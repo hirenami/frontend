@@ -68,6 +68,11 @@ const config = {
           to: { height: "0" },
         },
       },
+	  margin: {
+		'100': '25rem', // 100 と名付けたマージンを追加
+		'120': '30rem', // 120 と名付けたマージンを追加
+		'88' : '22rem', // 88 と名付けたマージンを追加
+	  },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
