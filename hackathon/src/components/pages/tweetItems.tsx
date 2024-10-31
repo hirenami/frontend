@@ -7,8 +7,9 @@ import { useEffect,useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MoreHorizontal } from "lucide-react";
-import { createLike, deleteLike } from "@/features/like/Like";
+import { createLike, deleteLike } from "@/features/like/likes";
 import { fetchUserData } from "@/features/user/fetchUserData";
+import { fetchLikeStatus } from "@/features/like/fetchLikeStatus";
 import { User} from "@/types/index";
 
 interface TweetItemProps {
@@ -22,38 +23,13 @@ export default function TweetItem({ tweet }: TweetItemProps) {
     const auth = getAuth();
     useEffect(() => {
     
-        const fetchLikeData = async (token: string) => {
-            try {
-                const likeResponse = await fetch(
-                    `http://localhost:8000/like/${tweet.tweetid}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-
-                if (!likeResponse.ok) {
-                    throw new Error("いいね情報の取得に失敗しました");
-                }
-
-                const likeData = await likeResponse.json();
-                console.log("Like Data:", likeData);
-                setIsLiked(likeData);
-            } catch (error) {
-                console.error("いいねデータの取得に失敗しました:", error);
-            }
-        };
-
         const handleAuthChange = () => {
             const unsubscribe = onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     const token = await user.getIdToken();
                     await Promise.all([
                         setUser(await fetchUserData(token,tweet.userid)),
-                        fetchLikeData(token),
+                        setIsLiked(await fetchLikeStatus(token, tweet.tweetid)),
                     ]);
                 } else {
                     console.error("ユーザーがログインしていません");
