@@ -20,7 +20,7 @@ import { Tweet, User} from "@/types";
 import { fetchTimeline } from "@/features/tweet/fetchTimeline";
 import Cookies from "js-cookie";
 import Sidebar from "@/components/pages/sidebar";
-import TweetItem from "@/features/tweet/tweetItems";
+import TweetItem from "@/components/pages/tweetItems";
 
 export default function Component() {
     const router = useRouter();

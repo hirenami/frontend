@@ -1,6 +1,6 @@
 "use client";
 
-import { LoginForm } from "@/features/firebase/loginform";
+import { LoginForm } from "@/components/pages/loginform";
 import { signIn, signUp } from "@/features/firebase/sign";
 import useAuth from "@/hooks/useAuth";
 

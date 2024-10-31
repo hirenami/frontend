@@ -8,7 +8,7 @@ import Image from "next/image";
 import { fireAuth } from "@/features/firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "@/components/pages/sidebar";
-import TweetItem from "@/features/tweet/tweetItems";
+import TweetItem from "@/components/pages/tweetItems";
 import { Tweet, User } from "@/types";
 import TrendsSidebar from "@/components/pages/trendsidebar";
 import { Button } from "@/components/ui/button";
