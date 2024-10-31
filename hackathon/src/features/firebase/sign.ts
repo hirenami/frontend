@@ -57,10 +57,6 @@ export const signUp = async (
 		const requestBody = {
 			username: username,
 			userId: username,
-			header_image:
-				"https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/grey.png?alt=media&token=3cfa3b15-5419-4807-932d-d19e10c52ff3",
-			icon_image:
-				"https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/default_profile_400x400.png?alt=media&token=44ace5f1-ef11-481f-9618-ba7d07e96b5d",
 		};
 
 		await fetch("http://localhost:8000/user/create", {

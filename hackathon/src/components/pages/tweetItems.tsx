@@ -140,6 +140,12 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 
     return (
         <div className="border-b border-gray-200 p-4 hover:bg-gray-50 transition-colors duration-200">
+			{(tweet.retweetid.Valid && !tweet.isquote)&& (
+				<div className="flex items-center space-x-2 text-gray-500">
+					<Repeat className="h-4 w-4" />
+					<span>リツイート</span>
+				</div>
+			)}
             <div className="flex space-x-3">
                 <Button
                     className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
