@@ -7,7 +7,7 @@ import { useEffect,useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MoreHorizontal } from "lucide-react";
-import { createLike, deleteLike } from "@/features/tweet/Like";
+import { createLike, deleteLike } from "@/features/like/Like";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { User} from "@/types/index";
 
