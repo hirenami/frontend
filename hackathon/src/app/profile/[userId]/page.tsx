@@ -14,6 +14,7 @@ import TrendsSidebar from "@/components/pages/trendsidebar";
 import { Button } from "@/components/ui/button";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchTweetsData } from "@/features/tweet/fetchTweetData";
+import { fetchFollowStatus } from "@/features/user/fetchFollowStatus";
 
 export default function ProfilePage() {
     const { userId } = useParams();
@@ -30,31 +31,6 @@ export default function ProfilePage() {
     useEffect(() => {
         if (!userId) return;
 
-        const fetchFollowStatus = async (token: string) => {
-            try {
-                const followResponse = await fetch(
-                    `http://localhost:8000/follow/${userId}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-
-                if (!followResponse.ok) {
-                    throw new Error("フォロー状態の取得に失敗しました");
-                }
-
-                const followData = await followResponse.json();
-				console.log("Follow Data:", followData);
-                setIsFollowing(followData);
-            } catch (error) {
-                console.error("フォロー状態の取得に失敗しました:", error);
-            }
-        };
-
         const handleAuthChange = async () => {
             const unsubscribe = onAuthStateChanged(auth, async (user) => {
                 if (user) {
@@ -64,7 +40,7 @@ export default function ProfilePage() {
                     await Promise.all([
                         setUser(await fetchUserData(token, userid)),
                         setTweets(await fetchTweetsData(token, userid)),
-                        fetchFollowStatus(token),
+                        setIsFollowing(await fetchFollowStatus(token, userid)),
                     ]);
                 } else {
                     console.error("ユーザーがログインしていません");
