@@ -12,6 +12,7 @@ import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchLikeStatus } from "@/features/like/fetchLikeStatus";
 import { User } from "@/types/index";
 import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
+import  RetweetItem  from "@/components/pages/retweetItems";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -213,7 +214,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
                             )}
                         </div>
                     )}
-                    {tweet.isquote && retweet && <TweetItem tweet={retweet} />}
+                    {tweet.isquote && retweet && <RetweetItem tweet={retweet} />}
                     <div className="mt-3 flex justify-between max-w-md">
                         <Button
                             variant="ghost"
