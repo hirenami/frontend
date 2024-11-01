@@ -41,20 +41,18 @@ export default function Component() {
 
 
     useEffect(() => {
-        const handleAuthChange = async () => {
-            const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    const token = await user.getIdToken();
-                    setUserToken(token);
-                    await Promise.all([
-                        setTimelineData(await fetchTimeline(token)),
-                    ]);
-                } else {
-                    console.error("ユーザーがログインしていません");
-                }
-            });
-            return unsubscribe;
-        };
+		const handleAuthChange = async () => {
+			const unsubscribe = onAuthStateChanged(auth, async (user) => {
+				if (user) {
+					const token = await user.getIdToken();
+					setUserToken(token);
+					setTimelineData(await fetchTimeline(token));
+				} else {
+					console.log("ユーザーがログインしていません");
+				}
+			});
+			return unsubscribe;
+		};
         handleAuthChange();
     }, [auth]);
 

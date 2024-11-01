@@ -5,7 +5,7 @@ import { Bell, Home, LogOut, Mail, Search, User as UserIcon, UserPlus } from "lu
 import { signOut } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { MoreHorizontal, Settings } from "lucide-react";
 import {
@@ -18,18 +18,14 @@ import Cookies from "js-cookie";
 import { User } from "@/types/index";
 
 const Sidebar = () => {
-    const router = useRouter();
-    const [user, setUser] = useState<User | null>(null); // useStateでユーザー情報を管理
-    const [loading, setLoading] = useState(true); // ローディング状態を追加
-    const userCookie = Cookies.get("user");
-
-    useEffect(() => {
-        if (userCookie) {
-            const parsedUser = JSON.parse(userCookie) as User; // JSON文字列をオブジェクトに変換
-            setUser(parsedUser);
-        }
-        setLoading(false); // データ取得後にローディングを解除
-    }, [userCookie]);
+	const router = useRouter();
+	const userCookie = Cookies.get("user");
+    let user : User | null = null;
+	if (userCookie) {
+        user = JSON.parse(userCookie) as User; // JSON文字列をオブジェクトに変換
+    }
+	console.log("User Data:", user);
+	console.log("usercookie:", userCookie);
 
     const signOutEmailAndPassword = (): void => {
         signOut(fireAuth)
@@ -43,11 +39,6 @@ const Sidebar = () => {
     };
 
     const [isOpen, setIsOpen] = useState(false);
-
-    // ローディング中の表示を追加
-    if (loading) {
-        return <div>Loading...</div>; // ローディング中の表示
-    }
 
     return (
         <aside className="w-80 p-4 flex flex-col fixed min-h-screen">

@@ -3,14 +3,14 @@ import { MessageCircle, Repeat, Heart, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tweet } from "@/types/index";
 import Image from "next/image";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MoreHorizontal } from "lucide-react";
 import { createLike, deleteLike } from "@/features/like/likes";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchLikeStatus } from "@/features/like/fetchLikeStatus";
-import { User} from "@/types/index";
+import { User } from "@/types/index";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -19,16 +19,15 @@ interface TweetItemProps {
 export default function TweetItem({ tweet }: TweetItemProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isliked, setIsLiked] = useState<boolean>(false);
-	const [likeData, setLikeData] = useState<number>(0);
+    const [likeData, setLikeData] = useState<number>(0);
     const auth = getAuth();
     useEffect(() => {
-    
         const handleAuthChange = () => {
             const unsubscribe = onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     const token = await user.getIdToken();
                     await Promise.all([
-                        setUser(await fetchUserData(token,tweet.userid)),
+                        setUser(await fetchUserData(token, tweet.userid)),
                         setIsLiked(await fetchLikeStatus(token, tweet.tweetid)),
                     ]);
                 } else {
@@ -38,7 +37,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
             return unsubscribe;
         };
         handleAuthChange();
-		setLikeData(tweet.likes);
+        setLikeData(tweet.likes);
     }, [auth, tweet.userid, tweet.tweetid, tweet.likes]);
 
     if (!tweet) {
@@ -68,7 +67,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
                     try {
                         await deleteLike(tweet, token); // トークンを渡す
                         setIsLiked(false); // いいねを消した後に状態を更新
-						setLikeData(likeData - 1);
+                        setLikeData(likeData - 1);
                     } catch (error) {
                         console.error("いいねの削除に失敗しました:", error);
                     }
@@ -76,7 +75,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
                     try {
                         await createLike(tweet, token); // トークンを渡す
                         setIsLiked(true); // いいねを追加した後に状態を更新
-						setLikeData(likeData + 1);
+                        setLikeData(likeData + 1);
                     } catch (error) {
                         console.error("いいねの追加に失敗しました:", error);
                     }
@@ -140,19 +139,23 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 
     return (
         <div className="border-b border-gray-200 p-4 hover:bg-gray-50 transition-colors duration-200">
-			{(tweet.retweetid.Valid && !tweet.isquote)&& (
-				<div className="flex items-center space-x-2 text-gray-500">
-					<Repeat className="h-4 w-4" />
-					<span>リツイート</span>
-				</div>
-			)}
+            {tweet.retweetid.Valid && !tweet.isquote && (
+               <div className="flex items-center space-x-1 text-sm text-gray-500 -mt-1 ml-auto pl-10">
+			   <Repeat className="h-3 w-3 text-gray-500" />
+			   <span className="font-medium text-gray-600">{user?.username}</span>
+			   <span>がリツイートしました</span>
+			 </div>
+            )}
             <div className="flex space-x-3">
                 <Button
                     className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
                     onClick={hundleUserClick}
                 >
                     <Avatar className="w-full h-full rounded-full">
-                        <AvatarImage src={user?.icon_image} alt={user?.userid} />
+                        <AvatarImage
+                            src={user?.icon_image}
+                            alt={user?.userid}
+                        />
                         <AvatarFallback>{user?.userid}</AvatarFallback>
                     </Avatar>
                 </Button>
