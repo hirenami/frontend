@@ -5,7 +5,7 @@ import { Bell, Home, LogOut, Mail, Search, User as UserIcon, UserPlus } from "lu
 import { signOut } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { MoreHorizontal, Settings } from "lucide-react";
 import {
@@ -18,14 +18,15 @@ import Cookies from "js-cookie";
 import { User } from "@/types/index";
 
 const Sidebar = () => {
-	const router = useRouter();
-	const userCookie = Cookies.get("user");
-    let user : User | null = null;
-	if (userCookie) {
-        user = JSON.parse(userCookie) as User; // JSON文字列をオブジェクトに変換
-    }
-	console.log("User Data:", user);
-	console.log("usercookie:", userCookie);
+    const router = useRouter();
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const userCookie = Cookies.get("user");
+        if (userCookie) {
+            setUser(JSON.parse(userCookie) as User); // JSON文字列をオブジェクトに変換
+        }
+    }, []);
 
     const signOutEmailAndPassword = (): void => {
         signOut(fireAuth)
