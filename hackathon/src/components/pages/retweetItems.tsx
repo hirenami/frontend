@@ -107,7 +107,7 @@ export default function RetweetItem({ tweet }: TweetItemProps) {
     return (
         <div className="flex space-x-3">
             <Button
-                className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
+                className="w-7 h-7 p-0 flex items-center justify-center rounded-full"
                 onClick={hundleUserClick}
             >
                 <Avatar className="w-full h-full rounded-full">
