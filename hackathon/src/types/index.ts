@@ -6,7 +6,7 @@ export type Sign = {
 export interface Tweet {
     tweetid: number;
 	userid: string;
-	retweetid: { Number: number; Valid: boolean };
+	retweetid: { Int32: number; Valid: boolean };
 	media_url: { String: string; Valid: boolean };
 	isquote: boolean;
 	isreply: boolean;

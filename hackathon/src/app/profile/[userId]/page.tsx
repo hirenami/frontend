@@ -29,28 +29,36 @@ export default function ProfilePage() {
     const [isFollowing, setIsFollowing] = useState(false);
 
     useEffect(() => {
-        if (!userId) return;
-
-        const handleAuthChange = async () => {
-            const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    const token = await user.getIdToken();
-                    setCurrentUserId(user.uid);
-
-                    await Promise.all([
-                        setUser(await fetchUserData(token, userid)),
-                        setTweets(await fetchTweetsData(token, userid)),
-                        setIsFollowing(await fetchFollowStatus(token, userid)),
-                    ]);
-                } else {
-                    console.error("ユーザーがログインしていません");
-                }
-                setLoading(false);
-            });
-            return unsubscribe;
-        };
-        handleAuthChange();
-    }, [userId,auth,userid]);
+		if (!userId) return;
+	
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
+			if (user) {
+				const token = await user.getIdToken();
+				setCurrentUserId(user.uid);
+	
+				try {
+					const [userData, tweetsData, followStatus] = await Promise.all([
+						fetchUserData(token, userid),
+						fetchTweetsData(token, userid),
+						fetchFollowStatus(token, userid),
+					]);
+	
+					setUser(userData);
+					setTweets(tweetsData);
+					setIsFollowing(followStatus);
+				} catch (error) {
+					console.error("データの取得に失敗しました:", error);
+				}
+			} else {
+				console.error("ユーザーがログインしていません");
+			}
+			setLoading(false);
+		});
+	
+		// クリーンアップ関数でイベントリスナーを解除
+		return () => unsubscribe();
+	}, [userId, auth, userid]);
+	
 
     const handleFollow = async () => {
         if (!currentUserId || !userId) return;

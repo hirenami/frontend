@@ -11,6 +11,7 @@ import { createLike, deleteLike } from "@/features/like/likes";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchLikeStatus } from "@/features/like/fetchLikeStatus";
 import { User } from "@/types/index";
+import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -20,6 +21,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isliked, setIsLiked] = useState<boolean>(false);
     const [likeData, setLikeData] = useState<number>(0);
+    const [retweet, setRetweet] = useState<Tweet | null>(null);
     const auth = getAuth();
     useEffect(() => {
         const handleAuthChange = () => {
@@ -30,6 +32,9 @@ export default function TweetItem({ tweet }: TweetItemProps) {
                         setUser(await fetchUserData(token, tweet.userid)),
                         setIsLiked(await fetchLikeStatus(token, tweet.tweetid)),
                     ]);
+                    if (tweet.retweetid.Valid) {
+                        setRetweet(await fetchOneTweet(tweet.retweetid.Int32));
+                    }
                 } else {
                     console.error("ユーザーがログインしていません");
                 }
@@ -38,7 +43,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
         };
         handleAuthChange();
         setLikeData(tweet.likes);
-    }, [auth, tweet.userid, tweet.tweetid, tweet.likes]);
+    }, [auth, tweet.userid, tweet.tweetid, tweet.likes, tweet.retweetid]);
 
     if (!tweet) {
         return (
@@ -137,15 +142,8 @@ export default function TweetItem({ tweet }: TweetItemProps) {
         });
     };
 
-    return (
-        <div className="border-b border-gray-200 p-4 hover:bg-gray-50 transition-colors duration-200">
-            {tweet.retweetid.Valid && !tweet.isquote && (
-               <div className="flex items-center space-x-1 text-sm text-gray-500 -mt-1 ml-auto pl-10">
-			   <Repeat className="h-3 w-3 text-gray-500" />
-			   <span className="font-medium text-gray-600">{user?.username}</span>
-			   <span>がリツイートしました</span>
-			 </div>
-            )}
+    const Tweetobj = () => {
+        return (
             <div className="flex space-x-3">
                 <Button
                     className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
@@ -215,6 +213,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
                             )}
                         </div>
                     )}
+                    {tweet.isquote && retweet && <TweetItem tweet={retweet} />}
                     <div className="mt-3 flex justify-between max-w-md">
                         <Button
                             variant="ghost"
@@ -260,6 +259,29 @@ export default function TweetItem({ tweet }: TweetItemProps) {
                     </div>
                 </div>
             </div>
+        );
+    };
+
+    return (
+        <div>
+            {retweet && !tweet.isquote ? (
+                <div>
+                    {/* リツイートメッセージ */}
+                    <div className="flex items-center space-x-1 text-sm text-gray-500 -mt-1 ml-auto pl-10 p-1">
+                        <Repeat className="h-3 w-3 text-gray-500" />
+                        <span className="font-medium text-gray-600">
+                            {user?.username}
+                        </span>
+                        <span>がリツイートしました</span>
+                    </div>
+                    {/* リツイートされたツイート */}
+                    <TweetItem tweet={retweet} />
+                </div>
+            ) : (
+				<div className="border-b border-gray-200 p-4 hover:bg-gray-50 transition-colors duration-200">
+                <Tweetobj />
+				</div>
+            )}
         </div>
     );
 }
