@@ -107,10 +107,10 @@ export default function UserEditor({
 					onAuthStateChanged(auth, async (currentUser) => {
 						if (currentUser) {
 							const token = await currentUser.getIdToken();
-							setUserToken(token);  // userTokenを設定
-							resolve(token);  // トークンを返す
+							setUserToken(token);
+							resolve(token);
 						} else {
-							resolve(null);  // ユーザーが見つからない場合
+							resolve(null);
 						}
 					});
 				});
@@ -125,7 +125,7 @@ export default function UserEditor({
 			const response = await fetch("http://localhost:8000/user/edit", {
 				method: "PUT",
 				headers: {
-					Authorization: `Bearer ${token}`,  // トークンを利用
+					Authorization: `Bearer ${token}`,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
@@ -140,7 +140,12 @@ export default function UserEditor({
 				console.log("プロフィールが正常に保存されました");
 	
 				// クッキーの更新
-				Cookies.set("user", JSON.stringify(user), { expires: 7 });
+				Cookies.set("user", JSON.stringify({
+					...user,
+					header_image: header_imageUrl,
+					icon_image: icon_imageUrl,
+				}), { expires: 7 });
+	
 				if (onSave) {
 					onSave({
 						...user,
