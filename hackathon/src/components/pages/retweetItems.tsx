@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { MoreHorizontal } from "lucide-react";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { User } from "@/types/index";
 
@@ -136,13 +135,6 @@ export default function RetweetItem({ tweet }: TweetItemProps) {
                             {formatDate(tweet.created_at)}
                         </span>
                     </div>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-gray-500 hover:text-primary"
-                    >
-                        <MoreHorizontal className="h-5 w-5" />
-                    </Button>
                 </div>
                 <p className="mt-2 text-sm text-gray-900 whitespace-pre-wrap">
                     {renderContentWithHashtags(tweet.content)}
