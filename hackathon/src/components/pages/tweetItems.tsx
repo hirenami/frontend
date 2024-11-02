@@ -159,7 +159,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 	
 				{/* ツイートの内容 */}
 				<div className="flex-1 min-w-0">
-					<div className="flex items-center justify-between">
+					<div className="flex items-start justify-between">
 						<div className="flex items-center space-x-1 truncate">
 							{/* ユーザー名とID */}
 							<button
@@ -281,7 +281,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
             {retweet && !tweet.isquote ? (
             <div className="relative hover:bg-gray-50 transition-colors duration-200">
 			{/* リツイートメッセージ */}
-			<div className="flex items-center p-1 text-sm text-gray-500 whitespace-nowrap ">
+			<div className="flex items-center  text-sm text-gray-500 whitespace-nowrap ml-12">
 				<Repeat className="h-3 w-3 text-gray-500" />
 				<span className="font-medium text-gray-600 ml-1">
 					{user?.username}
