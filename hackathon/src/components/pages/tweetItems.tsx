@@ -10,9 +10,11 @@ import { MoreHorizontal } from "lucide-react";
 import { createLike, deleteLike } from "@/features/like/likes";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchLikeStatus } from "@/features/like/fetchLikeStatus";
+import { fetchRetweetStatus } from "@/features/retweet/fetchRetweetStatus";
 import { User } from "@/types/index";
 import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
 import  RetweetItem  from "@/components/pages/retweetItems";
+import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -22,6 +24,8 @@ export default function TweetItem({ tweet }: TweetItemProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isliked, setIsLiked] = useState<boolean>(false);
     const [likeData, setLikeData] = useState<number>(0);
+	const [isretweet, setIsRetweet] = useState<boolean>(false);
+	const [retweetData, setRetweetData] = useState<number>(0);
     const [retweet, setRetweet] = useState<Tweet | null>(null);
     const auth = getAuth();
     useEffect(() => {
@@ -32,6 +36,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
                     await Promise.all([
                         setUser(await fetchUserData(token, tweet.userid)),
                         setIsLiked(await fetchLikeStatus(token, tweet.tweetid)),
+						setIsRetweet(await fetchRetweetStatus(token, tweet.tweetid)),
                     ]);
                     if (tweet.retweetid.Valid) {
                         setRetweet(await fetchOneTweet(tweet.retweetid.Int32));
@@ -44,7 +49,8 @@ export default function TweetItem({ tweet }: TweetItemProps) {
         };
         handleAuthChange();
         setLikeData(tweet.likes);
-    }, [auth, tweet.userid, tweet.tweetid, tweet.likes, tweet.retweetid]);
+		setRetweetData(tweet.retweets);
+    }, [auth, tweet.userid, tweet.tweetid, tweet.likes, tweet.retweetid, tweet.retweets]);
 
     if (!tweet) {
         return (
@@ -82,6 +88,33 @@ export default function TweetItem({ tweet }: TweetItemProps) {
                         await createLike(tweet, token); // トークンを渡す
                         setIsLiked(true); // いいねを追加した後に状態を更新
                         setLikeData(likeData + 1);
+                    } catch (error) {
+                        console.error("いいねの追加に失敗しました:", error);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("いいねのトグルに失敗しました:", error);
+        }
+    };
+
+	const handleRetweetToggle = async () => {
+        try {
+            const token = await auth.currentUser?.getIdToken();
+            if (token) {
+                if (isretweet) {
+                    try {
+                        await deleteRetweet(tweet, token); // トークンを渡す
+                        setIsRetweet(false); // いいねを消した後に状態を更新
+                        setRetweetData(retweetData - 1);
+                    } catch (error) {
+                        console.error("いいねの削除に失敗しました:", error);
+                    }
+                } else {
+                    try {
+                        await createRetweet(tweet, token); // トークンを渡す
+                        setIsRetweet(true); // いいねを追加した後に状態を更新
+                        setRetweetData(retweetData + 1);
                     } catch (error) {
                         console.error("いいねの追加に失敗しました:", error);
                     }
@@ -239,11 +272,13 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 						<Button
 							variant="ghost"
 							size="sm"
-							className="flex items-center space-x-2 text-gray-500 hover:text-green-500"
-							//onClick={handleRetweetClick}
+							className={`flex items-center space-x-2 ${
+								isretweet ? "text-green-500" : "text-gray-500"
+							} hover:text-red-500`}
+							onClick={handleRetweetToggle}
 						>
 							<Repeat className="h-4 w-4" />
-							<span className="text-xs">{tweet.retweets}</span>
+							<span className="text-xs">{retweetData}</span>
 						</Button>
 						<Button
 							variant="ghost"
