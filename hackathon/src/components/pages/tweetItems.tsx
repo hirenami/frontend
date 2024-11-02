@@ -144,142 +144,155 @@ export default function TweetItem({ tweet }: TweetItemProps) {
     };
 
     const Tweetobj = () => {
-        return (
-            <div className="flex space-x-3">
-                <Button
-                    className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
-                    onClick={hundleUserClick}
-                >
-                    <Avatar className="w-full h-full rounded-full">
-                        <AvatarImage
-                            src={user?.icon_image}
-                            alt={user?.userid}
-                        />
-                        <AvatarFallback>{user?.userid}</AvatarFallback>
-                    </Avatar>
-                </Button>
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-1 truncate">
-                            <button
-                                className="text-base font-bold text-gray-900 hover:underline bg-transparent p-0 focus:outline-none"
-                                onClick={hundleUserClick}
-                            >
-                                {user?.username}
-                            </button>
-                            <button
-                                className="text-sm text-gray-500  bg-transparent p-0 focus:outline-none"
-                                onClick={hundleUserClick}
-                            >
-                                @{user?.userid}
-                            </button>
-                            <span className="text-gray-500 text-sm">·</span>
-                            <span className="text-gray-500 text-sm">
-                                {formatDate(tweet.created_at)}
-                            </span>
-                        </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-gray-500 hover:text-primary"
-                        >
-                            <MoreHorizontal className="h-5 w-5" />
-                        </Button>
-                    </div>
-                    <p className="mt-2 text-sm text-gray-900 whitespace-pre-wrap">
-                        {renderContentWithHashtags(tweet.content)}
-                    </p>
-                    {tweet.media_url.Valid && (
-                        <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">
-                            {tweet.media_url.String.includes("images%") ? (
-                                // 画像の場合
-                                <Image
-                                    src={tweet.media_url.String}
-                                    alt="ツイート画像"
-                                    width={400}
-                                    height={225}
-                                    className="w-full h-auto object-cover max-h-[225px]"
-                                />
-                            ) : tweet.media_url.String.includes("videos%") ? (
-                                // 動画の場合
-                                <video
-                                    src={tweet.media_url.String}
-                                    controls
-                                    className="w-full h-auto object-cover max-h-[225px]"
-                                >
-                                    お使いのブラウザは動画タグをサポートしていません。
-                                </video>
-                            ) : (
-                                <p>サポートされていないメディアタイプです。</p> // その他のメディアタイプの場合
-                            )}
-                        </div>
-                    )}
-                    {tweet.isquote && retweet && <RetweetItem tweet={retweet} />}
-                    <div className="mt-3 flex justify-between max-w-md">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center space-x-2 text-gray-500 hover:text-primary"
-                        >
-                            <MessageCircle className="h-4 w-4" />
-                            <span className="text-xs">{tweet.replies}</span>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center space-x-2 text-gray-500 hover:text-green-500"
-                        >
-                            <Repeat className="h-4 w-4" />
-                            <span className="text-xs">{tweet.retweets}</span>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`flex items-center space-x-2 ${
-                                isliked ? "text-red-500" : "text-gray-500"
-                            } hover:text-red-500`}
-                            onClick={handleLikeToggle}
-                        >
-                            <Heart
-                                className={`h-4 w-4 ${
-                                    isliked
-                                        ? "fill-current text-red-500"
-                                        : "text-gray-500"
-                                }`}
-                            />
-                            <span className="text-xs">{likeData}</span>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center space-x-2 text-gray-500 hover:text-primary"
-                        >
-                            <BarChart className="h-4 w-4" />
-                            <span className="text-xs">{tweet.impressions}</span>
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        );
-    };
+		return (
+			<div className="flex space-x-3">
+				{/* ユーザーのアイコン */}
+				<Button
+					className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
+					onClick={hundleUserClick}
+				>
+					<Avatar className="w-full h-full rounded-full">
+						<AvatarImage src={user?.icon_image} alt={user?.userid} />
+						<AvatarFallback>{user?.userid}</AvatarFallback>
+					</Avatar>
+				</Button>
+	
+				{/* ツイートの内容 */}
+				<div className="flex-1 min-w-0">
+					<div className="flex items-center justify-between">
+						<div className="flex items-center space-x-1 truncate">
+							{/* ユーザー名とID */}
+							<button
+								className="text-base font-bold text-gray-900 hover:underline bg-transparent p-0 focus:outline-none"
+								onClick={hundleUserClick}
+							>
+								{user?.username}
+							</button>
+							<button
+								className="text-sm text-gray-500 bg-transparent p-0 focus:outline-none"
+								onClick={hundleUserClick}
+							>
+								@{user?.userid}
+							</button>
+							<span className="text-gray-500 text-sm">·</span>
+							<span className="text-gray-500 text-sm">
+								{formatDate(tweet.created_at)}
+							</span>
+						</div>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="text-gray-500 hover:text-primary"
+						>
+							<MoreHorizontal className="h-5 w-5" />
+						</Button>
+					</div>
+	
+					{/* ツイートのテキスト */}
+					<p className="text-sm text-gray-900 whitespace-pre-wrap">
+						{renderContentWithHashtags(tweet.content)}
+					</p>
+	
+					{/* メディア（画像または動画） */}
+					{tweet.media_url.Valid && (
+						<div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">
+							{tweet.media_url.String.includes("images%") ? (
+								<Image
+									src={tweet.media_url.String}
+									alt="ツイート画像"
+									width={400}
+									height={225}
+									className="w-full h-auto object-cover max-h-[225px]"
+								/>
+							) : tweet.media_url.String.includes("videos%") ? (
+								<video
+									src={tweet.media_url.String}
+									controls
+									className="w-full h-auto object-cover max-h-[225px]"
+								>
+									お使いのブラウザは動画タグをサポートしていません。
+								</video>
+							) : (
+								<p>サポートされていないメディアタイプです。</p>
+							)}
+						</div>
+					)}
+	
+					{/* 引用リツイートされたツイート */}
+					{tweet.isquote && retweet && (
+						<div className="mt-3 p-3 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100">
+							<RetweetItem tweet={retweet} />
+						</div>
+					)}
+	
+					{/* アクションボタン群 */}
+					<div className="mt-3 flex justify-between max-w-md">
+						<Button
+							variant="ghost"
+							size="sm"
+							className="flex items-center space-x-2 text-gray-500 hover:text-primary"
+							//onClick={handleReplyClick}
+						>
+							<MessageCircle className="h-4 w-4" />
+							<span className="text-xs">{tweet.replies}</span>
+						</Button>
+						<Button
+							variant="ghost"
+							size="sm"
+							className="flex items-center space-x-2 text-gray-500 hover:text-green-500"
+							//onClick={handleRetweetClick}
+						>
+							<Repeat className="h-4 w-4" />
+							<span className="text-xs">{tweet.retweets}</span>
+						</Button>
+						<Button
+							variant="ghost"
+							size="sm"
+							className={`flex items-center space-x-2 ${
+								isliked ? "text-red-500" : "text-gray-500"
+							} hover:text-red-500`}
+							onClick={handleLikeToggle}
+						>
+							<Heart
+								className={`h-4 w-4 ${
+									isliked ? "fill-current text-red-500" : "text-gray-500"
+								}`}
+							/>
+							<span className="text-xs">{likeData}</span>
+						</Button>
+						<Button
+							variant="ghost"
+							size="sm"
+							className="flex items-center space-x-2 text-gray-500 hover:text-primary"
+							//onClick={handleImpressionsClick}
+						>
+							<BarChart className="h-4 w-4" />
+							<span className="text-xs">{tweet.impressions}</span>
+						</Button>
+					</div>
+				</div>
+			</div>
+		);
+	};
+	
 
     return (
         <div>
             {retweet && !tweet.isquote ? (
-                <div>
-                    {/* リツイートメッセージ */}
-                    <div className="flex items-center space-x-1 text-sm text-gray-500 -mt-1 ml-auto pl-10 p-1">
-                        <Repeat className="h-3 w-3 text-gray-500" />
-                        <span className="font-medium text-gray-600">
-                            {user?.username}
-                        </span>
-                        <span>がリツイートしました</span>
-                    </div>
-                    {/* リツイートされたツイート */}
-                    <TweetItem tweet={retweet} />
-                </div>
+            <div className="relative hover:bg-gray-50 transition-colors duration-200">
+			{/* リツイートメッセージ */}
+			<div className="flex items-center p-1 text-sm text-gray-500 whitespace-nowrap ">
+				<Repeat className="h-3 w-3 text-gray-500" />
+				<span className="font-medium text-gray-600 ml-1">
+					{user?.username}
+				</span>
+				<span className="ml-1">がリツイートしました</span>
+			</div>
+			{/* リツイートされたツイート */}
+			<TweetItem tweet={retweet} />
+		</div>
             ) : (
-				<div className="border-b border-gray-200 p-4 hover:bg-gray-50 transition-colors duration-200">
+				<div className="border-b border-gray-200 p-2 hover:bg-gray-50 transition-colors duration-200">
                 <Tweetobj />
 				</div>
             )}
