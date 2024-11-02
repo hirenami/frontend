@@ -220,7 +220,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 	
 					{/* 引用リツイートされたツイート */}
 					{tweet.isquote && retweet && (
-						<div className="mt-3 p-3 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100">
+						<div className="mt-3 mr-10 p-3 border border-gray-200 rounded-lg  hover:bg-gray-100">
 							<RetweetItem tweet={retweet} />
 						</div>
 					)}
