@@ -16,7 +16,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { uploadFile } from "@/features/firebase/strage";
 import Image from "next/image";
 import TrendsSidebar from "@/components/pages/trendsidebar";
-import { Tweet, User} from "@/types";
+import { Tweet, User } from "@/types";
 import { fetchTimeline } from "@/features/tweet/fetchTimeline";
 import Cookies from "js-cookie";
 import Sidebar from "@/components/pages/sidebar";
@@ -39,20 +39,19 @@ export default function Component() {
         user = JSON.parse(userCookie) as User; // JSON文字列をオブジェクトに変換
     }
 
-
     useEffect(() => {
-		const handleAuthChange = async () => {
-			const unsubscribe = onAuthStateChanged(auth, async (user) => {
-				if (user) {
-					const token = await user.getIdToken();
-					setUserToken(token);
-					setTimelineData(await fetchTimeline(token));
-				} else {
-					console.log("ユーザーがログインしていません");
-				}
-			});
-			return unsubscribe;
-		};
+        const handleAuthChange = async () => {
+            const unsubscribe = onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    const token = await user.getIdToken();
+                    setUserToken(token);
+                    setTimelineData(await fetchTimeline(token));
+                } else {
+                    console.log("ユーザーがログインしていません");
+                }
+            });
+            return unsubscribe;
+        };
         handleAuthChange();
     }, [auth]);
 
@@ -121,11 +120,16 @@ export default function Component() {
                 <div className="border-b p-4">
                     <div className="flex space-x-4">
                         <button
-                            onClick={() => router.push(`/profile/${user?.userid}`)}
+                            onClick={() =>
+                                router.push(`/profile/${user?.userid}`)
+                            }
                             className="w-10 h-10"
                         >
                             <Avatar className="w-full h-full">
-                                <AvatarImage src={user?.icon_image} alt="@username" />
+                                <AvatarImage
+                                    src={user?.icon_image}
+                                    alt="@username"
+                                />
                                 <AvatarFallback>UN</AvatarFallback>
                             </Avatar>
                         </button>
@@ -134,7 +138,12 @@ export default function Component() {
                                 placeholder="いまどうしてる？"
                                 value={tweetText}
                                 onChange={(e) => setTweetText(e.target.value)}
-                                className="min-h-[100px] text-xl border-none resize-none focus:ring-0"
+                                className="min-h-[100px] text-xl resize-none focus:ring-0 focus:border-transparent border-transparent p-0 shadow-none bg-transparent"
+                                style={{
+                                    border: "none",
+                                    outline: "none",
+                                    boxShadow: "none",
+                                }}
                             />
                             {mediaFile && (
                                 <div className="relative w-full h-60 bg-gray-200 rounded-xl overflow-hidden">

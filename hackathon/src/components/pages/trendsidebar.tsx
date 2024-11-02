@@ -28,6 +28,11 @@ export default function TrendsSidebar() {
               type="search"
               placeholder="検索"
               className="pl-10 bg-gray-100 border-none focus:ring-2 focus:ring-primary"
+			  style={{
+              border: 'none',
+              outline: 'none',
+              boxShadow: 'none',
+            }}
             />
           </div>
         </div>
