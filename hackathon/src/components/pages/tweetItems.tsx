@@ -15,6 +15,8 @@ import { User } from "@/types/index";
 import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
 import  RetweetItem  from "@/components/pages/retweetItems";
 import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
+import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
+import { formatDate } from "@/lib/formatDate";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -123,57 +125,6 @@ export default function TweetItem({ tweet }: TweetItemProps) {
         } catch (error) {
             console.error("いいねのトグルに失敗しました:", error);
         }
-    };
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString); // ISO文字列をDateオブジェクトに変換
-        const now = new Date();
-        date.setHours((date.getHours() as number) - 9); // 9時間を追加して日本時間に変換
-
-        const diffInMs = now.getTime() - date.getTime(); // ミリ秒の差分を計算
-        const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-        if (diffInHours < 24) {
-            // 24時間以内なら「何時間前」
-            return `${diffInHours}時間`;
-        } else if (diffInDays < 365) {
-            // 1年未満なら「日付」
-            return date.toLocaleDateString("ja-JP", {
-                month: "short",
-                day: "numeric",
-            });
-        } else {
-            // 1年以上前なら「年と日付」
-            return date.toLocaleDateString("ja-JP", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-            });
-        }
-    };
-
-    // ハッシュタグを含むテキストをボタンに変換する関数
-    const renderContentWithHashtags = (content: string) => {
-        const hashtagRegex = /#\p{L}[\p{L}\p{N}_]*/gu; // ハッシュタグの正規表現
-        const parts = content.split(hashtagRegex);
-        const hashtags = content.match(hashtagRegex) || []; // マッチしたハッシュタグを取得
-
-        return parts.flatMap((part, index) => {
-            const result = [<span key={`text-${index}`}>{part}</span>]; // テキスト部分をspanで囲む
-            if (index < hashtags.length) {
-                result.push(
-                    <Button
-                        key={`hashtag-${index}`}
-                        variant="link"
-                        className="text-blue-500 hover:underline"
-                    >
-                        {hashtags[index]} {/* ハッシュタグをボタンにする */}
-                    </Button>
-                );
-            }
-            return result;
-        });
     };
 
     const Tweetobj = () => {
