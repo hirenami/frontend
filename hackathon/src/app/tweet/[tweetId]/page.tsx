@@ -27,6 +27,7 @@ import RetweetItem from "@/components/pages/retweetItems";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import {date} from "@/lib/Date";
 
 export default function TweetPage() {
     const { tweetId } = useParams();
@@ -225,6 +226,11 @@ export default function TweetPage() {
                             <RetweetItem tweet={retweet} />
                         </div>
                     )}
+					
+					{/* ツイートの日時 */}
+					<div className="mt-3 text-gray-500 text-sm">
+						{date(tweet.created_at)}
+					</div>
 
                     {/* アクションボタン群 */}
                     <div className="mt-3 flex justify-between max-w-md">
