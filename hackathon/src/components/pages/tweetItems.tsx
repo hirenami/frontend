@@ -15,6 +15,7 @@ import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";
 import { useRouter } from "next/navigation";
+import { combineTweetData } from "@/lib/combineTweetData";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -36,28 +37,6 @@ export default function TweetItem({
     const [retweet, setRetweet] = useState<TweetData | null>(null);
     const auth = getAuth();
     const router = useRouter();
-
-    // combineTweetData関数の定義
-    const combineTweetData = (data: {
-        Tweet: Tweet;
-        User: User;
-        IsLike: boolean;
-        IsRetweet: boolean;
-    }): TweetData => {
-        const {
-            Tweet: tweets,
-            User: users,
-            IsLike: isLiked,
-            IsRetweet: isRetweeted,
-        } = data;
-
-        return {
-            tweet: tweets,
-            user: users,
-            isLiked: isLiked,
-            isRetweeted: isRetweeted,
-        };
-    };
 
     useEffect(() => {
         const handleAuthChange = () => {

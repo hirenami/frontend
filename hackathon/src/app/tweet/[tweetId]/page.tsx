@@ -24,6 +24,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import {date} from "@/lib/Date";
+import { combineTweetData } from "@/lib/combineTweetData";
 
 export default function TweetPage() {
     const { tweetId } = useParams();
@@ -37,28 +38,6 @@ export default function TweetPage() {
 	const [user, setUser] = useState<User | null>(null);
     const auth = fireAuth;
     const router = useRouter();
-
-	// combineTweetData関数の定義
-    const combineTweetData = (data: {
-        Tweet: Tweet;
-        User: User;
-        IsLike: boolean;
-        IsRetweet: boolean;
-    }): TweetData => {
-        const {
-            Tweet: tweets,
-            User: users,
-            IsLike: isLiked,
-            IsRetweet: isRetweeted,
-        } = data;
-
-        return {
-            tweet: tweets,
-            user: users,
-            isLiked: isLiked,
-            isRetweeted: isRetweeted,
-        };
-    };
 
     useEffect(() => {
         if (!tweetId) return;

@@ -9,12 +9,13 @@ import { fireAuth } from "@/features/firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "@/components/pages/sidebar";
 import TweetItem from "@/components/pages/tweetItems";
-import { Tweet, User, TweetData } from "@/types";
+import {  User, TweetData } from "@/types";
 import TrendsSidebar from "@/components/pages/trendsidebar";
 import { Button } from "@/components/ui/button";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchTweetsData } from "@/features/tweet/fetchTweetData";
 import { fetchFollowStatus } from "@/features/user/fetchFollowStatus";
+import { combineTweetDatas } from "@/lib/combineTweetData";
 
 export default function ProfilePage() {
     const { userId } = useParams();
@@ -27,37 +28,6 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
     const [isFollowing, setIsFollowing] = useState(false);
-
-    // combineTweetData関数の定義
-    const combineTweetData = (data: {
-        Tweet: Tweet[];
-        User: User[];
-        IsLike: boolean[];
-        IsRetweet: boolean[];
-    }): TweetData[] => {
-        const {
-            Tweet: tweets,
-            User: users,
-            IsLike: isLiked,
-            IsRetweet: isRetweeted,
-        } = data;
-
-        // 配列の長さが一致しているか確認
-        if (
-            tweets.length !== users.length ||
-            tweets.length !== isLiked.length ||
-            tweets.length !== isRetweeted.length
-        ) {
-            throw new Error("配列の長さが一致していません");
-        }
-
-        return tweets.map((tweet, index) => ({
-            tweet: tweet,
-            user: users[index],
-            isLiked: isLiked[index],
-            isRetweeted: isRetweeted[index],
-        }));
-    };
 
     useEffect(() => {
         if (!userId) return;
@@ -76,8 +46,8 @@ export default function ProfilePage() {
                         ]);
 
                     setUser(userData);
-                    setTweets(combineTweetData(tweetsData));
-                    console.log(combineTweetData(tweetsData));
+                    setTweets(combineTweetDatas(tweetsData));
+                    console.log(combineTweetDatas(tweetsData));
                     setIsFollowing(followStatus);
                 } catch (error) {
                     console.error("データの取得に失敗しました:", error);
