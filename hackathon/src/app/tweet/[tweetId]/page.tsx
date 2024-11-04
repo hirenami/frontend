@@ -20,7 +20,6 @@ import {
     MessageCircle,
     Repeat,
     Heart,
-    BarChart,
 } from "lucide-react";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import RetweetItem from "@/components/pages/retweetItems";
@@ -228,8 +227,8 @@ export default function TweetPage() {
                     )}
 					
 					{/* ツイートの日時 */}
-					<div className="mt-3 text-gray-500 text-sm">
-						{date(tweet.created_at)}
+					<div className="mt-3 text-gray-500 text-sm border-b border-gray p-2">
+						{date(tweet.created_at)} ・<b>{tweet.impressions}</b>件の表示
 					</div>
 
                     {/* アクションボタン群 */}
@@ -270,15 +269,6 @@ export default function TweetPage() {
                                 }`}
                             />
                             <span className="text-xs">{likeData}</span>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center space-x-2 text-gray-500 hover:text-primary"
-                            //onClick={handleImpressionsClick}
-                        >
-                            <BarChart className="h-4 w-4" />
-                            <span className="text-xs">{tweet.impressions}</span>
                         </Button>
                     </div>
                 </div>

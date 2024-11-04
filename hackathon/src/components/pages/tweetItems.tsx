@@ -17,6 +17,7 @@ import  RetweetItem  from "@/components/pages/retweetItems";
 import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";
+import { useRouter } from "next/navigation";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -30,6 +31,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 	const [retweetData, setRetweetData] = useState<number>(0);
     const [retweet, setRetweet] = useState<Tweet | null>(null);
     const auth = getAuth();
+	const router = useRouter();
     useEffect(() => {
         const handleAuthChange = () => {
             const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -127,6 +129,10 @@ export default function TweetItem({ tweet }: TweetItemProps) {
         }
     };
 
+	const handleTweetClick = (tweetId : number) => {
+		router.push(`/tweet/${tweetId}`);
+	};
+
     const Tweetobj = () => {
 		return (
 			<div className="flex space-x-3">
@@ -204,7 +210,10 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 	
 					{/* 引用リツイートされたツイート */}
 					{tweet.isquote && retweet && (
-						<div className="mt-3 mr-10 p-3 border border-gray-200 rounded-lg  hover:bg-gray-100">
+						<div className="mt-3 mr-10 p-3 border border-gray-200 rounded-lg  hover:bg-gray-100" onClick={(e) => {
+							e.stopPropagation(); // 親のクリックイベントをキャンセル
+							handleTweetClick(tweet.retweetid.Int32);
+						}}>
 							<RetweetItem tweet={retweet} />
 						</div>
 					)}
@@ -226,7 +235,9 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 							className={`flex items-center space-x-2 ${
 								isretweet ? "text-green-500" : "text-gray-500"
 							} hover:text-red-500`}
-							onClick={handleRetweetToggle}
+							onClick={(e)=>{
+								e.stopPropagation();
+								handleRetweetToggle();}}
 						>
 							<Repeat className="h-4 w-4" />
 							<span className="text-xs">{retweetData}</span>
@@ -237,7 +248,9 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 							className={`flex items-center space-x-2 ${
 								isliked ? "text-red-500" : "text-gray-500"
 							} hover:text-red-500`}
-							onClick={handleLikeToggle}
+							onClick={(e)=>{
+								e.stopPropagation();
+								handleLikeToggle();}}
 						>
 							<Heart
 								className={`h-4 w-4 ${
@@ -249,7 +262,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 						<Button
 							variant="ghost"
 							size="sm"
-							className="flex items-center space-x-2 text-gray-500 hover:text-primary"
+							className="flex items-center space-x-2 text-gray-500"
 							//onClick={handleImpressionsClick}
 						>
 							<BarChart className="h-4 w-4" />
@@ -265,7 +278,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
     return (
         <div>
             {retweet && !tweet.isquote ? (
-            <div className="relative hover:bg-gray-50 transition-colors duration-200">
+            <div className="relative hover:bg-gray-50 transition-colors duration-200" onClick={() =>handleTweetClick(tweet.retweetid.Int32)}>
 			{/* リツイートメッセージ */}
 			<div className="flex items-center  text-sm text-gray-500 whitespace-nowrap ml-12">
 				<Repeat className="h-3 w-3 text-gray-500" />
@@ -278,7 +291,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 			<TweetItem tweet={retweet} />
 		</div>
             ) : (
-				<div className="border-b border-gray-200 p-2 hover:bg-gray-50 transition-colors duration-200">
+				<div className="border-b border-gray-200 p-2 hover:bg-gray-50 transition-colors duration-200" onClick={()=> handleTweetClick(tweet.tweetid)}>
                 <Tweetobj />
 				</div>
             )}
