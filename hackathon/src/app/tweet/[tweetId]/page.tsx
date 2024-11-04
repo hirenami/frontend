@@ -4,13 +4,10 @@ import Sidebar from "@/components/pages/sidebar";
 import TrendsSidebar from "@/components/pages/trendsidebar";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import { Tweet, User } from "@/types";
+import { Tweet, User, TweetData } from "@/types";
 import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
 import { onAuthStateChanged } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
-import { fetchUserData } from "@/features/user/fetchUserData";
-import { fetchLikeStatus } from "@/features/like/fetchLikeStatus";
-import { fetchRetweetStatus } from "@/features/retweet/fetchRetweetStatus";
 import { createLike, deleteLike } from "@/features/like/likes";
 import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -31,15 +28,37 @@ import {date} from "@/lib/Date";
 export default function TweetPage() {
     const { tweetId } = useParams();
     const tweetid = tweetId as unknown as number;
-    const [tweet, setTweet] = useState<Tweet | null>(null);
-    const [user, setUser] = useState<User | null>(null);
     const [isliked, setIsLiked] = useState<boolean>(false);
     const [likeData, setLikeData] = useState<number>(0);
     const [isretweet, setIsRetweet] = useState<boolean>(false);
     const [retweetData, setRetweetData] = useState<number>(0);
-    const [retweet, setRetweet] = useState<Tweet | null>(null);
+    const [retweet, setRetweet] = useState<TweetData | null>(null);
+	const [tweet, setTweet] = useState<Tweet | null>(null);
+	const [user, setUser] = useState<User | null>(null);
     const auth = fireAuth;
     const router = useRouter();
+
+	// combineTweetData関数の定義
+    const combineTweetData = (data: {
+        Tweet: Tweet;
+        User: User;
+        IsLike: boolean;
+        IsRetweet: boolean;
+    }): TweetData => {
+        const {
+            Tweet: tweets,
+            User: users,
+            IsLike: isLiked,
+            IsRetweet: isRetweeted,
+        } = data;
+
+        return {
+            tweet: tweets,
+            user: users,
+            isLiked: isLiked,
+            isRetweeted: isRetweeted,
+        };
+    };
 
     useEffect(() => {
         if (!tweetId) return;
@@ -47,27 +66,21 @@ export default function TweetPage() {
             if (user) {
                 try {
                     const token = await user.getIdToken();
-                    const tweetData = await fetchOneTweet(token, tweetid);
-                    setTweet(tweetData);
-                    await Promise.all([
-                        setUser(await fetchUserData(token, tweetData.userid)),
-                        setIsLiked(
-                            await fetchLikeStatus(token, tweetData.tweetid)
-                        ),
-                        setIsRetweet(
-                            await fetchRetweetStatus(token, tweetData.tweetid)
-                        ),
-                    ]);
-                    if (tweetData.retweetid.Valid) {
-                        setRetweet(
-                            await fetchOneTweet(
-                                token,
-                                tweetData.retweetid.Int32
-                            )
-                        );
-                    }
-                    setLikeData(tweetData.likes);
-                    setRetweetData(tweetData.retweets);
+                    const tweetdata = await fetchOneTweet(token, tweetid);
+					const tweetData = combineTweetData(tweetdata);
+					setTweet(tweetData.tweet);
+					setIsLiked(tweetData.isLiked);
+					setLikeData(tweetData.tweet.likes);
+					setIsRetweet(tweetData.isRetweeted);
+					setRetweetData(tweetData.tweet.retweets);
+					setUser(tweetData.user);
+					if (tweetData.tweet.retweetid.Valid) {
+						const retweetData = await fetchOneTweet(
+							token,
+							tweetData.tweet.retweetid.Int32
+						);
+						setRetweet(combineTweetData(retweetData));
+					}
                 } catch (error) {
                     console.error("ユーザーがログインしていません", error);
                 }
@@ -222,7 +235,7 @@ export default function TweetPage() {
                     {/* 引用リツイートされたツイート */}
                     {tweet.isquote && retweet && (
                         <div className="mt-3 mr-10 p-3 border border-gray-200 rounded-lg  hover:bg-gray-100">
-                            <RetweetItem tweet={retweet} />
+                            <RetweetItem tweet={retweet.tweet} />
                         </div>
                     )}
 					

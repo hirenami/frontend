@@ -41,3 +41,10 @@ export interface Profile {
     header_image: string;
     icon_image: string;
 }
+
+export interface TweetData {
+	tweet: Tweet;
+	user: User;
+	isLiked: boolean;
+	isRetweeted: boolean;
+}
