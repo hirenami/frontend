@@ -41,7 +41,7 @@ export default function TweetItem({ tweet }: TweetItemProps) {
 						setIsRetweet(await fetchRetweetStatus(token, tweet.tweetid)),
                     ]);
                     if (tweet.retweetid.Valid) {
-                        setRetweet(await fetchOneTweet(tweet.retweetid.Int32));
+                        setRetweet(await fetchOneTweet(token,tweet.retweetid.Int32));
                     }
                 } else {
                     console.error("ユーザーがログインしていません");

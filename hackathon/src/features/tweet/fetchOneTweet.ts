@@ -1,9 +1,6 @@
-import { fireAuth } from "@/features/firebase/auth";
 
-export const fetchOneTweet = async (tweetid:number) => {
-	const auth = fireAuth;
+export const fetchOneTweet = async (token: string,tweetid:number) => {
 	try {
-		const token = await auth.currentUser?.getIdToken();
 		const tweetsResponse = await fetch(
 			`http://localhost:8000/tweet/${tweetid}/tweetid`,
 			{
