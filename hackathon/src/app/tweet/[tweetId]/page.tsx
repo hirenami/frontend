@@ -6,25 +6,22 @@ import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { Tweet, User, TweetData } from "@/types";
 import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
+import { fetchReplyData } from "@/features/tweet/fetchReplies";
 import { onAuthStateChanged } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
 import { createLike, deleteLike } from "@/features/like/likes";
 import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-    MoreHorizontal,
-    MessageCircle,
-    Repeat,
-    Heart,
-} from "lucide-react";
+import { MoreHorizontal, MessageCircle, Repeat, Heart } from "lucide-react";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import RetweetItem from "@/components/pages/retweetItems";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import {date} from "@/lib/Date";
-import { combineTweetData } from "@/lib/combineTweetData";
+import { date } from "@/lib/Date";
+import { combineTweetData, combineTweetDatas } from "@/lib/combineTweetData";
+import TweetItem from "@/components/pages/tweetItems";
 
 export default function TweetPage() {
     const { tweetId } = useParams();
@@ -34,8 +31,9 @@ export default function TweetPage() {
     const [isretweet, setIsRetweet] = useState<boolean>(false);
     const [retweetData, setRetweetData] = useState<number>(0);
     const [retweet, setRetweet] = useState<TweetData | null>(null);
-	const [tweet, setTweet] = useState<Tweet | null>(null);
-	const [user, setUser] = useState<User | null>(null);
+    const [tweet, setTweet] = useState<Tweet | null>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [replies, setReplies] = useState<TweetData[]>([]);
     const auth = fireAuth;
     const router = useRouter();
 
@@ -46,20 +44,23 @@ export default function TweetPage() {
                 try {
                     const token = await user.getIdToken();
                     const tweetdata = await fetchOneTweet(token, tweetid);
-					const tweetData = combineTweetData(tweetdata);
-					setTweet(tweetData.tweet);
-					setIsLiked(tweetData.isLiked);
-					setLikeData(tweetData.tweet.likes);
-					setIsRetweet(tweetData.isRetweeted);
-					setRetweetData(tweetData.tweet.retweets);
-					setUser(tweetData.user);
-					if (tweetData.tweet.retweetid.Valid) {
-						const retweetData = await fetchOneTweet(
-							token,
-							tweetData.tweet.retweetid.Int32
-						);
-						setRetweet(combineTweetData(retweetData));
-					}
+                    const tweetData = combineTweetData(tweetdata);
+                    const repliesData = await fetchReplyData(token, tweetid);
+                    setTweet(tweetData.tweet);
+                    setIsLiked(tweetData.isLiked);
+                    setLikeData(tweetData.tweet.likes);
+                    setIsRetweet(tweetData.isRetweeted);
+                    setRetweetData(tweetData.tweet.retweets);
+                    setUser(tweetData.user);
+                    setReplies(combineTweetDatas(repliesData));
+		
+                    if (tweetData.tweet.retweetid.Valid) {
+                        const retweetData = await fetchOneTweet(
+                            token,
+                            tweetData.tweet.retweetid.Int32
+                        );
+                        setRetweet(combineTweetData(retweetData));
+                    }
                 } catch (error) {
                     console.error("ユーザーがログインしていません", error);
                 }
@@ -137,41 +138,41 @@ export default function TweetPage() {
     const Tweetobj = () => {
         if (!tweet || !user) return null;
         return (
-            <div className="flex space-x-3 flex-col">
+            <div className="flex space-x-3 flex-col p-2">
                 {/* ユーザーのアイコン */}
                 <div className="flex justify-between">
-					<div className="flex">
-                    <Button
-                        className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
-                        onClick={hundleUserClick}
-                    >
-                        <Avatar className="w-full h-full rounded-full">
-                            <AvatarImage
-                                src={user?.icon_image}
-                                alt={user?.userid}
-                            />
-                            <AvatarFallback>{user?.userid}</AvatarFallback>
-                        </Avatar>
-                    </Button>
-
-                    {/* ツイートの内容 */}
-
-                    <div className="flex space-x-1 truncate flex-col ml-2">
-                        {/* ユーザー名とID */}
-                        <button
-                            className="text-base font-bold text-gray-900 hover:underline bg-transparent p-0 focus:outline-none"
+                    <div className="flex">
+                        <Button
+                            className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
                             onClick={hundleUserClick}
                         >
-                            {user?.username}
-                        </button>
-                        <button
-                            className="text-sm text-gray-500 bg-transparent pr-6 focus:outline-none whitespace-nowrap"
-                            onClick={hundleUserClick}
-                        >
-                            @{user?.userid}
-                        </button>
+                            <Avatar className="w-full h-full rounded-full">
+                                <AvatarImage
+                                    src={user?.icon_image}
+                                    alt={user?.userid}
+                                />
+                                <AvatarFallback>{user?.userid}</AvatarFallback>
+                            </Avatar>
+                        </Button>
+
+                        {/* ツイートの内容 */}
+
+                        <div className="flex space-x-1 truncate flex-col ml-2">
+                            {/* ユーザー名とID */}
+                            <button
+                                className="text-base font-bold text-gray-900 hover:underline bg-transparent p-0 focus:outline-none"
+                                onClick={hundleUserClick}
+                            >
+                                {user?.username}
+                            </button>
+                            <button
+                                className="text-sm text-gray-500 bg-transparent pr-6 focus:outline-none whitespace-nowrap"
+                                onClick={hundleUserClick}
+                            >
+                                @{user?.userid}
+                            </button>
+                        </div>
                     </div>
-					</div>
                     <Button
                         variant="ghost"
                         size="icon"
@@ -217,11 +218,12 @@ export default function TweetPage() {
                             <RetweetItem tweet={retweet.tweet} />
                         </div>
                     )}
-					
-					{/* ツイートの日時 */}
-					<div className="mt-3 text-gray-500 text-sm border-b border-gray p-2">
-						{date(tweet.created_at)} ・<b>{tweet.impressions}</b>件の表示
-					</div>
+
+                    {/* ツイートの日時 */}
+                    <div className="mt-3 text-gray-500 text-sm border-b border-gray p-2">
+                        {date(tweet.created_at)} ・<b>{tweet.impressions}</b>
+                        件の表示
+                    </div>
 
                     {/* アクションボタン群 */}
                     <div className="mt-3 flex justify-between max-w-md">
@@ -290,8 +292,20 @@ export default function TweetPage() {
                     </div>
                 </header>
                 {tweet ? (
-                    <div className="p-4 border-b border-gray-200">
+                    <div className=" border-b border-gray-200">
                         <Tweetobj />
+						
+                        <div>
+                            {replies.map((data, index) => (
+                                <TweetItem
+                                    key={index}
+                                    tweet={data.tweet}
+                                    user={data.user}
+                                    initialisLiked={data.isLiked}
+                                    initialisRetweeted={data.isRetweeted}
+                                />
+                            ))}
+                        </div>
                     </div>
                 ) : (
                     <div className="p-4 text-gray-500">読み込み中...</div>
