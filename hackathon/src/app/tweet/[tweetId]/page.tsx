@@ -22,6 +22,7 @@ import { ArrowLeft } from "lucide-react";
 import { date } from "@/lib/Date";
 import { combineTweetData, combineTweetDatas } from "@/lib/combineTweetData";
 import TweetItem from "@/components/pages/tweetItems";
+import {  Tweet as TweetComponent } from "@/components/pages/tweet";
 
 export default function TweetPage() {
     const { tweetId } = useParams();
@@ -34,6 +35,7 @@ export default function TweetPage() {
     const [tweet, setTweet] = useState<Tweet | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [replies, setReplies] = useState<TweetData[]>([]);
+	const [userToken, setUserToken] = useState<string | null>(null);
     const auth = fireAuth;
     const router = useRouter();
 
@@ -43,6 +45,7 @@ export default function TweetPage() {
             if (user) {
                 try {
                     const token = await user.getIdToken();
+					setUserToken(token);
                     const tweetdata = await fetchOneTweet(token, tweetid);
                     const tweetData = combineTweetData(tweetdata);
                     const repliesData = await fetchReplyData(token, tweetid);
@@ -138,7 +141,7 @@ export default function TweetPage() {
     const Tweetobj = () => {
         if (!tweet || !user) return null;
         return (
-            <div className="flex space-x-3 flex-col p-2">
+            <div className="flex space-x-3 flex-col p-2 border-b">
                 {/* ユーザーのアイコン */}
                 <div className="flex justify-between">
                     <div className="flex">
@@ -292,8 +295,11 @@ export default function TweetPage() {
                     </div>
                 </header>
                 {tweet ? (
-                    <div className=" border-b border-gray-200">
+                    <div className="border-gray-200">
                         <Tweetobj />
+
+						< TweetComponent userToken={userToken} type={"reply"} tweetId={tweetid} />
+
 						
                         <div>
                             {replies.map((data, index) => (
