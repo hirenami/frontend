@@ -22,7 +22,7 @@ import { ArrowLeft } from "lucide-react";
 import { date } from "@/lib/Date";
 import { combineTweetData, combineTweetDatas } from "@/lib/combineTweetData";
 import TweetItem from "@/components/pages/tweetItems";
-import {  Tweet as TweetComponent } from "@/components/pages/tweet";
+import { Tweet as TweetComponent } from "@/components/pages/tweet";
 
 export default function TweetPage() {
     const { tweetId } = useParams();
@@ -35,7 +35,7 @@ export default function TweetPage() {
     const [tweet, setTweet] = useState<Tweet | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [replies, setReplies] = useState<TweetData[]>([]);
-	const [userToken, setUserToken] = useState<string | null>(null);
+    const [userToken, setUserToken] = useState<string | null>(null);
     const auth = fireAuth;
     const router = useRouter();
 
@@ -45,7 +45,7 @@ export default function TweetPage() {
             if (user) {
                 try {
                     const token = await user.getIdToken();
-					setUserToken(token);
+                    setUserToken(token);
                     const tweetdata = await fetchOneTweet(token, tweetid);
                     const tweetData = combineTweetData(tweetdata);
                     const repliesData = await fetchReplyData(token, tweetid);
@@ -56,7 +56,7 @@ export default function TweetPage() {
                     setRetweetData(tweetData.tweet.retweets);
                     setUser(tweetData.user);
                     setReplies(combineTweetDatas(repliesData));
-		
+
                     if (tweetData.tweet.retweetid.Valid) {
                         const retweetData = await fetchOneTweet(
                             token,
@@ -298,9 +298,12 @@ export default function TweetPage() {
                     <div className="border-gray-200">
                         <Tweetobj />
 
-						< TweetComponent userToken={userToken} type={"reply"} tweetId={tweetid} />
+                        <TweetComponent
+                            userToken={userToken}
+                            type={"reply"}
+                            tweetId={tweetid}
+                        />
 
-						
                         <div>
                             {replies.map((data, index) => (
                                 <TweetItem
