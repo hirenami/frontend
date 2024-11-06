@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/pages/sidebar";
 import TrendsSidebar from "@/components/pages/trendsidebar";
 import { Bell } from "lucide-react";
-import  NotificationItem  from "@/features/notification/notificationitem";
+import  NotificationItem  from "@/components/pages/notificationitem";
 import { NotificationData } from "@/types";
 import { onAuthStateChanged } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
