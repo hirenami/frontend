@@ -48,3 +48,19 @@ export interface TweetData {
 	isLiked: boolean;
 	isRetweeted: boolean;
 }
+
+export interface Notification {
+	notificationid: number;
+	senderid: string;
+	replyid: string;
+	type : string;
+	created_at: string;
+	contentid : { Int32: number; Valid: boolean };
+	status: string;
+}
+
+export interface NotificationData {
+	notification: Notification;
+	user: User;
+	tweet: Tweet;
+}

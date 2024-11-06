@@ -1,7 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Bell, Home, LogOut, Mail, Search, User as UserIcon, UserPlus } from "lucide-react";
+import {
+    Bell,
+    Home,
+    LogOut,
+    Mail,
+    Search,
+    User as UserIcon,
+    UserPlus,
+} from "lucide-react";
 import { signOut } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
 import { useRouter } from "next/navigation";
@@ -65,19 +73,36 @@ const Sidebar = () => {
                     <Home className="mr-4 h-6 w-6" />
                     ホーム
                 </Button>
-                <Button variant="ghost" size="lg" className="w-full justify-start text-lg">
+                <Button
+                    variant="ghost"
+                    size="lg"
+                    className="w-full justify-start text-lg"
+                >
                     <Search className="mr-4 h-6 w-6" />
                     検索
                 </Button>
-                <Button variant="ghost" size="lg" className="w-full justify-start text-lg">
+                <Button
+                    onClick={() => router.push("/notification")}
+                    variant="ghost"
+                    size="lg"
+                    className="w-full justify-start text-lg"
+                >
                     <Bell className="mr-4 h-6 w-6" />
                     通知
                 </Button>
-                <Button variant="ghost" size="lg" className="w-full justify-start text-lg">
+                <Button
+                    variant="ghost"
+                    size="lg"
+                    className="w-full justify-start text-lg"
+                >
                     <Mail className="mr-4 h-6 w-6" />
                     メッセージ
                 </Button>
-                <Button variant="ghost" size="lg" className="w-full justify-start text-lg">
+                <Button
+                    variant="ghost"
+                    size="lg"
+                    className="w-full justify-start text-lg"
+                >
                     <Settings className="mr-4 h-6 w-6" />
                     設定
                 </Button>
@@ -100,7 +125,9 @@ const Sidebar = () => {
                                 {user.icon_image ? (
                                     <Image
                                         src={user.icon_image}
-                                        alt={user.username || "ユーザーアイコン"}
+                                        alt={
+                                            user.username || "ユーザーアイコン"
+                                        }
                                         width={48}
                                         height={48}
                                         className="rounded-full"
