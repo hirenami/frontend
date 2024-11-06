@@ -3,7 +3,7 @@
 import Sidebar from "@/components/pages/sidebar";
 import TrendsSidebar from "@/components/pages/trendsidebar";
 import { useParams } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Tweet, User, TweetData } from "@/types";
 import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
 import { fetchReplyData } from "@/features/tweet/fetchReplies";
@@ -23,6 +23,7 @@ import { date } from "@/lib/Date";
 import { combineTweetData, combineTweetDatas } from "@/lib/combineTweetData";
 import TweetItem from "@/components/pages/tweetItems";
 import { Tweet as TweetComponent } from "@/components/pages/tweet";
+import { fetchTweetsReplied } from "@/features/tweet/fetchTweetToReplied";
 
 export default function TweetPage() {
     const { tweetId } = useParams();
@@ -35,6 +36,7 @@ export default function TweetPage() {
     const [tweet, setTweet] = useState<Tweet | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [replies, setReplies] = useState<TweetData[]>([]);
+    const [replied, setReplied] = useState<TweetData[]>([]);
     const [userToken, setUserToken] = useState<string | null>(null);
     const auth = fireAuth;
     const router = useRouter();
@@ -49,6 +51,10 @@ export default function TweetPage() {
                     const tweetdata = await fetchOneTweet(token, tweetid);
                     const tweetData = combineTweetData(tweetdata);
                     const repliesData = await fetchReplyData(token, tweetid);
+                    const repliedData = await fetchTweetsReplied(
+                        token,
+                        tweetid
+                    );
                     setTweet(tweetData.tweet);
                     setIsLiked(tweetData.isLiked);
                     setLikeData(tweetData.tweet.likes);
@@ -56,6 +62,7 @@ export default function TweetPage() {
                     setRetweetData(tweetData.tweet.retweets);
                     setUser(tweetData.user);
                     setReplies(combineTweetDatas(repliesData));
+                    setReplied(combineTweetDatas(repliedData));
 
                     if (tweetData.tweet.retweetid.Valid) {
                         const retweetData = await fetchOneTweet(
@@ -137,6 +144,39 @@ export default function TweetPage() {
             console.error("いいねのトグルに失敗しました:", error);
         }
     };
+
+	//スクロール設定
+	const [visibleCount, setVisibleCount] = useState(10); // 初期表示数
+    const loadMoreRef = useRef(null);
+
+    // IntersectionObserverのコールバック
+    const loadMoreTweets = useCallback(() => {
+        setVisibleCount((prevCount) => prevCount + 10); // 表示数を増やす
+    }, []);
+
+    useEffect(() => {
+        // loadMoreRefのcurrentを変数に保存
+        const currentRef = loadMoreRef.current;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    loadMoreTweets();
+                }
+            },
+            { threshold: 1 } // 完全に見えた時のみ発火
+        );
+
+        if (currentRef) {
+            observer.observe(currentRef);
+        }
+
+        return () => {
+            if (currentRef) {
+                observer.unobserve(currentRef);
+            }
+        };
+    }, [loadMoreRef, loadMoreTweets]);
 
     const Tweetobj = () => {
         if (!tweet || !user) return null;
@@ -294,6 +334,23 @@ export default function TweetPage() {
                         </div>
                     </div>
                 </header>
+
+                {/* スクロール時に表示するTweetリスト */}
+                <div>
+                    <div ref={loadMoreRef} className="h-1"></div>
+                    {[...replied]
+                        .reverse()
+                        .slice(0, visibleCount) // 表示するデータ数を制限
+                        .map((data, index) => (
+                            <TweetItem
+                                key={index}
+                                tweet={data.tweet}
+                                user={data.user}
+                                initialisLiked={data.isLiked}
+                                initialisRetweeted={data.isRetweeted}
+                            />
+                        ))}
+                </div>
                 {tweet ? (
                     <div className="border-gray-200">
                         <Tweetobj />
