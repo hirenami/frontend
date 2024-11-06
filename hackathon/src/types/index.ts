@@ -50,7 +50,7 @@ export interface TweetData {
 }
 
 export interface Notification {
-	notificationid: number;
+	notificationsid: number;
 	senderid: string;
 	replyid: string;
 	type : string;
