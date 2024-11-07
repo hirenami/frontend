@@ -56,6 +56,7 @@ export default function Component() {
                     {timelineData.map((data, index) => (
                         <TweetItem
                             key={index}
+							type={"tweet"}
                             tweet={data.tweet}
                             user={data.user}
                             initialisLiked={data.isLiked}

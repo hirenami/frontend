@@ -303,8 +303,9 @@ export default function TweetPage() {
                 </header>
                 <div>
                     {[...replied].reverse().map((data, index) => (
-                        <TweetItem
+                        <TweetItem                     //type追加
                             key={index}
+							type={"reply"}
                             tweet={data.tweet}
                             user={data.user}
                             initialisLiked={data.isLiked}
@@ -330,6 +331,7 @@ export default function TweetPage() {
                                     user={data.user}
                                     initialisLiked={data.isLiked}
                                     initialisRetweeted={data.isRetweeted}
+									type = {"tweet"}
                                 />
                             ))}
                         </div>

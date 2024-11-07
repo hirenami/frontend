@@ -22,6 +22,7 @@ interface TweetItemProps {
     user: User;
     initialisLiked: boolean;
     initialisRetweeted: boolean;
+    type: string;
 }
 
 export default function TweetItem({
@@ -29,6 +30,7 @@ export default function TweetItem({
     user,
     initialisLiked,
     initialisRetweeted,
+    type,
 }: TweetItemProps) {
     const [isLiked, setIsLiked] = useState(initialisLiked); // 状態を管理
     const [isRetweeted, setIsRetweeted] = useState(initialisRetweeted); // 状態を管理
@@ -142,18 +144,22 @@ export default function TweetItem({
         return (
             <div className="flex space-x-3">
                 {/* ユーザーのアイコン */}
-                <Button
-                    className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
-                    onClick={hundleUserClick}
-                >
-                    <Avatar className="w-full h-full rounded-full">
-                        <AvatarImage
-                            src={user?.icon_image}
-                            alt={user?.userid}
-                        />
-                        <AvatarFallback>{user?.userid}</AvatarFallback>
-                    </Avatar>
-                </Button>
+                <div className="relative flex flex-col items-center">
+                    <Button
+                        className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
+                        onClick={hundleUserClick}
+                    >
+                        <Avatar className="w-full h-full rounded-full">
+                            <AvatarImage
+                                src={user?.icon_image}
+                                alt={user?.userid}
+                            />
+                            <AvatarFallback>{user?.userid}</AvatarFallback>
+                        </Avatar>
+                    </Button>
+                    {/* 縦線を表示 */}
+                    <div className={`${type == "reply" ? "h-full border-l-2 border-gray-300 absolute top-10": ""}`}></div>
+                </div>
 
                 {/* ツイートの内容 */}
                 <div className="flex-1 min-w-0">
@@ -310,11 +316,14 @@ export default function TweetItem({
                         user={retweet.user}
                         initialisLiked={retweet.isLiked}
                         initialisRetweeted={retweet.isRetweeted}
+                        type={"tweet"}
                     />
                 </div>
             ) : (
                 <div
-                    className="border-b border-gray-200 p-2 hover:bg-gray-50 transition-colors duration-200"
+                    className={`p-2 hover:bg-gray-50 transition-colors duration-200 ${
+                        type == "tweet" ? "border-b border-gray-200" : ""
+                    }`}
                     onClick={() => handleTweetClick(tweet.tweetid)}
                 >
                     <Tweetobj />

@@ -225,6 +225,7 @@ export default function ProfilePage() {
                             user={data.user}
                             initialisLiked={data.isLiked}
                             initialisRetweeted={data.isRetweeted}
+							type={"tweet"}
                         />
                     ))}
                 </div>
