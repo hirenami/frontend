@@ -9,30 +9,17 @@ import { User } from "@/types";
 import Cookies from "js-cookie";
 
 interface UserEditorProps {
-    initialUser?: Partial<User>;
     onSave: (user: User) => void;
 }
 
 export default function UserEditor({
-    initialUser = {},
     onSave,
 }: UserEditorProps) {
-    const [user, setUser] = useState<User>({
-        userid: initialUser.userid || "",
-        firebaseuid: initialUser.firebaseuid || "",
-        username: initialUser.username || "",
-        biography: initialUser.biography || {String: "", Valid: false},
-        header_image: initialUser.header_image || "",
-        icon_image: initialUser.icon_image || "",
-		created_at: initialUser.created_at || "",
-		isadmin: initialUser.isadmin || false,
-		isfrozen: initialUser.isfrozen || false,
-		isprivate: initialUser.isprivate || false,
-		isdeleted: initialUser.isdeleted || false,
-    });
+    const [user, setUser] = useState<User | null>(null);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const headerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
+	const router = useRouter();
 
 	 // Cookieからプロフィール情報を取得
 	 const getUserFromCookie = (): User => {
@@ -49,12 +36,17 @@ export default function UserEditor({
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => {
 		const { name, value } = e.target;
-		setUser((prev) => ({
-			...prev,
-			[name]: name === "biography" 
-				? { ...prev.biography, String: value, Valid: true }
-				: value
-		}));
+		setUser((prev) => {
+			if (prev) {
+				return {
+					...prev,
+					[name]: name === "biography" 
+						? { ...prev.biography, String: value, Valid: true }
+						: value
+				};
+			}
+			return prev;
+		});
 		setErrors((prev) => ({ ...prev, [name]: "" }));
 	};
 
@@ -66,14 +58,23 @@ export default function UserEditor({
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setUser((prev) => ({
-                    ...prev,
-                    [imageType]: reader.result as string,
-                }));
+                setUser((prev) => {
+					if (prev) {
+						return {
+							...prev,
+							[imageType]: reader.result as string, // 画像データをセット
+						};
+					}
+					return prev; // prevがnullならそのまま返す
+				});
             };
             reader.readAsDataURL(file);
         }
     };
+
+	if (!user) {
+		return <div>ユーザー情報が見つかりません</div>;
+	}
 
     const validateForm = () => {
         const newErrors: { [key: string]: string } = {};
@@ -144,7 +145,7 @@ export default function UserEditor({
 					icon_image: icon_imageUrl,
 				}), { expires: 7 });
 	
-				if (onSave) {
+				if (onSave && user) {
 					onSave({
 						...user,
 						header_image: header_imageUrl,
@@ -156,9 +157,7 @@ export default function UserEditor({
 				console.error("プロフィールの保存中にエラーが発生しました");
 			}
 		}
-	};
-	
-    const router = useRouter();
+	};	
 
     return (
         <div className="flex min-h-screen">
