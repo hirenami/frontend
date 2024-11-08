@@ -31,7 +31,6 @@ export default function UserEditor({
 		isdeleted: initialUser.isdeleted || false,
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [, setUserToken] = useState<string | null>(null);
     const headerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
 
@@ -107,7 +106,6 @@ export default function UserEditor({
 					onAuthStateChanged(auth, async (currentUser) => {
 						if (currentUser) {
 							const token = await currentUser.getIdToken();
-							setUserToken(token);
 							resolve(token);
 						} else {
 							resolve(null);
