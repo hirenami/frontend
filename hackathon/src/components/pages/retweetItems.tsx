@@ -20,10 +20,8 @@ export default function RetweetItem({ tweet }: TweetItemProps) {
             const unsubscribe = onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     const token = await user.getIdToken();
-                    await Promise.all([
-                        setUser(await fetchUserData(token, tweet.userid)),
-                    ]);
-            
+                    const userData = await fetchUserData(token, tweet.userid);
+					setUser(userData.user);
                     
                 } else {
                     console.error("ユーザーがログインしていません");
