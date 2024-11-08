@@ -8,13 +8,7 @@ import { useRouter } from "next/navigation";
 import { User } from "@/types";
 import Cookies from "js-cookie";
 
-interface UserEditorProps {
-    onSave: (user: User) => void;
-}
-
-export default function UserEditor({
-    onSave,
-}: UserEditorProps) {
+export default function UserEditor() {
     const [user, setUser] = useState<User | null>(null);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const headerInputRef = useRef<HTMLInputElement>(null);
@@ -144,14 +138,7 @@ export default function UserEditor({
 					header_image: header_imageUrl,
 					icon_image: icon_imageUrl,
 				}), { expires: 7 });
-	
-				if (onSave && user) {
-					onSave({
-						...user,
-						header_image: header_imageUrl,
-						icon_image: icon_imageUrl,
-					});
-				}
+				
 				router.push(`http://localhost:3000/profile/${user.userid}`);
 			} else {
 				console.error("プロフィールの保存中にエラーが発生しました");
