@@ -9,12 +9,11 @@ import { fireAuth } from "@/features/firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "@/components/pages/sidebar";
 import TweetItem from "@/components/pages/tweetItems";
-import {  User, TweetData } from "@/types";
+import { TweetData, User } from "@/types";
 import TrendsSidebar from "@/components/pages/trendsidebar";
 import { Button } from "@/components/ui/button";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchTweetsData } from "@/features/tweet/fetchTweetData";
-import { fetchFollowStatus } from "@/features/user/fetchFollowStatus";
 import { combineTweetDatas } from "@/lib/combineTweetData";
 
 export default function ProfilePage() {
@@ -28,6 +27,8 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [followCount, setFollowCount] = useState(0);
+    const [followerCount, setFollowerCount] = useState(0);
 
     useEffect(() => {
         if (!userId) return;
@@ -38,17 +39,17 @@ export default function ProfilePage() {
                 setCurrentUserId(user.uid);
 
                 try {
-                    const [userData, tweetsData, followStatus] =
-                        await Promise.all([
-                            fetchUserData(token, userid),
-                            fetchTweetsData(token, userid),
-                            fetchFollowStatus(token, userid),
-                        ]);
+                    const [userData, tweetsData] = await Promise.all([
+                        fetchUserData(token, userid),
+                        fetchTweetsData(token, userid),
+                    ]);
 
-                    setUser(userData);
+                    setUser(userData.user);
                     setTweets(combineTweetDatas(tweetsData));
                     console.log(combineTweetDatas(tweetsData));
-                    setIsFollowing(followStatus);
+                    setFollowCount(userData.following);
+                    setFollowerCount(userData.follower);
+                    setIsFollowing(userData.isfollow);
                 } catch (error) {
                     console.error("データの取得に失敗しました:", error);
                 }
@@ -80,6 +81,9 @@ export default function ProfilePage() {
 
             if (response.ok) {
                 setIsFollowing(!isFollowing);
+                setFollowerCount(
+                    isFollowing ? followerCount - 1 : followerCount + 1
+                );
             } else {
                 throw new Error("フォロー操作に失敗しました");
             }
@@ -207,6 +211,17 @@ export default function ProfilePage() {
                               })()
                             : "登録日"}
                     </div>
+
+                    <div className="mt-4 flex space-x-6 text-sm">
+                        <div className="flex items-center space-x-1">
+                            <p className="font-bold">{followCount}</p>
+                            <p className="text-gray-500">フォロー中</p>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                            <p className="font-bold">{followerCount}</p>
+                            <p className="text-gray-500">フォロワー</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="mt-4 border-b border-gray-200">
@@ -225,7 +240,7 @@ export default function ProfilePage() {
                             user={data.user}
                             initialisLiked={data.isLiked}
                             initialisRetweeted={data.isRetweeted}
-							type={"tweet"}
+                            type={"tweet"}
                         />
                     ))}
                 </div>
