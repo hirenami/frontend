@@ -1,6 +1,6 @@
 export const fetchTimeline = async (token: string) => {
 	try {
-		const response = await fetch("http://localhost:8000/timeline", {
+		const response = await fetch("http://localhost:8080/timeline", {
 			method: "GET",
 			headers: {
 				Authorization: `Bearer ${token}`,

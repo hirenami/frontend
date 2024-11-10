@@ -1,27 +1,33 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import {User} from "@/types";
+import { User } from "@/types";
 import { useRef, useState } from "react";
-import { FileVideo, Smile, CalendarClock, BarChart2, LucideImage } from "lucide-react";
+import {
+    FileVideo,
+    Smile,
+    CalendarClock,
+    BarChart2,
+    LucideImage,
+} from "lucide-react";
 import { uploadFile } from "@/features/firebase/strage";
 import Cookies from "js-cookie";
 
 interface TweetComponentProps {
-	userToken: string | null;
-	type: string;
-	tweetId: number;
+    userToken: string | null;
+    type: string;
+    tweetId: number;
 }
 
-export const Tweet = ({ userToken,type,tweetId }: TweetComponentProps) => {
-	const [tweetText, setTweetText] = useState("");
+export const Tweet = ({ userToken, type, tweetId }: TweetComponentProps) => {
+    const [tweetText, setTweetText] = useState("");
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false); // ローディング状態
 
-	// クッキーからユーザー情報を取得
+    // クッキーからユーザー情報を取得
     const userCookie = Cookies.get("user");
     let user: User | null = null;
 
@@ -29,7 +35,7 @@ export const Tweet = ({ userToken,type,tweetId }: TweetComponentProps) => {
         user = JSON.parse(userCookie) as User; // JSON文字列をオブジェクトに変換
     }
 
-	const handleTweet = async () => {
+    const handleTweet = async () => {
         if (tweetText.trim() === "" && !mediaFile) {
             alert("ツイートの内容を入力してください"); // 空のツイートの警告
             return;
@@ -41,8 +47,11 @@ export const Tweet = ({ userToken,type,tweetId }: TweetComponentProps) => {
         if (fileInputRef.current?.files?.[0]) {
             media_url = await uploadFile(fileInputRef.current.files[0]);
         }
-		
-		const endpoint = type==="tweet" ? "http://localhost:8000/tweet" : `http://localhost:8000/reply/${tweetId}`;
+
+        const endpoint =
+            type === "tweet"
+                ? "http://localhost:8080/tweet"
+                : `http://localhost:8080/reply/${tweetId}`;
 
         const response = await fetch(endpoint, {
             method: "POST",
@@ -60,7 +69,11 @@ export const Tweet = ({ userToken,type,tweetId }: TweetComponentProps) => {
             console.log("ツイートが正常に投稿されました");
             setTweetText("");
             setMediaFile(null);
-            router.push(type=="tweet" ?`http://localhost:3000/home` : `http://localhost:3000/tweet/${tweetId}`);
+            router.push(
+                type == "tweet"
+                    ? `http://localhost:3000/home`
+                    : `http://localhost:3000/tweet/${tweetId}`
+            );
         } else {
             console.error("ツイートの投稿中にエラーが発生しました");
         }
@@ -79,7 +92,7 @@ export const Tweet = ({ userToken,type,tweetId }: TweetComponentProps) => {
         fileInputRef.current?.click();
     };
 
-	const router = useRouter();
+    const router = useRouter();
     return (
         <div className="border-b p-4">
             <div className="flex space-x-4">
@@ -94,7 +107,11 @@ export const Tweet = ({ userToken,type,tweetId }: TweetComponentProps) => {
                 </button>
                 <div className="flex-1 space-y-2">
                     <Textarea
-                        placeholder={type==="tweet" ? "いまどうしてる？" : "返信をツイート"}
+                        placeholder={
+                            type === "tweet"
+                                ? "いまどうしてる？"
+                                : "返信をツイート"
+                        }
                         value={tweetText}
                         onChange={(e) => setTweetText(e.target.value)}
                         className="min-h-[100px] text-xl resize-none focus:ring-0 focus:border-transparent border-transparent p-0 shadow-none bg-transparent"
@@ -172,7 +189,11 @@ export const Tweet = ({ userToken,type,tweetId }: TweetComponentProps) => {
                                 }
                                 className="rounded-full px-4 py-2"
                             >
-                                {isLoading ? "投稿中..." : type==="tweet" ? "ポストする" : "返信する"}
+                                {isLoading
+                                    ? "投稿中..."
+                                    : type === "tweet"
+                                    ? "ポストする"
+                                    : "返信する"}
                             </Button>
                         </div>
                     </div>

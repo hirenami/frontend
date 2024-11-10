@@ -1,7 +1,7 @@
-export const updateNotificationStatus = async (token: string,notificationId:number) => {
+export const updateNotificationStatus = async (token: string, notificationId: number) => {
 	try {
 		const Response = await fetch(
-			`http://localhost:8000/notifications/${notificationId}`,
+			`http://localhost:8080/notifications/${notificationId}`,
 			{
 				method: "PUT",
 				headers: {

@@ -1,8 +1,8 @@
-import {Tweet} from "@/types/index";
+import { Tweet } from "@/types/index";
 
-export const createRetweet = async (tweet :Tweet,token:string) => {
+export const createRetweet = async (tweet: Tweet, token: string) => {
 	try {
-		const response = await fetch(`http://localhost:8000/retweet/${tweet.tweetid}`, {
+		const response = await fetch(`http://localhost:8080/retweet/${tweet.tweetid}`, {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -18,9 +18,9 @@ export const createRetweet = async (tweet :Tweet,token:string) => {
 	}
 };
 
-export const deleteRetweet = async (tweet :Tweet,token:string) => {
+export const deleteRetweet = async (tweet: Tweet, token: string) => {
 	try {
-		const response = await fetch(`http://localhost:8000/retweet/${tweet.tweetid}`, {
+		const response = await fetch(`http://localhost:8080/retweet/${tweet.tweetid}`, {
 			method: "DELETE",
 			headers: {
 				Authorization: `Bearer ${token}`,

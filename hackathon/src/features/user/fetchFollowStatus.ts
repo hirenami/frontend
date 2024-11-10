@@ -1,7 +1,7 @@
-export const fetchFollowStatus = async (token: string,userId:string) => {
+export const fetchFollowStatus = async (token: string, userId: string) => {
 	try {
 		const followResponse = await fetch(
-			`http://localhost:8000/follow/${userId}`,
+			`http://localhost:8080/follow/${userId}`,
 			{
 				method: "GET",
 				headers: {

@@ -1,7 +1,7 @@
-export const fetchFollows = async (token: string,userId:string) => {
+export const fetchFollows = async (token: string, userId: string) => {
 	try {
 		const followResponse = await fetch(
-			`http://localhost:8000/follow/${userId}/following`,
+			`http://localhost:8080/follow/${userId}/following`,
 			{
 				method: "GET",
 				headers: {
@@ -23,10 +23,10 @@ export const fetchFollows = async (token: string,userId:string) => {
 	}
 };
 
-export const fetchFollowers = async (token: string,userId:string) => {
+export const fetchFollowers = async (token: string, userId: string) => {
 	try {
 		const followResponse = await fetch(
-			`http://localhost:8000/follow/${userId}/follower`,
+			`http://localhost:8080/follow/${userId}/follower`,
 			{
 				method: "GET",
 				headers: {

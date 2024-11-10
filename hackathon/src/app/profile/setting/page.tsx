@@ -13,36 +13,37 @@ export default function UserEditor() {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const headerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
-	const router = useRouter();
+    const router = useRouter();
 
-	 // Cookieからプロフィール情報を取得
-	 const getUserFromCookie = (): User => {
+    // Cookieからプロフィール情報を取得
+    const getUserFromCookie = (): User => {
         const cookieData = Cookies.get("user");
         return cookieData ? JSON.parse(cookieData) : {};
     };
 
     useEffect(() => {
-		 // Cookieからユーザーデータを設定
-		 setUser(getUserFromCookie());
+        // Cookieからユーザーデータを設定
+        setUser(getUserFromCookie());
     }, []);
 
     const handleInputChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
-		setUser((prev) => {
-			if (prev) {
-				return {
-					...prev,
-					[name]: name === "biography" 
-						? { ...prev.biography, String: value, Valid: true }
-						: value
-				};
-			}
-			return prev;
-		});
-		setErrors((prev) => ({ ...prev, [name]: "" }));
-	};
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value } = e.target;
+        setUser((prev) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    [name]:
+                        name === "biography"
+                            ? { ...prev.biography, String: value, Valid: true }
+                            : value,
+                };
+            }
+            return prev;
+        });
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+    };
 
     const handleImageUpload = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -53,22 +54,22 @@ export default function UserEditor() {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setUser((prev) => {
-					if (prev) {
-						return {
-							...prev,
-							[imageType]: reader.result as string, // 画像データをセット
-						};
-					}
-					return prev; // prevがnullならそのまま返す
-				});
+                    if (prev) {
+                        return {
+                            ...prev,
+                            [imageType]: reader.result as string, // 画像データをセット
+                        };
+                    }
+                    return prev; // prevがnullならそのまま返す
+                });
             };
             reader.readAsDataURL(file);
         }
     };
 
-	if (!user) {
-		return <div>ユーザー情報が見つかりません</div>;
-	}
+    if (!user) {
+        return <div>ユーザー情報が見つかりません</div>;
+    }
 
     const validateForm = () => {
         const newErrors: { [key: string]: string } = {};
@@ -83,68 +84,74 @@ export default function UserEditor() {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (validateForm()) {
-			let header_imageUrl = user.header_image;
-			let icon_imageUrl = user.icon_image;
-	
-			if (headerInputRef.current?.files?.[0]) {
-				header_imageUrl = await uploadFile(headerInputRef.current.files[0]);
-			}
-			if (iconInputRef.current?.files?.[0]) {
-				icon_imageUrl = await uploadFile(iconInputRef.current.files[0]);
-			}
-	
-			const getUserToken = async () => {
-				const auth = getAuth();
-				return new Promise<string | null>((resolve) => {
-					onAuthStateChanged(auth, async (currentUser) => {
-						if (currentUser) {
-							const token = await currentUser.getIdToken();
-							resolve(token);
-						} else {
-							resolve(null);
-						}
-					});
-				});
-			};
-	
-			const token = await getUserToken();
-			if (!token) {
-				console.error("認証トークンの取得に失敗しました");
-				return;
-			}
-	
-			const response = await fetch("http://localhost:8000/user/edit", {
-				method: "PUT",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					username: user.username,
-					biography: user.biography.String,
-					header_image: header_imageUrl,
-					icon_image: icon_imageUrl,
-				}),
-			});
-	
-			if (response.ok) {
-				console.log("プロフィールが正常に保存されました");
-	
-				// クッキーの更新
-				Cookies.set("user", JSON.stringify({
-					...user,
-					header_image: header_imageUrl,
-					icon_image: icon_imageUrl,
-				}), { expires: 7 });
-				
-				router.push(`http://localhost:3000/profile/${user.userid}`);
-			} else {
-				console.error("プロフィールの保存中にエラーが発生しました");
-			}
-		}
-	};	
+        e.preventDefault();
+        if (validateForm()) {
+            let header_imageUrl = user.header_image;
+            let icon_imageUrl = user.icon_image;
+
+            if (headerInputRef.current?.files?.[0]) {
+                header_imageUrl = await uploadFile(
+                    headerInputRef.current.files[0]
+                );
+            }
+            if (iconInputRef.current?.files?.[0]) {
+                icon_imageUrl = await uploadFile(iconInputRef.current.files[0]);
+            }
+
+            const getUserToken = async () => {
+                const auth = getAuth();
+                return new Promise<string | null>((resolve) => {
+                    onAuthStateChanged(auth, async (currentUser) => {
+                        if (currentUser) {
+                            const token = await currentUser.getIdToken();
+                            resolve(token);
+                        } else {
+                            resolve(null);
+                        }
+                    });
+                });
+            };
+
+            const token = await getUserToken();
+            if (!token) {
+                console.error("認証トークンの取得に失敗しました");
+                return;
+            }
+
+            const response = await fetch("http://localhost:8080/user/edit", {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: user.username,
+                    biography: user.biography.String,
+                    header_image: header_imageUrl,
+                    icon_image: icon_imageUrl,
+                }),
+            });
+
+            if (response.ok) {
+                console.log("プロフィールが正常に保存されました");
+
+                // クッキーの更新
+                Cookies.set(
+                    "user",
+                    JSON.stringify({
+                        ...user,
+                        header_image: header_imageUrl,
+                        icon_image: icon_imageUrl,
+                    }),
+                    { expires: 7 }
+                );
+
+                router.push(`http://localhost:3000/profile/${user.userid}`);
+            } else {
+                console.error("プロフィールの保存中にエラーが発生しました");
+            }
+        }
+    };
 
     return (
         <div className="flex min-h-screen">

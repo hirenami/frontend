@@ -1,7 +1,7 @@
 // UserDataを取得する関数
-export const fetchUserData = async (token: string,userId:string) => {
+export const fetchUserData = async (token: string, userId: string) => {
 	// userIdが空の場合は特定のエンドポイントを使用
-    const endpoint = userId ? `http://localhost:8000/user/${userId}` : `http://localhost:8000/user`;
+	const endpoint = userId ? `http://localhost:8080/user/${userId}` : `http://localhost:8080/user`;
 
 	try {
 		const userResponse = await fetch(
@@ -20,7 +20,7 @@ export const fetchUserData = async (token: string,userId:string) => {
 		}
 
 		const userData = await userResponse.json();
-		
+
 		return userData;
 
 	} catch (error) {

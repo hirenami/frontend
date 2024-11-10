@@ -1,7 +1,7 @@
 export const fetchNotificationData = async (token: string) => {
 	try {
 		const Response = await fetch(
-			`http://localhost:8000/notifications`,
+			`http://localhost:8080/notifications`,
 			{
 				method: "GET",
 				headers: {

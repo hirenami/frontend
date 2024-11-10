@@ -69,7 +69,7 @@ export default function ProfilePage() {
         try {
             const token = await fireAuth.currentUser?.getIdToken();
             const response = await fetch(
-                `http://localhost:8000/follow/${userId}`,
+                `http://localhost:8080/follow/${userId}`,
                 {
                     method: isFollowing ? "DELETE" : "POST",
                     headers: {

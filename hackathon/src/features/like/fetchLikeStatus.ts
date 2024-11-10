@@ -1,7 +1,7 @@
-export const fetchLikeStatus = async (token: string,tweetid:number) => {
+export const fetchLikeStatus = async (token: string, tweetid: number) => {
 	try {
 		const likeResponse = await fetch(
-			`http://localhost:8000/like/${tweetid}`,
+			`http://localhost:8080/like/${tweetid}`,
 			{
 				method: "GET",
 				headers: {
