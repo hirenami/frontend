@@ -68,8 +68,8 @@ export default function NotificationItem({
 			console.log("Notification Clicked:", notification.notificationsid);
 			updateNotificationStatus(userToken, notification.notificationsid);
 		}
-		if (notification.contentid.Valid) {
-			router.push(`/tweet/${notification.contentid.Int32}`);
+		if (notification.contentid) {
+			router.push(`/tweet/${notification.contentid}`);
 		}else{
 			router.push(`/user/${user.userid}`);
 		}
@@ -93,7 +93,7 @@ export default function NotificationItem({
 					</Avatar>
 				</div>
 				<p className="text-gray-700 mb-1"><b>{user.username}</b>{getMessage()}</p>
-				{notification.contentid.Valid && (
+				{notification.contentid && (
 					<p className="text-sm text-gray-600 mb-1">{tweet.content}</p>
 				)}
 			</div>
