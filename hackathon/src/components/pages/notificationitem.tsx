@@ -45,6 +45,8 @@ export default function NotificationItem({
                 return <Heart className="w-5 h-5 text-pink-500" />;
             case "retweet":
                 return <Repeat className="w-5 h-5 text-green-500" />;
+			case "quote":
+				return <Repeat className="w-5 h-5 text-green-500" />;
             case "follow":
                 return <UserPlus className="w-5 h-5 text-primary" />;
         }
@@ -58,6 +60,8 @@ export default function NotificationItem({
                 return `さんがあなたの投稿をいいねしました`;
             case "retweet":
                 return `さんがあなたの投稿をリツイートしました`;
+			case "quote":
+				return `さんがあなたの投稿を引用リツイートしました`;
             case "follow":
                 return `さんがあなたをフォローしました`;
         }
