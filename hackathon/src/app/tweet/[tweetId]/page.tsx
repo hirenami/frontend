@@ -54,9 +54,9 @@ export default function TweetPage() {
                         tweetid
                     );
                     setTweet(tweetData.tweet);
-                    setIsLiked(tweetData.isLiked);
+                    setIsLiked(tweetData.likes);
                     setLikeData(tweetData.tweet.likes);
-                    setIsRetweet(tweetData.isRetweeted);
+                    setIsRetweet(tweetData.retweets);
                     setRetweetData(tweetData.tweet.retweets);
                     setUser(tweetData.user);
                     setReplies(repliesData);
