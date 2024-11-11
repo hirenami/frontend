@@ -14,7 +14,6 @@ import TrendsSidebar from "@/components/pages/trendsidebar";
 import { Button } from "@/components/ui/button";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchTweetsData } from "@/features/tweet/fetchTweetData";
-import { combineTweetDatas } from "@/lib/combineTweetData";
 
 export default function ProfilePage() {
     const { userId } = useParams();
@@ -45,8 +44,8 @@ export default function ProfilePage() {
                     ]);
 
                     setUser(userData.user);
-                    setTweets(combineTweetDatas(tweetsData));
-                    console.log(combineTweetDatas(tweetsData));
+                    setTweets(tweetsData);
+                    console.log(tweetsData);
                     setFollowCount(userData.following);
                     setFollowerCount(userData.follower);
                     setIsFollowing(userData.isfollow);
@@ -202,7 +201,7 @@ export default function ProfilePage() {
                 <div className="mt-20 px-4">
                     <h2 className="text-xl font-bold">{user.username}</h2>
                     <p className="text-gray-500">@{user.userid}</p>
-                    <p className="mt-2">{user?.biography.String}</p>
+					{user.biography &&  user.biography !== "\"\"" && <p className="mt-2">{user.biography}</p>}
 
                     <div className="mt-2 text-gray-500">
                         <Calendar size={16} className="mr-1 inline" />
@@ -248,8 +247,8 @@ export default function ProfilePage() {
                             key={index}
                             tweet={data.tweet}
                             user={data.user}
-                            initialisLiked={data.isLiked}
-                            initialisRetweeted={data.isRetweeted}
+                            initialisLiked={data.likes}
+                            initialisRetweeted={data.retweets}
                             type={"tweet"}
                         />
                     ))}

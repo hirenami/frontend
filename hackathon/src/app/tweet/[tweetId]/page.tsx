@@ -20,7 +20,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { date } from "@/lib/Date";
-import { combineTweetData, combineTweetDatas } from "@/lib/combineTweetData";
 import TweetItem from "@/components/pages/tweetItems";
 import { Tweet as TweetComponent } from "@/components/pages/tweet";
 import { fetchTweetsReplied } from "@/features/tweet/fetchTweetToReplied";
@@ -48,8 +47,7 @@ export default function TweetPage() {
                 try {
                     const token = await user.getIdToken();
                     setUserToken(token);
-                    const tweetdata = await fetchOneTweet(token, tweetid);
-                    const tweetData = combineTweetData(tweetdata);
+                    const tweetData = await fetchOneTweet(token, tweetid);
                     const repliesData = await fetchReplyData(token, tweetid);
                     const repliedData = await fetchTweetsReplied(
                         token,
@@ -61,15 +59,16 @@ export default function TweetPage() {
                     setIsRetweet(tweetData.isRetweeted);
                     setRetweetData(tweetData.tweet.retweets);
                     setUser(tweetData.user);
-                    setReplies(combineTweetDatas(repliesData));
-                    setReplied(combineTweetDatas(repliedData));
+                    setReplies(repliesData);
+                    setReplied(repliedData);
+					console.log("aaa",repliedData);
 
-                    if (tweetData.tweet.retweetid.Valid) {
+                    if (tweetData.tweet.retweetid) {
                         const retweetData = await fetchOneTweet(
                             token,
-                            tweetData.tweet.retweetid.Int32
+                            tweetData.tweet.retweetid
                         );
-                        setRetweet(combineTweetData(retweetData));
+                        setRetweet(retweetData);
                     }
                 } catch (error) {
                     console.error("ユーザーがログインしていません", error);
@@ -198,19 +197,19 @@ export default function TweetPage() {
                     </p>
 
                     {/* メディア（画像または動画） */}
-                    {tweet.media_url.Valid && (
+                    {tweet.media_url &&  tweet.media_url !== "\"\"" && (
                         <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">
-                            {tweet.media_url.String.includes("images%") ? (
+                            {tweet.media_url.includes("images%") ? (
                                 <Image
-                                    src={tweet.media_url.String}
+                                    src={tweet.media_url}
                                     alt="ツイート画像"
                                     width={400}
                                     height={225}
                                     className="w-full h-auto object-cover max-h-[225px]"
                                 />
-                            ) : tweet.media_url.String.includes("videos%") ? (
+                            ) : tweet.media_url.includes("videos%") ? (
                                 <video
-                                    src={tweet.media_url.String}
+                                    src={tweet.media_url}
                                     controls
                                     className="w-full h-auto object-cover max-h-[225px]"
                                 >
@@ -302,14 +301,14 @@ export default function TweetPage() {
                     </div>
                 </header>
                 <div>
-                    {[...replied].reverse().map((data, index) => (
-                        <TweetItem                     //type追加
+                    {replied &&[...replied].reverse().map((data, index) => (
+                        <TweetItem //type追加
                             key={index}
-							type={"reply"}
+                            type={"reply"}
                             tweet={data.tweet}
                             user={data.user}
-                            initialisLiked={data.isLiked}
-                            initialisRetweeted={data.isRetweeted}
+                            initialisLiked={data.likes}
+                            initialisRetweeted={data.retweets}
                         />
                     ))}
                 </div>
@@ -324,14 +323,14 @@ export default function TweetPage() {
                         />
 
                         <div>
-                            {replies.map((data, index) => (
+                            {replies && replies.map((data, index) => (
                                 <TweetItem
                                     key={index}
                                     tweet={data.tweet}
                                     user={data.user}
-                                    initialisLiked={data.isLiked}
-                                    initialisRetweeted={data.isRetweeted}
-									type = {"tweet"}
+                                    initialisLiked={data.likes}
+                                    initialisRetweeted={data.retweets}
+                                    type={"tweet"}
                                 />
                             ))}
                         </div>

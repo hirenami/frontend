@@ -137,21 +137,21 @@ export default function RetweetItem({ tweet }: TweetItemProps) {
                 <p className="mt-2 text-sm text-gray-900 whitespace-pre-wrap">
                     {renderContentWithHashtags(tweet.content)}
                 </p>
-                {tweet.media_url.Valid && (
+                {tweet.media_url && tweet.media_url !== "\"\"" && (
                     <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">
-                        {tweet.media_url.String.includes("images%") ? (
+                        {tweet.media_url.includes("images%") ? (
                             // 画像の場合
                             <Image
-                                src={tweet.media_url.String}
+                                src={tweet.media_url}
                                 alt="ツイート画像"
                                 width={400}
                                 height={225}
                                 className="w-full h-auto object-cover max-h-[225px]"
                             />
-                        ) : tweet.media_url.String.includes("videos%") ? (
+                        ) : tweet.media_url.includes("videos%") ? (
                             // 動画の場合
                             <video
-                                src={tweet.media_url.String}
+                                src={tweet.media_url}
                                 controls
                                 className="w-full h-auto object-cover max-h-[225px]"
                             >

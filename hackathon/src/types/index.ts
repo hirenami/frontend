@@ -6,8 +6,8 @@ export type Sign = {
 export interface Tweet {
     tweetid: number;
 	userid: string;
-	retweetid: { Int32: number; Valid: boolean };
-	media_url: { String: string; Valid: boolean };
+	retweetid: number;
+	media_url: string;
 	isquote: boolean;
 	isreply: boolean;
 	isdeleted: boolean;
@@ -26,7 +26,7 @@ export interface User {
     created_at: string;
     header_image: string; // 修正: null 値を許可
     icon_image: string; // 修正: null 値を許可
-    biography: { String: string; Valid: boolean }; // 修正: null 値を許可
+    biography: string; // 修正: null 値を許可
     isprivate: boolean;
     isfrozen: boolean;
     isdeleted: boolean;
@@ -45,8 +45,8 @@ export interface Profile {
 export interface TweetData {
 	tweet: Tweet;
 	user: User;
-	isLiked: boolean;
-	isRetweeted: boolean;
+	likes: boolean;
+	retweets: boolean;
 }
 
 export interface Notification {
@@ -55,7 +55,7 @@ export interface Notification {
 	replyid: string;
 	type : string;
 	created_at: string;
-	contentid : { Int32: number; Valid: boolean };
+	contentid : number;
 	status: string;
 }
 

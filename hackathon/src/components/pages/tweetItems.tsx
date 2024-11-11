@@ -15,7 +15,6 @@ import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";
 import { useRouter } from "next/navigation";
-import { combineTweetData } from "@/lib/combineTweetData";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -45,12 +44,12 @@ export default function TweetItem({
             const unsubscribe = onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     const token = await user.getIdToken();
-                    if (tweet.retweetid.Valid) {
+                    if (tweet.retweetid) {
                         const retweets = await fetchOneTweet(
                             token,
-                            tweet.retweetid.Int32
+                            tweet.retweetid
                         );
-                        setRetweet(combineTweetData(retweets));
+                        setRetweet(retweets);
                     }
                 } else {
                     console.error("ユーザーがログインしていません");
@@ -198,19 +197,19 @@ export default function TweetItem({
                     </p>
 
                     {/* メディア（画像または動画） */}
-                    {tweet.media_url.Valid && (
+                    {tweet.media_url && tweet.media_url !== "\"\"" && (
                         <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">
-                            {tweet.media_url.String.includes("images%") ? (
+                            {tweet.media_url.includes("images%") ? (
                                 <Image
-                                    src={tweet.media_url.String}
+                                    src={tweet.media_url}
                                     alt="ツイート画像"
                                     width={400}
                                     height={225}
                                     className="w-full h-auto object-cover max-h-[225px]"
                                 />
-                            ) : tweet.media_url.String.includes("videos%") ? (
+                            ) : tweet.media_url.includes("videos%") ? (
                                 <video
-                                    src={tweet.media_url.String}
+                                    src={tweet.media_url}
                                     controls
                                     className="w-full h-auto object-cover max-h-[225px]"
                                 >
@@ -228,7 +227,7 @@ export default function TweetItem({
                             className="mt-3 mr-10 p-3 border border-gray-200 rounded-lg  hover:bg-gray-100"
                             onClick={(e) => {
                                 e.stopPropagation(); // 親のクリックイベントをキャンセル
-                                handleTweetClick(tweet.retweetid.Int32);
+                                handleTweetClick(tweet.retweetid);
                             }}
                         >
                             <RetweetItem tweet={retweet.tweet} />
@@ -300,7 +299,7 @@ export default function TweetItem({
             {retweet && !tweet.isquote ? (
                 <div
                     className="relative hover:bg-gray-50 transition-colors duration-200"
-                    onClick={() => handleTweetClick(tweet.retweetid.Int32)}
+                    onClick={() => handleTweetClick(tweet.retweetid)}
                 >
                     {/* リツイートメッセージ */}
                     <div className="flex items-center  text-sm text-gray-500 whitespace-nowrap ml-12">
@@ -314,8 +313,8 @@ export default function TweetItem({
                     <TweetItem
                         tweet={retweet.tweet}
                         user={retweet.user}
-                        initialisLiked={retweet.isLiked}
-                        initialisRetweeted={retweet.isRetweeted}
+                        initialisLiked={retweet.likes}
+                        initialisRetweeted={retweet.retweets}
                         type={"tweet"}
                     />
                 </div>

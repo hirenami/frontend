@@ -8,7 +8,6 @@ import { fetchTimeline } from "@/features/tweet/fetchTimeline";
 import Sidebar from "@/components/pages/sidebar";
 import TweetItem from "@/components/pages/tweetItems";
 import { Tweet as TweetComponent } from "@/components/pages/tweet";
-import { combineTweetDatas } from "@/lib/combineTweetData";
 
 export default function Component() {
     const [userToken, setUserToken] = useState<string | null>(null);
@@ -22,7 +21,7 @@ export default function Component() {
                     const token = await user.getIdToken();
                     setUserToken(token);
                     const timelinedata = await fetchTimeline(token);
-                    setTimelineData(combineTweetDatas(timelinedata));
+                    setTimelineData(timelinedata);
                 } else {
                     console.log("ユーザーがログインしていません");
                 }
@@ -59,8 +58,8 @@ export default function Component() {
 							type={"tweet"}
                             tweet={data.tweet}
                             user={data.user}
-                            initialisLiked={data.isLiked}
-                            initialisRetweeted={data.isRetweeted}
+                            initialisLiked={data.likes}
+                            initialisRetweeted={data.retweets}
                         />
                     ))}
                 </div>

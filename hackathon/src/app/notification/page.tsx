@@ -10,7 +10,6 @@ import { NotificationData } from "@/types";
 import { onAuthStateChanged } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
 import { fetchNotificationData } from "@/features/notification/fetchNotifications";
-import { combineNotificationDatas } from "@/lib/combineNotificationData";
 
 
 
@@ -27,7 +26,7 @@ export default function NotificationsPage() {
                 const token = await user.getIdToken();
                 try {
 					const data = await fetchNotificationData(token);
-					setNotifications(combineNotificationDatas(data));
+					setNotifications(data);
                 } catch (error) {
                     console.error("データの取得に失敗しました:", error);
                 }

@@ -32,15 +32,13 @@ export default function UserEditor() {
         const { name, value } = e.target;
         setUser((prev) => {
             if (prev) {
-                return {
-                    ...prev,
-                    [name]:
-                        name === "biography"
-                            ? { ...prev.biography, String: value, Valid: true }
-                            : value,
-                };
-            }
-            return prev;
+				return {
+					...prev,
+					[name]:
+						name === "biography" ? value : value, // biographyをstringとして扱う
+				};
+			}
+			return prev;
         });
         setErrors((prev) => ({ ...prev, [name]: "" }));
     };
@@ -126,7 +124,7 @@ export default function UserEditor() {
                 },
                 body: JSON.stringify({
                     username: user.username,
-                    biography: user.biography.String,
+                    biography: user.biography,
                     header_image: header_imageUrl,
                     icon_image: icon_imageUrl,
                 }),
@@ -282,7 +280,7 @@ export default function UserEditor() {
                         <textarea
                             id="biography"
                             name="biography"
-                            value={user.biography.String}
+                            value={user.biography}
                             onChange={handleInputChange}
                             className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
