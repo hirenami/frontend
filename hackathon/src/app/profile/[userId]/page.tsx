@@ -94,7 +94,11 @@ export default function ProfilePage() {
     };
 
     const handleFollowCount = () => {
-        router.push(`/profile/${userid}/follow`);
+        router.push(`/profile/${userid}/follow?tab=follows`);
+    };
+
+	const handleFollowerCount = () => {
+        router.push(`/profile/${userid}/follow?tab=followers`);
     };
 
     const handleEditProfile = () => {
@@ -236,7 +240,7 @@ export default function ProfilePage() {
                         </div>
                         <div
                             className="flex items-center space-x-1 border-b border-transparent hover:border-black pb-0 leading-tight"
-                            onClick={handleFollowCount}
+                            onClick={handleFollowerCount}
                         >
                             <p className="font-bold">{followerCount}</p>
                             <p className="text-gray-500">フォロワー</p>

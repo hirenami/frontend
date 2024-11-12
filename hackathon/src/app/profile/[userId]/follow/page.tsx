@@ -12,11 +12,12 @@ import { fireAuth } from "@/features/firebase/auth";
 import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchFollows, fetchFollowers } from "@/features/user/fetchFollowCount";
 import { User, FollowData } from "@/types";
-import { useRouter } from "next/navigation";
+import { useRouter,useSearchParams } from "next/navigation";
 
 export default function Component() {
-    const [, setActiveTab] = useState("followers");
-    const router = useRouter();
+	const router = useRouter();
+	const tab = useSearchParams().get("tab");
+    const [activeTab, setActiveTab] = useState<string>(tab || "followers");
     const auth = fireAuth;
     const { userId } = useParams();
     const userid = userId as string;
@@ -90,7 +91,7 @@ export default function Component() {
                 </header>
 
                 <Tabs
-                    defaultValue="followers"
+                    defaultValue={ activeTab} 
                     className="w-full"
                     onValueChange={setActiveTab}
                 >
@@ -101,7 +102,7 @@ export default function Component() {
                                 {followsCount}
                             </span>
                         </TabsTrigger>
-                        <TabsTrigger value="following">
+                        <TabsTrigger value="follows">
                             フォロー中
                             <span className="ml-2 text-sm text-muted-foreground">
                                 {followersCount}
@@ -142,7 +143,7 @@ export default function Component() {
                             </div>
                         ))}
                     </TabsContent>
-                    <TabsContent value="following">
+                    <TabsContent value="follows">
                         {follows.map((follow, index) => (
                             <div
                                 key={index}
