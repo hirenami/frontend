@@ -75,7 +75,7 @@ export default function NotificationItem({
 		if (notification.contentid) {
 			router.push(`/tweet/${notification.contentid}`);
 		}else{
-			router.push(`/user/${user.userid}`);
+			router.push(`/profile/${user.userid}`);
 		}
 
 	}
@@ -97,7 +97,7 @@ export default function NotificationItem({
 					</Avatar>
 				</div>
 				<p className="text-gray-700 mb-1"><b>{user.username}</b>{getMessage()}</p>
-				{notification.contentid && (
+				{notification.contentid!=0 && (
 					<p className="text-sm text-gray-600 mb-1">{tweet.content}</p>
 				)}
 			</div>
