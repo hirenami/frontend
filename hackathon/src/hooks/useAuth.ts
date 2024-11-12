@@ -18,7 +18,7 @@ const useAuth = () => {
                 
                 if (userData) {
                     setLoginUser(userData); // 取得したユーザーデータをセット
-                    Cookies.set("user", JSON.stringify(userData), { expires: 7 });
+                    Cookies.set("user", JSON.stringify(userData.user), { expires: 7 });
                     router.push("/home");
                 } else {
                     console.error("ユーザーデータが無効です");

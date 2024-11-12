@@ -26,6 +26,7 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
     const [isFollowing, setIsFollowing] = useState(false);
+	const [isFollowers, setIsFollowers] = useState(false);
     const [followCount, setFollowCount] = useState(0);
     const [followerCount, setFollowerCount] = useState(0);
 
@@ -46,9 +47,10 @@ export default function ProfilePage() {
                     setUser(userData.user);
                     setTweets(tweetsData);
                     console.log(tweetsData);
-                    setFollowCount(userData.following);
-                    setFollowerCount(userData.follower);
-                    setIsFollowing(userData.isfollow);
+                    setFollowCount(userData.follows);
+                    setFollowerCount(userData.followers);
+                    setIsFollowing(userData.isfollows);
+					setIsFollowers(userData.isfollowers);
                 } catch (error) {
                     console.error("データの取得に失敗しました:", error);
                 }
@@ -200,7 +202,14 @@ export default function ProfilePage() {
 
                 <div className="mt-20 px-4">
                     <h2 className="text-xl font-bold">{user.username}</h2>
-                    <p className="text-gray-500">@{user.userid}</p>
+					<p className="text-gray-500">
+    @{user.userid} 
+    {isFollowers && (
+        <span className="bg-gray-200 text-gray-500 text-xs  ml-2 px-2 py-0.5">
+            フォローされています
+        </span>
+    )}
+</p>
 					{user.biography &&  user.biography !== "\"\"" && <p className="mt-2">{user.biography}</p>}
 
                     <div className="mt-2 text-gray-500">

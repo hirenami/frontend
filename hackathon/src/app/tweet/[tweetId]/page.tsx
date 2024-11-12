@@ -61,7 +61,6 @@ export default function TweetPage() {
                     setUser(tweetData.user);
                     setReplies(repliesData);
                     setReplied(repliedData);
-					console.log("aaa",repliedData);
 
                     if (tweetData.tweet.retweetid) {
                         const retweetData = await fetchOneTweet(
