@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Sidebar from "@/components/pages/sidebar";
@@ -13,6 +12,7 @@ import { fetchUserData } from "@/features/user/fetchUserData";
 import { fetchFollows, fetchFollowers } from "@/features/user/fetchFollowCount";
 import { User, FollowData } from "@/types";
 import { useRouter,useSearchParams } from "next/navigation";
+import Follow from "@/components/pages/follow";
 
 export default function Component() {
 	const router = useRouter();
@@ -65,6 +65,14 @@ export default function Component() {
         );
     }
 
+	if(!user){
+		return (
+			<div className="flex min-h-screen items-center justify-center bg-white text-black">
+				<p>ユーザーが見つかりません</p>
+			</div>
+		);
+	}
+
     return (
         <div className="flex min-h-screen bg-background">
             <Sidebar />
@@ -99,82 +107,24 @@ export default function Component() {
                         <TabsTrigger value="followers">
                             フォロワー
                             <span className="ml-2 text-sm text-muted-foreground">
-                                {followsCount}
+                                {followersCount}
                             </span>
                         </TabsTrigger>
                         <TabsTrigger value="follows">
                             フォロー中
                             <span className="ml-2 text-sm text-muted-foreground">
-                                {followersCount}
+                                {followsCount}
                             </span>
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent value="followers">
                         {followers.map((follower, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center p-4 border-b"
-                            >
-                                <Avatar className="w-12 h-12">
-                                    <AvatarImage
-                                        src={follower.user.icon_image}
-                                        alt="@username"
-                                    />
-                                </Avatar>
-                                <div className="ml-4">
-                                    <h2 className="font-bold">
-                                        {follower.user.username}
-                                    </h2>
-                                    <p className="text-sm text-muted-foreground">
-                                        @{follower.user.userid}
-                                        {follower.isfollowers && (
-                                            <span className="bg-gray-200 text-gray-500 text-xs  ml-2 px-2 py-0.5">
-                                                フォローされています
-                                            </span>
-                                        )}
-                                    </p>
-                                    {follower.user.biography &&
-                                        follower.user.biography !== '""' && (
-                                            <p className="text-sm text-muted-foreground">
-                                                {follower.user.biography}
-                                            </p>
-                                        )}
-                                </div>
-                            </div>
+                            <Follow key={index} follower={follower} index={index} />
                         ))}
                     </TabsContent>
                     <TabsContent value="follows">
                         {follows.map((follow, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center p-4 border-b"
-                            >
-                                <Avatar className="w-12 h-12">
-                                    <AvatarImage
-                                        src={follow.user.icon_image}
-                                        alt="@username"
-                                    />
-                                </Avatar>
-                                <div className="ml-4">
-                                    <h2 className="font-bold">
-                                        {follow.user.username}
-                                    </h2>
-                                    <p className="text-sm text-muted-foreground">
-                                        @{follow.user.userid}
-                                        {follow.isfollowers && (
-                                            <span className="bg-gray-200 text-gray-500 text-xs  ml-2 px-2 py-0.5">
-                                                フォローされています
-                                            </span>
-                                        )}
-                                    </p>
-                                    {follow.user.biography &&
-                                        follow.user.biography !== '""' && (
-                                            <p className="text-sm text-muted-foreground">
-                                                {follow.user.biography}
-                                            </p>
-                                        )}
-                                </div>
-                            </div>
+                             <Follow key={index} follower={follow} index={index} />
                         ))}
                     </TabsContent>
                 </Tabs>
