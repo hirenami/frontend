@@ -46,10 +46,22 @@ export default function Follow({ follower, index }: FollowProps) {
         }
     };
 
+	const hundleUserClick = async () => {
+        try {
+            const token = await fireAuth.currentUser?.getIdToken();
+            if (token) {
+                window.location.href = `/profile/${follower.user.userid}`; // ユーザーページへ遷移
+            }
+        } catch (error) {
+            console.error("ユーザーページへの遷移に失敗しました:", error);
+        }
+    };
+
     return (
         <div
             key={index}
             className="flex items-center p-4 border-b hover:bg-gray-100 transition-colors duration-200"
+			onClick={hundleUserClick}
         >
             <Avatar className="w-12 h-12">
                 <AvatarImage src={follower.user.icon_image} alt="@username" />
@@ -81,7 +93,10 @@ export default function Follow({ follower, index }: FollowProps) {
                             ? "border-gray-300 text-gray-900 hover:bg-gray-100 hover:text-red-500 hover:border-red-500"
                             : "bg-gray-900 text-white hover:bg-gray-800"
                     }`}
-                    onClick={handleFollow}
+                    onClick={(e) => {
+						e.stopPropagation();
+						handleFollow();
+					}}
                 >
                     {isFollowing ? (
                         <>
