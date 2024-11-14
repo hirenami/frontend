@@ -12,7 +12,7 @@ import Image from "next/image";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { createLike, deleteLike } from "@/features/like/likes";
 import GetFetcher from "@/routes/getfetcher";
-import RetweetItem from "@/components/pages/retweetItems";
+import RetweetItem from "@/components/pages/tweet/retweetItems";
 import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";

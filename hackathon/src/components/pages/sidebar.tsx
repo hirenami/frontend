@@ -77,6 +77,7 @@ const Sidebar = () => {
                     ホーム
                 </Button>
                 <Button
+					onClick={() => router.push("/search")}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${

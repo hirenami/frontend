@@ -15,12 +15,12 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, MessageCircle, Repeat, Heart } from "lucide-react";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
-import RetweetItem from "@/components/pages/retweetItems";
+import RetweetItem from "@/components/pages/tweet/retweetItems";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { date } from "@/lib/Date";
-import TweetItem from "@/components/pages/tweetItems";
+import TweetItem from "@/components/pages/tweet/tweetItems";
 import CreateTweet from "@/components/pages/home/createTweet";
 import { fetchTweetsReplied } from "@/features/tweet/fetchTweetToReplied";
 
@@ -196,7 +196,7 @@ export default function TweetPage() {
                     </p>
 
                     {/* メディア（画像または動画） */}
-                    {tweet.media_url &&  tweet.media_url !== "\"\"" && (
+                    {tweet.media_url && tweet.media_url !== '""' && (
                         <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">
                             {tweet.media_url.includes("images%") ? (
                                 <Image
@@ -300,16 +300,17 @@ export default function TweetPage() {
                     </div>
                 </header>
                 <div>
-                    {replied &&[...replied].reverse().map((data, index) => (
-                        <TweetItem //type追加
-                            key={index}
-                            type={"reply"}
-                            tweet={data.tweet}
-                            user={data.user}
-                            initialisLiked={data.likes}
-                            initialisRetweeted={data.retweets}
-                        />
-                    ))}
+                    {replied &&
+                        [...replied].reverse().map((data, index) => (
+                            <TweetItem //type追加
+                                key={index}
+                                type={"reply"}
+                                tweet={data.tweet}
+                                user={data.user}
+                                initialisLiked={data.likes}
+                                initialisRetweeted={data.retweets}
+                            />
+                        ))}
                 </div>
                 {tweet ? (
                     <div className="border-gray-200">
@@ -322,16 +323,17 @@ export default function TweetPage() {
                         />
 
                         <div>
-                            {replies && replies.map((data, index) => (
-                                <TweetItem
-                                    key={index}
-                                    tweet={data.tweet}
-                                    user={data.user}
-                                    initialisLiked={data.likes}
-                                    initialisRetweeted={data.retweets}
-                                    type={"tweet"}
-                                />
-                            ))}
+                            {replies &&
+                                replies.map((data, index) => (
+                                    <TweetItem
+                                        key={index}
+                                        tweet={data.tweet}
+                                        user={data.user}
+                                        initialisLiked={data.likes}
+                                        initialisRetweeted={data.retweets}
+                                        type={"tweet"}
+                                    />
+                                ))}
                         </div>
                     </div>
                 ) : (
