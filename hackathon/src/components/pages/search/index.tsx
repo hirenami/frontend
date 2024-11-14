@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect,Suspense } from "react";
 import GetFetcher from "@/routes/getfetcher";
 import TweetItem from "@/components/pages/tweet/tweetItems";
 import { TweetData } from "@/types";
@@ -37,7 +37,7 @@ const SearchPage = () => {
 	}
 
 	return (
-		<>
+		<Suspense fallback={<div>Loading...</div>}>
 			<header className="sticky top-0 z-10 border-b bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-4 p-4">
           <button
@@ -76,7 +76,7 @@ const SearchPage = () => {
 				/>
 				))}
 			</div>
-		</>
+		</Suspense>
 	);
 }
 
