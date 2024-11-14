@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { MessageCircle, Heart, Repeat, UserPlus } from "lucide-react";
 import { User,Notification,Tweet } from "@/types/index";
 import { onAuthStateChanged } from "firebase/auth";
@@ -93,7 +93,6 @@ export default function NotificationItem({
 				<div className="flex items-center mb-1">
 					<Avatar className="w-8 h-8 mr-2">
 						<AvatarImage src={user.icon_image} alt={user.username} />
-						<AvatarFallback>{user.username}</AvatarFallback>
 					</Avatar>
 				</div>
 				<p className="text-gray-700 mb-1"><b>{user.username}</b>{getMessage()}</p>

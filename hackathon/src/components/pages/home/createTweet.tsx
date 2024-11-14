@@ -5,23 +5,16 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { User } from "@/types";
 import { useRef, useState } from "react";
-import {
-    FileVideo,
-    Smile,
-    CalendarClock,
-    BarChart2,
-    LucideImage,
-} from "lucide-react";
+import {LucideImage} from "lucide-react";
 import { uploadFile } from "@/features/firebase/strage";
 import Cookies from "js-cookie";
 
 interface TweetComponentProps {
-    userToken: string | null;
+	userToken: string | null;
     type: string;
     tweetId: number;
 }
-
-export const Tweet = ({ userToken, type, tweetId }: TweetComponentProps) => {
+const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
     const [tweetText, setTweetText] = useState("");
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -164,18 +157,6 @@ export const Tweet = ({ userToken, type, tweetId }: TweetComponentProps) => {
                             >
                                 <LucideImage className="h-5 w-5 text-primary" />
                             </Button>
-                            <Button variant="ghost" size="icon">
-                                <FileVideo className="h-5 w-5 text-primary" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                                <BarChart2 className="h-5 w-5 text-primary" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                                <Smile className="h-5 w-5 text-primary" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                                <CalendarClock className="h-5 w-5 text-primary" />
-                            </Button>
                         </div>
                         <div className="flex items-center space-x-4">
                             <span className="text-sm text-gray-500">
@@ -202,3 +183,5 @@ export const Tweet = ({ userToken, type, tweetId }: TweetComponentProps) => {
         </div>
     );
 };
+
+export default CreateTweet;

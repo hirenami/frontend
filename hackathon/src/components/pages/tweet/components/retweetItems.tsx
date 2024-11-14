@@ -2,11 +2,12 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Tweet } from "@/types/index";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { fetchUserData } from "@/features/user/fetchUserData";
 import { User } from "@/types/index";
+import { formatDate } from "@/lib/formatDate";
+import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
+import GetFetcher from "@/routes/getfetcher";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -14,25 +15,18 @@ interface TweetItemProps {
 
 export default function RetweetItem({ tweet }: TweetItemProps) {
     const [user, setUser] = useState<User | null>(null);
-    const auth = getAuth();
-    useEffect(() => {
-        const handleAuthChange = () => {
-            const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    const token = await user.getIdToken();
-                    const userData = await fetchUserData(token, tweet.userid);
-					setUser(userData.user);
-                    
-                } else {
-                    console.error("ユーザーがログインしていません");
-                }
-            });
-            return unsubscribe;
-        };
-        handleAuthChange();
-    }, [auth, tweet.userid, tweet.tweetid, tweet.likes, tweet.retweetid]);
 
-    if (!tweet) {
+    const { data, error, token } = GetFetcher(
+        `http://localhost:8080/user/${tweet.userid}`
+    );
+
+    useEffect(() => {
+        if (data) {
+            setUser(data.user);
+        }
+    }, [data]);
+
+    if (!tweet || error) {
         return (
             <div className="p-4 text-gray-500">
                 ツイートを読み込めませんでした。
@@ -42,64 +36,12 @@ export default function RetweetItem({ tweet }: TweetItemProps) {
 
     const hundleUserClick = async () => {
         try {
-            const token = await auth.currentUser?.getIdToken();
             if (token) {
                 window.location.href = `/profile/${user?.userid}`; // ユーザーページへ遷移
             }
         } catch (error) {
             console.error("ユーザーページへの遷移に失敗しました:", error);
         }
-    };
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString); // ISO文字列をDateオブジェクトに変換
-        const now = new Date();
-        date.setHours((date.getHours() as number) - 9); // 9時間を追加して日本時間に変換
-
-        const diffInMs = now.getTime() - date.getTime(); // ミリ秒の差分を計算
-        const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-        if (diffInHours < 24) {
-            // 24時間以内なら「何時間前」
-            return `${diffInHours}時間`;
-        } else if (diffInDays < 365) {
-            // 1年未満なら「日付」
-            return date.toLocaleDateString("ja-JP", {
-                month: "short",
-                day: "numeric",
-            });
-        } else {
-            // 1年以上前なら「年と日付」
-            return date.toLocaleDateString("ja-JP", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-            });
-        }
-    };
-
-    // ハッシュタグを含むテキストをボタンに変換する関数
-    const renderContentWithHashtags = (content: string) => {
-        const hashtagRegex = /#\p{L}[\p{L}\p{N}_]*/gu; // ハッシュタグの正規表現
-        const parts = content.split(hashtagRegex);
-        const hashtags = content.match(hashtagRegex) || []; // マッチしたハッシュタグを取得
-
-        return parts.flatMap((part, index) => {
-            const result = [<span key={`text-${index}`}>{part}</span>]; // テキスト部分をspanで囲む
-            if (index < hashtags.length) {
-                result.push(
-                    <Button
-                        key={`hashtag-${index}`}
-                        variant="link"
-                        className="text-blue-500 hover:underline"
-                    >
-                        {hashtags[index]} {/* ハッシュタグをボタンにする */}
-                    </Button>
-                );
-            }
-            return result;
-        });
     };
 
     return (
@@ -137,7 +79,7 @@ export default function RetweetItem({ tweet }: TweetItemProps) {
                 <p className="mt-2 text-sm text-gray-900 whitespace-pre-wrap">
                     {renderContentWithHashtags(tweet.content)}
                 </p>
-                {tweet.media_url && tweet.media_url !== "\"\"" && (
+                {tweet.media_url && tweet.media_url !== '""' && (
                     <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">
                         {tweet.media_url.includes("images%") ? (
                             // 画像の場合
