@@ -10,18 +10,25 @@ import { ArrowLeft, Search, Settings2 } from "lucide-react";
 const SearchPage = () => {
     const [searchData, setSearchData] = useState<TweetData[]>([]);
     const router = useRouter();
-    const q = useSearchParams().get("q");
-    const {
-        data: search,
-        error,
-        isLoading,
-    } = GetFetcher(`http://localhost:8080/search/${q}`);
+    const searchParams = useSearchParams();
+    const q = searchParams.get("q") || "";
+
+    const { data: search, error, isLoading } = GetFetcher(
+        q ? `http://localhost:8080/search/${q}` : ""
+    );
 
     useEffect(() => {
-        if (search) {
+        if (search && q) {
             setSearchData(search);
         }
-    }, [search]);
+    }, [search, q]);
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+            const query = (e.target as HTMLInputElement).value;
+            router.push(`/search?q=${query}`);
+        }
+    };
 
     if (isLoading) {
         return (
@@ -30,6 +37,7 @@ const SearchPage = () => {
             </div>
         );
     }
+
     if (error) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-white text-black">
@@ -43,7 +51,7 @@ const SearchPage = () => {
             <header className="sticky top-0 z-10 border-b bg-white/80 backdrop-blur-sm">
                 <div className="flex items-center gap-4 p-4">
                     <button
-                        onClick={() => router.back()}
+                        onClick={() => router.push("/home")}
                         className="rounded-full p-2 hover:bg-gray-200"
                         aria-label="戻る"
                     >
@@ -54,7 +62,7 @@ const SearchPage = () => {
                             type="search"
                             placeholder="検索"
                             className="w-full rounded-full bg-gray-100 py-2 pl-10 pr-4 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            //onChange={(e) => handleSearch(e.target.value)}
+                            onKeyDown={handleKeyPress}
                         />
                         <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
                     </div>
@@ -66,18 +74,24 @@ const SearchPage = () => {
                     </button>
                 </div>
             </header>
-            <div>
-                {searchData.map((data, index) => (
-                    <TweetItem
-                        key={index}
-                        type={"tweet"}
-                        tweet={data.tweet}
-                        user={data.user}
-                        initialisLiked={data.likes}
-                        initialisRetweeted={data.retweets}
-                    />
-                ))}
-            </div>
+            {searchData?.length === 0 ? (
+                <div className="flex min-h-screen items-center justify-center bg-white text-black pt-20">
+                    <p>該当するツイートが見つかりませんでした</p>
+                </div>
+            ) : (
+                <div>
+                    {searchData?.map((data, index) => (
+                        <TweetItem
+                            key={index}
+                            type={"tweet"}
+                            tweet={data.tweet}
+                            user={data.user}
+                            initialisLiked={data.likes}
+                            initialisRetweeted={data.retweets}
+                        />
+                    ))}
+                </div>
+            )}
         </>
     );
 };

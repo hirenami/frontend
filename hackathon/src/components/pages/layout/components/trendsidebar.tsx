@@ -1,7 +1,7 @@
 import React from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface TrendItem {
     topic: string;
@@ -22,6 +22,24 @@ const trendItems: TrendItem[] = [
 ];
 
 export default function TrendsSidebar() {
+    const router = useRouter();
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            // エンターキーが押された場合に検索処理を呼び出す
+            if (e.key === "Enter") {
+                if (e.nativeEvent.isComposing) {
+                    // 日本語入力中（変換中）のエンターキーは抑制する
+                    e.preventDefault();
+                } else {
+                    router.push(
+                        `/search?q=${(e.target as HTMLInputElement).value}`
+                    );
+                }
+            }
+        }
+    };
+
     return (
         <aside
             className="hidden lg:block fixed top-0 right-20 w-80 h-full"
@@ -30,17 +48,15 @@ export default function TrendsSidebar() {
             <div className="bg-gray-50 rounded-2xl overflow-hidden mb-4">
                 <div className="p-4">
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <Input
-                            type="search"
-                            placeholder="検索"
-                            className="pl-10 bg-gray-100 border-none focus:ring-2 focus:ring-primary"
-                            style={{
-                                border: "none",
-                                outline: "none",
-                                boxShadow: "none",
-                            }}
-                        />
+                        <div className="relative flex-1">
+                            <input
+                                type="search"
+                                placeholder="検索"
+                                className="w-full rounded-full bg-gray-100 py-2 pl-10 pr-4 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                onKeyDown={handleKeyPress}
+                            />
+                            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
+                        </div>
                     </div>
                 </div>
             </div>

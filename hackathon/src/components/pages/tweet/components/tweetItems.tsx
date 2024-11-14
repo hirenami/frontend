@@ -50,8 +50,12 @@ export default function TweetItem({
         if (data) {
             setRetweet(data);
         }
+		if(tweet.likes){
         setLikeData(tweet.likes);
+		}
+		if(tweet.retweets){
         setRetweetData(tweet.retweets);
+		}
     }, [data, tweet.likes, tweet.retweets]);
 
     if (!tweet || error) {
