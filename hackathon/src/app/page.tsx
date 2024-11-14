@@ -2,7 +2,7 @@
 
 import { LoginForm } from "@/components/pages/loginform";
 import { signIn, signUp } from "@/features/firebase/sign";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/routes/useAuth";
 
 export default function Home() {
     const loginUser = useAuth();

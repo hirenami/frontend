@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { date } from "@/lib/Date";
 import TweetItem from "@/components/pages/tweetItems";
-import { Tweet as TweetComponent } from "@/components/pages/tweet";
+import CreateTweet from "@/components/pages/home/createTweet";
 import { fetchTweetsReplied } from "@/features/tweet/fetchTweetToReplied";
 
 export default function TweetPage() {
@@ -315,7 +315,7 @@ export default function TweetPage() {
                     <div className="border-gray-200">
                         <Tweetobj />
 
-                        <TweetComponent
+                        <CreateTweet
                             userToken={userToken}
                             type={"reply"}
                             tweetId={tweetid}

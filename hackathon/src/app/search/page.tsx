@@ -1,57 +1,55 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import TrendsSidebar from "@/components/pages/trendsidebar";
-import { TweetData } from "@/types";
-import { fetchSearchTweet } from "@/features/search/fetchSearch";
-import Sidebar from "@/components/pages/sidebar";
-import TweetItem from "@/components/pages/tweetItems";
-import { useSearchParams } from "next/navigation";
+import useSWR from "swr";
+import { fireAuth } from "@/features/firebase/auth";
 
+// fetcher関数
+export const fetcher = async (url: string, token: string) => {
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  }).then((res) => res.json());
+};
 
-export default function Component() {
-    const [timelineData, setTimelineData] = useState<TweetData[]>([]);
-    const auth = getAuth();
-	const q = useSearchParams().get("q");
+const useAuthFetcher = (url: string) => {
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const handleAuthChange = async () => {
-            const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    const token = await user.getIdToken();
-                    const timelinedata = await fetchSearchTweet(token,q as string);
-                    setTimelineData(timelinedata);
-                } else {
-                    console.log("ユーザーがログインしていません");
-                }
-            });
-            return unsubscribe;
-        };
-        handleAuthChange();
-    }, [auth,q]);
+  useEffect(() => {
+    const unsubscribe = fireAuth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const token = await user.getIdToken();
+          setToken(token);
+        } catch (error) {
+          console.error("トークン取得エラー:", error);
+        }
+      } else {
+        setToken(null);
+      }
+      setIsLoading(false);
+    });
 
-    return (
-        <div className="flex min-h-screen bg-background">
-            <Sidebar />
+    // クリーンアップ
+    return () => unsubscribe();
+  }, []);
 
-            <main className="flex-1 ml-80 mr-120 border-r border-l">
+  const { data, error } = useSWR(
+    token ? url : null, // トークンが取得できた場合のみURLを渡す
+    (url) => fetcher(url, token!), // トークンがある場合のみ実行
+    {
+      revalidateOnFocus: false, // 不要な再試行を防ぐ
+      revalidateOnReconnect: false, // 再接続時の再試行を防ぐ
+    }
+  );
 
-                <div>
-                    {timelineData && timelineData.map((data, index) => (
-                        <TweetItem
-                            key={index}
-							type={"tweet"}
-                            tweet={data.tweet}
-                            user={data.user}
-                            initialisLiked={data.likes}
-                            initialisRetweeted={data.retweets}
-                        />
-                    ))}
-                </div>
-            </main>
+  return {
+    data,
+    error,
+    isLoading,
+  };
+};
 
-            <TrendsSidebar />
-        </div>
-    );
-}
+export default useAuthFetcher;
