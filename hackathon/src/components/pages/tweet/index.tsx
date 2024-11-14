@@ -41,15 +41,6 @@ export default function TweetPage() {
         error: error3,
         isLoading: isLoading3,
     } = GetFetcher(`http://localhost:8080/reply/${tweetId}/replied`);
-    const {
-        data: retweetData,
-        error: error4,
-        isLoading: isLoading4,
-    } = tweetData?.tweet?.retweetid
-        ? GetFetcher(
-              `http://localhost:8080/tweet/${tweetData.tweet.retweetid}/tweetid`
-          )
-        : { data: null, error: null , isLoading: false};
 
     useEffect(() => {
         if (!tweetId) return;
@@ -70,12 +61,25 @@ export default function TweetPage() {
         setReplied(repliedData);
 		}
 
-        if (tweetData?.tweet.retweetid && retweetData) {
-            setRetweet(retweetData);
+        if (tweetData?.tweet.retweetid) {
+			const fetchData = async () => {
+				const res = await fetch(`http://localhost:8080/tweet/${tweetData.tweet.retweetid}/tweetid`,
+				{
+					method: "GET",
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+					},
+				}
+				);
+				const data = await res.json();
+				setRetweet(data);
+			}
+			fetchData();
         }
-    }, [tweetId, tweetData, repliesData, repliedData, retweetData]);
+    }, [tweetId, tweetData, repliesData, repliedData,token]);
 
-	if (isLoading1 || isLoading2 || isLoading3 || isLoading4 || !tweet) {
+	if (isLoading1 || isLoading2 || isLoading3 || !tweet) {
 		return (
 			<div className="flex min-h-screen items-center justify-center bg-white text-black">
 				<p>読み込み中...</p>
@@ -83,7 +87,7 @@ export default function TweetPage() {
 		);
 	}
 
-	if (error1 || error2 || error3 || error4) {
+	if (error1 || error2 || error3) {
 		return (
 			<div className="flex min-h-screen items-center justify-center bg-white text-black">
 				<p>再読み込みしてください。</p>
