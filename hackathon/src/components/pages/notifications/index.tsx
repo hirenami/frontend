@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
-import NotificationItem from "@/features/notification/notificationitem";
+import NotificationItem from "@/components/pages/notifications/components/notificationitem";
 import { NotificationData } from "@/types";
 import GetFetcher from "@/routes/getfetcher";
 

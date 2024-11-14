@@ -1,7 +1,7 @@
 "use client";
 
-import Sidebar from "@/components/pages/sidebar";
-import TrendsSidebar from "@/components/pages/trendsidebar";
+import Sidebar from "@/components/pages/layout/components/sidebar";
+import TrendsSidebar from "@/components/pages/layout/components/trendsidebar";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { Tweet, User, TweetData } from "@/types";
@@ -10,7 +10,10 @@ import { fetchReplyData } from "@/features/tweet/fetchReplies";
 import { onAuthStateChanged } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
 import { createLike, deleteLike } from "@/features/like/likes";
-import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
+import {
+    createRetweet,
+    deleteRetweet,
+} from "@/features/retweet/handleretweets";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, MessageCircle, Repeat, Heart } from "lucide-react";

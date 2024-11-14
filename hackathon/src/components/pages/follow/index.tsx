@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, FollowData } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import Follow from "@/components/pages/follow/follow";
+import Follow from "@/components/pages/follow/components/follow";
 import GetFetcher from "@/routes/getfetcher";
 
 export default function FollowPage() {
