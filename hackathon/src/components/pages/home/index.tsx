@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { TweetData } from "@/types";
-import TweetItem from "@/components/pages/tweet/tweetItems";
-import  CreateTweet  from "@/components/pages/home/createTweet";
+import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
 
 export default function HomePage() {
@@ -12,7 +12,7 @@ export default function HomePage() {
         data: timeline,
         error,
         isLoading,
-		token
+        token,
     } = GetFetcher("http://localhost:8080/timeline");
 
     // dataが変更されたときにtimelineDataを更新する
@@ -48,11 +48,7 @@ export default function HomePage() {
                 </div>
             </header>
 
-            <CreateTweet
-					userToken={token}
-                    type={"tweet"}
-                    tweetId={0}
-                />
+            <CreateTweet userToken={token} type={"tweet"} tweetId={0} />
 
             <div>
                 {timelineData.map((data, index) => (
