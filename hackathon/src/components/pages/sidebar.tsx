@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
-import { useRouter } from "next/navigation";
+import { useRouter,usePathname  } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { MoreHorizontal, Settings } from "lucide-react";
@@ -27,6 +27,7 @@ import { User } from "@/types/index";
 
 const Sidebar = () => {
     const router = useRouter();
+	const currentPath = usePathname();
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -68,7 +69,9 @@ const Sidebar = () => {
                     onClick={() => router.push("/home")}
                     variant="ghost"
                     size="lg"
-                    className="w-full justify-start text-lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath === "/home" ? "font-bold" : ""
+                    }`}
                 >
                     <Home className="mr-4 h-6 w-6" />
                     ホーム
@@ -76,7 +79,9 @@ const Sidebar = () => {
                 <Button
                     variant="ghost"
                     size="lg"
-                    className="w-full justify-start text-lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath === "/search" ? "font-bold" : ""
+                    }`}
                 >
                     <Search className="mr-4 h-6 w-6" />
                     検索
@@ -85,7 +90,9 @@ const Sidebar = () => {
                     onClick={() => router.push("/notification")}
                     variant="ghost"
                     size="lg"
-                    className="w-full justify-start text-lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath === "/notification" ? "font-bold" : ""
+                    }`}
                 >
                     <Bell className="mr-4 h-6 w-6" />
                     通知
@@ -93,7 +100,9 @@ const Sidebar = () => {
                 <Button
                     variant="ghost"
                     size="lg"
-                    className="w-full justify-start text-lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath === "/home" ? "font-bold" : ""
+                    }`}
                 >
                     <Mail className="mr-4 h-6 w-6" />
                     メッセージ
@@ -101,7 +110,9 @@ const Sidebar = () => {
                 <Button
                     variant="ghost"
                     size="lg"
-                    className="w-full justify-start text-lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath === "/home" ? "font-bold" : ""
+                    }`}
                 >
                     <Settings className="mr-4 h-6 w-6" />
                     設定
@@ -110,7 +121,9 @@ const Sidebar = () => {
                     onClick={() => router.push(`/profile/${user?.userid}`)}
                     variant="ghost"
                     size="lg"
-                    className="w-full justify-start text-lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath.startsWith("/profile/") ? "font-bold" : ""
+                    }`}
                 >
                     <UserIcon className="mr-4 h-6 w-6" />
                     プロフィール

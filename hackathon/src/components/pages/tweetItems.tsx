@@ -1,20 +1,23 @@
-import React from "react";
-import { MessageCircle, Repeat, Heart, BarChart } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import {
+    MessageCircle,
+    Repeat,
+    Heart,
+    BarChart,
+    MoreHorizontal,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tweet, TweetData } from "@/types/index";
+import { Tweet, TweetData, User } from "@/types/index";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { MoreHorizontal } from "lucide-react";
 import { createLike, deleteLike } from "@/features/like/likes";
-import { User } from "@/types/index";
-import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
+import GetFetcher from "@/routes/getfetcher";
 import RetweetItem from "@/components/pages/retweetItems";
 import { createRetweet, deleteRetweet } from "@/features/retweet/retweets";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";
 import { useRouter } from "next/navigation";
+import { fireAuth } from "@/features/firebase/auth";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -36,33 +39,22 @@ export default function TweetItem({
     const [likeData, setLikeData] = useState<number>(0);
     const [retweetData, setRetweetData] = useState<number>(0);
     const [retweet, setRetweet] = useState<TweetData | null>(null);
-    const auth = getAuth();
     const router = useRouter();
+    const auth = fireAuth;
+
+    const { data, error } = tweet.retweetid
+        ? GetFetcher(`http://localhost:8080/tweet/${tweet.retweetid}/tweetid`)
+        : { data: null, error: null };
 
     useEffect(() => {
-        const handleAuthChange = () => {
-            const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    const token = await user.getIdToken();
-                    if (tweet.retweetid) {
-                        const retweets = await fetchOneTweet(
-                            token,
-                            tweet.retweetid
-                        );
-                        setRetweet(retweets);
-                    }
-                } else {
-                    console.error("ユーザーがログインしていません");
-                }
-            });
-            return unsubscribe;
-        };
-        handleAuthChange();
+        if (data) {
+            setRetweet(data);
+        }
         setLikeData(tweet.likes);
         setRetweetData(tweet.retweets);
-    }, [auth, tweet]);
+    }, [data, tweet.likes, tweet.retweets]);
 
-    if (!tweet) {
+    if (!tweet || error) {
         return (
             <div className="p-4 text-gray-500">
                 ツイートを読み込めませんでした。
@@ -157,7 +149,13 @@ export default function TweetItem({
                         </Avatar>
                     </Button>
                     {/* 縦線を表示 */}
-                    <div className={`${type == "reply" ? "h-full border-l-2 border-gray-300 absolute top-10": ""}`}></div>
+                    <div
+                        className={`${
+                            type == "reply"
+                                ? "h-full border-l-2 border-gray-300 absolute top-10"
+                                : ""
+                        }`}
+                    ></div>
                 </div>
 
                 {/* ツイートの内容 */}
@@ -197,7 +195,7 @@ export default function TweetItem({
                     </p>
 
                     {/* メディア（画像または動画） */}
-                    {tweet.media_url && tweet.media_url !== "\"\"" && (
+                    {tweet.media_url && tweet.media_url !== '""' && (
                         <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">
                             {tweet.media_url.includes("images%") ? (
                                 <Image
