@@ -109,10 +109,11 @@ const Sidebar = () => {
                     メッセージ
                 </Button>
                 <Button
+					onClick={() => router.push(`/setting`)}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
-                        currentPath === "/home" ? "font-bold" : ""
+                        currentPath === "/setting" ? "font-bold" : ""
                     }`}
                 >
                     <Settings className="mr-4 h-6 w-6" />
