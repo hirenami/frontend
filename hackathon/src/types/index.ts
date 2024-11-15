@@ -47,6 +47,8 @@ export interface TweetData {
 	user: User;
 	likes: boolean;
 	retweets: boolean;
+	isblocked: boolean;
+	isprivate: boolean;
 }
 
 export interface Notification {
@@ -71,4 +73,6 @@ export interface FollowData {
 	followers: number;
 	isfollows: boolean;
 	isfollowers: boolean;
+	isblocked: boolean;
+	isprivate: boolean;
 }

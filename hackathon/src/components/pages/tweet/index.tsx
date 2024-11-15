@@ -104,9 +104,10 @@ export default function TweetPage() {
 
                 <div className="flex-1 min-w-0">
                     {/* ツイートの内容 */}
-					<TweetComponent tweet={tweet} retweet={retweet}/>
+					<TweetComponent tweet={tweet} retweet={retweet} isblocked={tweetData.isblocked} isprivate={tweetData.isprivate}/>
 
                     {/* アクションボタン群 */}
+					{ tweetData.isblocked || tweetData.isprivate || tweet.isdeleted ? null :
 					<ActionButton 
 						tweet={tweet}
 						token={token}
@@ -119,6 +120,7 @@ export default function TweetPage() {
 						retweetCount={retweetCount}
 						setRetweetCount={setRetweetCount}
 					/>
+					}
                     
                 </div>
             </div>
@@ -152,6 +154,8 @@ export default function TweetPage() {
                             user={data.user}
                             initialisLiked={data.likes}
                             initialisRetweeted={data.retweets}
+							isblocked={data.isblocked}
+							isprivate={data.isprivate}
                         />
                     ))}
             </div>
@@ -175,6 +179,8 @@ export default function TweetPage() {
                                     initialisLiked={data.likes}
                                     initialisRetweeted={data.retweets}
                                     type={"tweet"}
+									isblocked={data.isblocked}
+									isprivate={data.isprivate}
                                 />
                             ))}
                     </div>

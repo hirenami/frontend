@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { Camera, ArrowLeft } from "lucide-react";
+import { Camera } from "lucide-react";
 import Image from "next/image";
 import { uploadFile } from "@/features/firebase/strage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -8,7 +8,11 @@ import { useRouter } from "next/navigation";
 import { User } from "@/types";
 import Cookies from "js-cookie";
 
-export default function UserEditor() {
+interface UserEditorProps {
+setOpen : React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function UserEditor( {setOpen} : UserEditorProps) {
     const [user, setUser] = useState<User | null>(null);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const headerInputRef = useRef<HTMLInputElement>(null);
@@ -143,7 +147,7 @@ export default function UserEditor() {
                     }),
                     { expires: 7 }
                 );
-
+				setOpen(false);
                 router.push(`http://localhost:3000/profile/${user.userid}`);
             } else {
                 console.error("プロフィールの保存中にエラーが発生しました");
@@ -152,25 +156,13 @@ export default function UserEditor() {
     };
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex max-w-[600px] max-h-[90vh]">
             {/* <Sidebar /> 左側のサイドバー */}
-            <div className="flex-1 bg-white text-black p-6">
+            <div className="flex-1 bg-white text-black">
                 {" "}
                 {/* 右側の編集画面 */}
                 <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 p-4 bg-white">
                     <div className="flex items-center">
-                        <button
-                            className="mr-4 rounded-full p-2 hover:bg-gray-200"
-                            aria-label="戻る"
-                            onClick={() =>
-                                router.push(
-                                    `http://localhost:3000/profile/${user.userid}`
-                                )
-                            }
-                        >
-                            <ArrowLeft size={20} />
-                        </button>
-
                         <h1 className="text-xl font-bold">
                             プロフィールを編集
                         </h1>
@@ -195,7 +187,7 @@ export default function UserEditor() {
                             alt="ヘッダー画像"
                             width={600}
                             height={200}
-                            className="h-48 w-full object-cover"
+                            className="h-44 w-full object-cover"
                             priority
                         />
                         <button
@@ -205,7 +197,7 @@ export default function UserEditor() {
                             aria-label="ヘッダー画像をアップロード"
                         >
                             <div className="rounded-full bg-gray-800 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                <Camera size={24} className="text-white" />
+                                <Camera size={16} className="text-white" />
                             </div>
                         </button>
                         <input
@@ -282,7 +274,7 @@ export default function UserEditor() {
                             name="biography"
                             value={user.biography}
                             onChange={handleInputChange}
-                            className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full rounded-md border  focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
                         />
                         {errors.biography && (

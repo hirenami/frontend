@@ -102,7 +102,7 @@ const Sidebar = () => {
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
-                        currentPath === "/home" ? "font-bold" : ""
+                        currentPath === "/message" ? "font-bold" : ""
                     }`}
                 >
                     <Mail className="mr-4 h-6 w-6" />

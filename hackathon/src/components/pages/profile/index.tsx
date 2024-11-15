@@ -14,13 +14,15 @@ import Cookies from "js-cookie";
 import {
     handleFollowCount,
     handleFollowerCount,
-    handleEditProfile,
 } from "@/features/profile/handleprofile";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import UserEditor from "@/components/pages/profile/components/edit";
 
 export default function ProfilePage() {
     const { userId } = useParams();
     const router = useRouter();
     const userid = userId as string;
+	const [open, setOpen] = useState(false);
 
     const [user, setUser] = useState<User | null>(null);
     const [tweets, setTweets] = useState<TweetData[]>([]);
@@ -140,15 +142,30 @@ export default function ProfilePage() {
                 {/* プロフィール編集ボタンをヘッダーのすぐ下、右側に配置 */}
                 <div className="absolute top-56 right-4">
                     {currentUserId === user.firebaseuid ? (
+						<>
                         <Button
                             variant="outline"
                             size="sm"
                             className="rounded-full border-gray-300 text-gray-900 hover:bg-gray-100"
-                            onClick={() => handleEditProfile(router)}
+                            onClick={() => setOpen(true)}
                         >
                             <Edit3 className="h-4 w-4 mr-2" />
                             プロフィールを編集
                         </Button>
+						<Dialog open={open} onOpenChange={setOpen}>
+						<DialogContent 
+						className="max-w-[600px] max-h-[90vh] p-4"
+						style={{
+						  width: "600px", // 横幅を固定
+						  height: "auto", // 高さを自動調整
+						}} >
+						  <DialogHeader>
+							<DialogTitle></DialogTitle>
+						  </DialogHeader>
+						  <UserEditor setOpen={setOpen}/>
+						</DialogContent>
+					  </Dialog>
+					  	</>
                     ) : (
                         <Button
                             variant={isFollowing ? "outline" : "default"}
@@ -244,6 +261,8 @@ export default function ProfilePage() {
                         initialisLiked={data.likes}
                         initialisRetweeted={data.retweets}
                         type={"tweet"}
+						isblocked={data.isblocked}
+						isprivate={data.isprivate}
                     />
                 ))}
             </div>

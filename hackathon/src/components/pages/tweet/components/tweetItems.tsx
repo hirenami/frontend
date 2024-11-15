@@ -25,6 +25,8 @@ interface TweetItemProps {
     initialisLiked: boolean;
     initialisRetweeted: boolean;
     type: string;
+	isblocked: boolean;
+	isprivate: boolean;
 }
 
 export default function TweetItem({
@@ -33,6 +35,8 @@ export default function TweetItem({
     initialisLiked,
     initialisRetweeted,
     type,
+	isblocked,
+	isprivate,
 }: TweetItemProps) {
     const [isLiked, setIsLiked] = useState(initialisLiked); // 状態を管理
     const [isRetweeted, setIsRetweeted] = useState(initialisRetweeted); // 状態を管理
@@ -232,7 +236,7 @@ export default function TweetItem({
                                 handleTweetClick(tweet.retweetid);
                             }}
                         >
-                            <RetweetItem tweet={retweet.tweet} />
+                            <RetweetItem tweet={retweet.tweet} isblocked={retweet.isblocked} isprivate={retweet.isprivate}/>
                         </div>
                     )}
 
@@ -296,6 +300,30 @@ export default function TweetItem({
         );
     };
 
+	if(tweet.isdeleted){
+		return (
+			<div className="flex flex-col items-center justify-center p-4 border rounded-md bg-gray-50 text-gray-600">
+			  <p className="text-sm font-medium text-gray-800">このツイートは、ツイートの制作者により削除されました。</p>
+			</div>
+		  );
+	}
+
+	if(isblocked){
+		return (
+			<div className="flex flex-col items-center justify-center p-4 border  rounded-md text-gray-600">
+			  <p className="text-sm font-medium text-gray-800">ブロックされているため、このツイートは表示できません。</p>
+			</div>
+		  );
+	}
+	if(isprivate){
+		return (
+			<div className="flex flex-col items-center justify-center  p-4 border rounded-md  text-gray-600">
+			  <p className="text-sm font-medium text-gray-800">作成者が表示範囲を設定しているため、このツイートは表示できません。</p>
+			</div>
+		  );
+	}
+
+
     return (
         <div>
             {retweet && !tweet.isquote ? (
@@ -318,6 +346,8 @@ export default function TweetItem({
                         initialisLiked={retweet.likes}
                         initialisRetweeted={retweet.retweets}
                         type={"tweet"}
+						isblocked={retweet.isblocked}
+						isprivate={retweet.isprivate}
                     />
                 </div>
             ) : (

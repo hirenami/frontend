@@ -59,6 +59,8 @@ export default function HomePage() {
                         user={data.user}
                         initialisLiked={data.likes}
                         initialisRetweeted={data.retweets}
+						isblocked={data.isblocked}
+						isprivate={data.isprivate}
                     />
                 ))}
             </div>
