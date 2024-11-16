@@ -99,6 +99,7 @@ const Sidebar = () => {
                     通知
                 </Button>
                 <Button
+					onClick={() => router.push("/message")}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${

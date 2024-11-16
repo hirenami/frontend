@@ -28,7 +28,7 @@ export interface User {
 	icon_image: string; // 修正: null 値を許可
 	biography: string; // 修正: null 値を許可
 	isprivate: boolean;
-	isfrozen: boolean;
+	ispremium: boolean;
 	isdeleted: boolean;
 	isadmin: boolean;
 }

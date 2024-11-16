@@ -108,7 +108,7 @@ export default function ProfilePage() {
 
     return (
         <>
-            <header className="sticky top-0 z-10 bg-white bg-opacity-80 p-4 backdrop-blur-sm">
+            <header className="sticky top-0 z-10 bg-white bg-opacity-80 p-2 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <button

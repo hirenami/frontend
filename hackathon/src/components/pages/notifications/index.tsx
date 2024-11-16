@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Bell } from "lucide-react";
 import NotificationItem from "@/components/pages/notifications/components/notificationitem";
 import { NotificationData } from "@/types";
 import GetFetcher from "@/routes/getfetcher";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function NotificationsPage() {
     const [notifications, setNotifications] = useState<NotificationData[]>([]);
     const { data, error, isLoading } = GetFetcher("http://localhost:8080/notifications");
+	const router = useRouter();
 
     useEffect(() => {
         if (data) {
@@ -34,12 +35,15 @@ export default function NotificationsPage() {
     }
 
     return (
-        <>
-            <div className="flex items-center justify-between p-4 border-b">
-                <h1 className="text-xl font-bold">通知</h1>
-                <Button variant="ghost" size="icon">
-                    <Bell className="w-5 h-5" />
-                </Button>
+        <div className="p-4">
+            <div className="flex items-center w-full border-b pb-4">
+                <button
+                    className="rounded-full p-2 hover:bg-gray-200"
+                    onClick={() => router.back()}
+                >
+                    <ArrowLeft size={20} />
+                </button>
+                <h1 className="text-xl font-bold ml-4">通知</h1>
             </div>
             <div className="overflow-y-auto">
                 {notifications.slice(0, 10).map((data, index) => (
@@ -51,6 +55,6 @@ export default function NotificationsPage() {
                     />
                 ))}
             </div>
-        </>
+        </div>
     );
 }
