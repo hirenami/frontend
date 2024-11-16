@@ -274,15 +274,7 @@ export default function DirectMessage() {
                                         {message.timestamp}
                                     </div>
                                 </div>
-                                {message.sent && (
-                                    <Avatar className="h-10 w-10 mr-2">
-                                        <AvatarImage
-                                            src="/placeholder.svg?height=40&width=40"
-                                            alt="You"
-                                        />
-                                        <AvatarFallback>You</AvatarFallback>
-                                    </Avatar>
-                                )}
+                                {message.sent}
                             </div>
                         ))}
                     </ScrollArea>

@@ -1,24 +1,34 @@
 import PaypalButton from "@/components/pages/purchase/components/paypalbutton";
-import Cookies from "js-cookie";
+import GetFetcher from "@/routes/getfetcher";
 import { useEffect, useState } from "react";
 import { User } from "@/types";
+import { updatePremium } from "@/routes/purchase/post";
 
 export default function PremiumAccountBilling() {
 	// ユーザーデータ
 	const [user, setUser] = useState<User>();
 	// プレミアム会員かどうか
 	const isPremium = user?.ispremium;
+
     
-	// Cookieからプロフィール情報を取得
-    const getUserFromCookie = (): User => {
-        const cookieData = Cookies.get("user");
-        return cookieData ? JSON.parse(cookieData) : {};
-    };
+	const { data: userdata ,token} = GetFetcher(
+		"http://localhost:8080/user"
+	);
+	
+
+	// 支払い成功時にプレミアム状態を更新する
+	const handlePaymentSuccess = () => {
+		if (!token) {
+			console.error("トークンが取得できませんでした");
+			return;
+		}
+		updatePremium(token);
+	};
 
     useEffect(() => {
-        // Cookieからユーザーデータを設定
-        setUser(getUserFromCookie());
-    }, []);
+		if(userdata)
+        	setUser(userdata);
+    }, [userdata]);
 
     return (
         <>
@@ -67,8 +77,9 @@ export default function PremiumAccountBilling() {
                 <>
                     <PaypalButton
                         productId="premium"
-                        value={1000}
+                        value={10}
                         isOpen={true}
+						onPaymentSuccess={handlePaymentSuccess}
                     />
                     <div className="text-center mt-4">
                         <p className="text-sm text-gray-700">

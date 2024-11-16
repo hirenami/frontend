@@ -6,9 +6,10 @@ interface Props {
   productId: string;
   value: number;
   isOpen: boolean; // ダイアログが開いているかどうかのフラグ
+  onPaymentSuccess: () => void; // 支払いが成功した時のコールバック
 }
 
-export default function PaypalButton({ productId, value, isOpen }: Props) {
+export default function PaypalButton({ productId, value, isOpen, onPaymentSuccess }: Props) {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export default function PaypalButton({ productId, value, isOpen }: Props) {
       const script = document.createElement('script');
       const scriptId = "paypal-sdk-script";
       script.id = scriptId;
-      script.src = "https://www.paypal.com/sdk/js?client-id=ARjiuQWqgbf1HwWctdfY3FaiN5k2U1bBZ8b9A0ijomRguTFgCkxKI4rhY36YubQDSzcVCnGM-OaCvWLW&currency=JPY&components=buttons";
+      script.src = "https://www.paypal.com/sdk/js?client-id=AV4GwsZ-Q6DR5q5YHZr6vvpUvtF1aEITWAet9lnvc-NbSS0w47EmM7jLGxdzwfuSp71CqZhoeIi6_QLR&currency=JPY&components=buttons";
       script.async = true;
 
       script.onload = () => {
@@ -54,12 +55,14 @@ export default function PaypalButton({ productId, value, isOpen }: Props) {
         },
         onApprove: (data: any, actions: any) => {
           return actions.order.capture().then((details: any) => {
+			// 支払いが成功したらコールバックを実行
+			onPaymentSuccess();
             alert('Transaction completed by ' + details.payer.name.given_name);
           });
         },
       }).render('#paypal-button-container'); // PayPalボタンを描画
     }
-  }, [isOpen, isScriptLoaded, productId, value]);
+  }, [isOpen, isScriptLoaded]);
 
   return <div id="paypal-button-container" className="w-full max-h-[600px] overflow-y-auto transform scale-75"></div>;
 }
