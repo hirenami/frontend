@@ -1,14 +1,11 @@
 import PaypalButton from "@/components/pages/purchase/components/paypalbutton";
 import GetFetcher from "@/routes/getfetcher";
 import { useEffect, useState } from "react";
-import { User } from "@/types";
 import { updatePremium } from "@/routes/purchase/post";
 
 export default function PremiumAccountBilling() {
-	// ユーザーデータ
-	const [user, setUser] = useState<User>();
 	// プレミアム会員かどうか
-	const isPremium = user?.ispremium;
+	const [isPremium, setIsPremium] = useState<boolean>(false);
 
     
 	const { data: userdata ,token} = GetFetcher(
@@ -22,13 +19,15 @@ export default function PremiumAccountBilling() {
 			console.error("トークンが取得できませんでした");
 			return;
 		}
+		setIsPremium(true);
 		updatePremium(token);
 	};
 
     useEffect(() => {
-		if(userdata)
-        	setUser(userdata);
-    }, [userdata]);
+		if(userdata){
+			setIsPremium(userdata.user.ispremium);
+		}
+    }, [userdata, isPremium]);
 
     return (
         <>
@@ -71,13 +70,30 @@ export default function PremiumAccountBilling() {
                         </svg>
                         購入情報を管理
                     </li>
+					<li className="flex items-center text-sm text-gray-700">
+                        <svg
+                            className="w-5 h-5 text-blue-500 mr-2"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M5 12l5 5L20 7"
+                            ></path>
+                        </svg>
+                        ツイートの文字数制限がなくなります
+                    </li>
                 </ul>
             </div>
             {!isPremium ? (
                 <>
                     <PaypalButton
                         productId="premium"
-                        value={10}
+                        value={1000}
                         isOpen={true}
 						onPaymentSuccess={handlePaymentSuccess}
                     />
