@@ -18,7 +18,7 @@ export default function PaypalButton({ productId, value, isOpen, onPaymentSucces
       const script = document.createElement('script');
       const scriptId = "paypal-sdk-script";
       script.id = scriptId;
-      script.src = "https://www.paypal.com/sdk/js?client-id=AV4GwsZ-Q6DR5q5YHZr6vvpUvtF1aEITWAet9lnvc-NbSS0w47EmM7jLGxdzwfuSp71CqZhoeIi6_QLR&currency=JPY&components=buttons";
+      script.src = "https://www.paypal.com/sdk/js?client-id=AQ1mcAmB8qGUGV4SNlsh7BqTNYafwflLLwYr7pPpx_9qQksBO0dnw0PgIUkGS1l9qZFmAFP1pzB7-7F9&currency=JPY&components=buttons";
       script.async = true;
 
       script.onload = () => {
