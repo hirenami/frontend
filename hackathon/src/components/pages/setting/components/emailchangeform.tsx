@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getAuth, updateEmail, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+import { getAuth, verifyBeforeUpdateEmail, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ const EmailChangeForm = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
+	const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false); // ボタンの無効化状態
 
     // メールアドレスの変更
     const changeEmail = async (newEmail: string, currentPassword: string) => {
@@ -22,9 +23,10 @@ const EmailChangeForm = () => {
                 // 再認証（必要に応じて）
                 const credential = EmailAuthProvider.credential(user.email as string, currentPassword); // user.emailがnullの可能性があるため型アサーションを使用
                 await reauthenticateWithCredential(user, credential);
+				setIsButtonDisabled(true); // ボタンを無効化
 
                 // メールアドレスを変更
-                await updateEmail(user, newEmail);
+                await verifyBeforeUpdateEmail(user, newEmail);
                 console.log("メールアドレスが変更されました");
             } catch (error) {
                 if (error instanceof Error) {
@@ -80,7 +82,7 @@ const EmailChangeForm = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
-                                <Button onClick={handleEmailChange} className="w-full mt-4">メールアドレスを変更</Button>
+                                <Button onClick={handleEmailChange} className="w-full mt-4" disabled={isButtonDisabled}>{isButtonDisabled ? "確認メールを送信しました" : "メールアドレスを変更"}</Button>
                             </div>
                         </div>
                         

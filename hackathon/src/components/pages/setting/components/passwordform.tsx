@@ -15,6 +15,7 @@ const PasswordChangeForm = () => {
     const [password, setPassword] = useState<string>("");
     const [newPassword, setNewPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
+	const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false); // ボタンの無効化状態
 
     // パスワードの変更
     const changePassword = async (
@@ -32,6 +33,7 @@ const PasswordChangeForm = () => {
                     currentPassword
                 ); // user.emailがnullの可能性があるため型アサーションを使用
                 await reauthenticateWithCredential(user, credential);
+				setIsButtonDisabled(true); // ボタンを無効化
 
                 // パスワードを変更
                 await updatePassword(user, newPassword);
@@ -102,8 +104,9 @@ const PasswordChangeForm = () => {
                                 <Button
                                     onClick={handlePasswordChange}
                                     className="w-full mt-4"
+									disabled={isButtonDisabled}
                                 >
-                                    パスワードを変更
+                                    {isButtonDisabled ? "パスワードを変更しました" : "パスワードを変更"}
                                 </Button>
                             </div>
                         </div>
