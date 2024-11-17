@@ -3,7 +3,7 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { FollowData, User } from "@/types";
-import Cookies from "js-cookie";
+import GetFetcher from "@/routes/getfetcher";
 import { useState, useEffect } from "react";
 import { UserCheck, UserPlus } from "lucide-react";
 import { fireAuth } from "@/features/firebase/auth";
@@ -16,14 +16,14 @@ interface FollowProps {
 export default function Follow({ follower, index }: FollowProps) {
     const [user, setUser] = useState<User | null>(null);
 	const [isFollowing, setIsFollowing] = useState(false);
+	const { data: UserData } = GetFetcher('http://localhost:8080/user');
 
     useEffect(() => {
-        const userCookie = Cookies.get("user");
-        if (userCookie) {
-            setUser(JSON.parse(userCookie) as User); // JSON文字列をオブジェクトに変換
-        }
+        if(UserData) {
+			setUser(UserData);
+		}
 		setIsFollowing(follower.isfollows);
-    }, [follower.isfollows]);
+    }, [follower.isfollows ,UserData]);
 
     const handleFollow = async () => {
         try {

@@ -4,10 +4,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { User } from "@/types";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {LucideImage} from "lucide-react";
 import { uploadFile } from "@/features/firebase/strage";
-import Cookies from "js-cookie";
+import GetFetcher from "@/routes/getfetcher";
 
 interface TweetComponentProps {
 	userToken: string | null;
@@ -19,14 +19,15 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false); // ローディング状態
+	const { data: UserData } = GetFetcher('http://localhost:8080/user');
+	const [user , setUser] = useState<User | null>(null);
 
-    // クッキーからユーザー情報を取得
-    const userCookie = Cookies.get("user");
-    let user: User | null = null;
-
-    if (userCookie) {
-        user = JSON.parse(userCookie) as User; // JSON文字列をオブジェクトに変換
-    }
+    useEffect(() => {
+		if (UserData) {
+			setUser(UserData.user);
+		}
+		console.log(UserData);
+	}, [UserData]);
 
     const handleTweet = async () => {
         if (tweetText.trim() === "" && !mediaFile) {

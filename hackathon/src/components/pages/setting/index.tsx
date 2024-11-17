@@ -21,6 +21,7 @@ import {
 import PremiumAccountBilling from "@/components/pages/setting/components/premium";
 import PasswordChangeForm from "@/components/pages/setting/components/passwordform";
 import EmailChangeForm from "@/components/pages/setting/components/emailchangeform";
+import PrivateAccountSettings from "./components/privatechange";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -145,10 +146,6 @@ function AccountDeletionForm() {
 
 function BlockList() {
     return <div>ブロックされたユーザー一覧</div>;
-}
-
-function PrivateAccountSettings() {
-    return <div>鍵アカウント設定</div>;
 }
 
 function FollowRequests() {

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import GetFetcher from "@/routes/getfetcher";
 
 const useAuth = () => {
@@ -11,11 +10,9 @@ const useAuth = () => {
 	useEffect(() => {
 		if (userData) {
 			setLoginUser(userData); // 取得したユーザーデータをセット
-			Cookies.set("user", JSON.stringify(userData.user), { expires: 7 });
 			router.push("/home");
 		} else {
 			setLoginUser(null); // ユーザーがいない場合はnullを設定
-			Cookies.remove("user");
 		}
 	}, [userData, router]);
 

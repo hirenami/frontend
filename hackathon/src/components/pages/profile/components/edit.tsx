@@ -6,7 +6,7 @@ import { uploadFile } from "@/features/firebase/strage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { User } from "@/types";
-import Cookies from "js-cookie";
+import GetFetcher from "@/routes/getfetcher";
 
 interface UserEditorProps {
 setOpen : React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,16 +19,13 @@ export default function UserEditor( {setOpen} : UserEditorProps) {
     const iconInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
-    // Cookieからプロフィール情報を取得
-    const getUserFromCookie = (): User => {
-        const cookieData = Cookies.get("user");
-        return cookieData ? JSON.parse(cookieData) : {};
-    };
+    const { data: UserData } = GetFetcher("http://localhost:8080/user");
 
     useEffect(() => {
-        // Cookieからユーザーデータを設定
-        setUser(getUserFromCookie());
-    }, []);
+        if (UserData) {
+			setUser(UserData.user);
+		}
+    }, [ UserData ]);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -136,17 +133,6 @@ export default function UserEditor( {setOpen} : UserEditorProps) {
 
             if (response.ok) {
                 console.log("プロフィールが正常に保存されました");
-
-                // クッキーの更新
-                Cookies.set(
-                    "user",
-                    JSON.stringify({
-                        ...user,
-                        header_image: header_imageUrl,
-                        icon_image: icon_imageUrl,
-                    }),
-                    { expires: 7 }
-                );
 				setOpen(false);
                 router.push(`http://localhost:3000/profile/${user.userid}`);
             } else {

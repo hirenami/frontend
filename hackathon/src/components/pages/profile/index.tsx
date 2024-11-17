@@ -10,7 +10,6 @@ import TweetItem from "@/components/pages/tweet/components/tweetItems";
 import { TweetData, User } from "@/types";
 import { Button } from "@/components/ui/button";
 import GetFetcher from "@/routes/getfetcher";
-import Cookies from "js-cookie";
 import {
     handleFollowCount,
     handleFollowerCount,
@@ -42,13 +41,13 @@ export default function ProfilePage() {
         isLoading: isLoading2,
     } = GetFetcher(`http://localhost:8080/tweet/${userid}`);
 
+	const { data: myData } = GetFetcher('http://localhost:8080/user');
+
     // dataが変更されたときにtimelineDataを更新する
     useEffect(() => {
-        const userCookie = Cookies.get("user");
-        if (userCookie) {
-            const CurrentUser = JSON.parse(userCookie) as User; // JSON文字列をオブジェクトに変換
-            setCurrentUserId(CurrentUser.firebaseuid);
-        }
+        if (myData) {
+			setCurrentUserId(myData.user.firebaseuid);
+		}
         if (userData) {
             setUser(userData.user);
             setFollowCount(userData.follows);
@@ -59,7 +58,7 @@ export default function ProfilePage() {
         if (tweetData) {
             setTweets(tweetData);
         }
-    }, [userData, tweetData]); // dataが変わるたびにsetTimelineDataが実行される
+    }, [userData, tweetData, myData]); // dataが変わるたびにsetTimelineDataが実行される
 
     if (isLoading1 || isLoading2 || !user) {
         return (

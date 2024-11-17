@@ -22,20 +22,20 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Cookies from "js-cookie";
+import GetFetcher from "@/routes/getfetcher";
 import { User } from "@/types/index";
 
 const Sidebar = () => {
     const router = useRouter();
 	const currentPath = usePathname();
     const [user, setUser] = useState<User | null>(null);
+	const { data: UserData } = GetFetcher('http://localhost:8080/user');
 
     useEffect(() => {
-        const userCookie = Cookies.get("user");
-        if (userCookie) {
-            setUser(JSON.parse(userCookie) as User); // JSON文字列をオブジェクトに変換
-        }
-    }, []);
+		if (UserData) {
+			setUser(UserData.user);
+		}
+    }, [ UserData ]);
 
     const signOutEmailAndPassword = (): void => {
         signOut(fireAuth)
