@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
@@ -97,7 +97,6 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
                 >
                     <Avatar className="w-full h-full">
                         <AvatarImage src={user?.icon_image} alt="@username" />
-                        <AvatarFallback>UN</AvatarFallback>
                     </Avatar>
                 </button>
                 <div className="flex-1 space-y-2">

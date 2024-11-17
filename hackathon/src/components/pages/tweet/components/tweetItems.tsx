@@ -4,7 +4,6 @@ import {
     Repeat,
     Heart,
     BarChart,
-    MoreHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tweet, TweetData, User } from "@/types/index";
@@ -18,9 +17,10 @@ import { formatDate } from "@/lib/formatDate";
 import { useRouter } from "next/navigation";
 import { fireAuth } from "@/features/firebase/auth";
 import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
+import MenuComponent from "./menu";
 
 interface TweetItemProps {
-    tweet: Tweet; // tweetをオプショナルに変更
+    tweet: Tweet; 
     user: User;
     initialisLiked: boolean;
     initialisRetweeted: boolean;
@@ -197,13 +197,7 @@ export default function TweetItem({
                                 {formatDate(tweet.created_at)}
                             </span>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-gray-500 hover:text-primary"
-                        >
-                            <MoreHorizontal className="h-5 w-5" />
-                        </Button>
+                        <MenuComponent tweet={tweet}  />
                     </div>
 
                     {/* ツイートのテキスト */}

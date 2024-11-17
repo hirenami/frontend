@@ -100,7 +100,7 @@ export default function TweetPage() {
         return (
             <div className="flex space-x-3 flex-col p-2 border-b">
                 {/* ユーザーのアイコン */}
-               <Header user={user} token={token} />
+               <Header user={user} token={token} tweet={tweet} />
 
                 <div className="flex-1 min-w-0">
                     {/* ツイートの内容 */}
