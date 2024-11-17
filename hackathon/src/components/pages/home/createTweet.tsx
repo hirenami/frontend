@@ -36,7 +36,8 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
         }
 
         setIsLoading(true); // ローディング開始
-        let media_url = null;
+        let media_url = "";
+		if ( tweetText == "") console.log("tweetText is empty");
 
         if (fileInputRef.current?.files?.[0]) {
             media_url = await uploadFile(fileInputRef.current.files[0]);
@@ -54,7 +55,7 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                content: tweetText,
+                content:  tweetText,
                 media_url: media_url,
             }),
         });
@@ -161,13 +162,13 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
                         </div>
                         <div className="flex items-center space-x-4">
                             <span className="text-sm text-gray-500">
-                                {140 - tweetText.length}
+                                {user?.ispremium ?  "∞" : 140 - tweetText.length}
                             </span>
                             <Button
                                 onClick={handleTweet}
                                 disabled={
                                     isLoading ||
-                                    (tweetText.length === 0 && !mediaFile)
+                                    (tweetText.length === 0 && !mediaFile) || (!user?.ispremium && tweetText.length > 140)
                                 }
                                 className="rounded-full px-4 py-2"
                             >

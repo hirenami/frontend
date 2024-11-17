@@ -156,6 +156,7 @@ export default function TweetPage() {
                             initialisRetweeted={data.retweets}
 							isblocked={data.isblocked}
 							isprivate={data.isprivate}
+							token={token}
                         />
                     ))}
             </div>
@@ -181,6 +182,7 @@ export default function TweetPage() {
                                     type={"tweet"}
 									isblocked={data.isblocked}
 									isprivate={data.isprivate}
+									token={token}
                                 />
                             ))}
                     </div>

@@ -39,6 +39,7 @@ export default function ProfilePage() {
         data: tweetData,
         error: error2,
         isLoading: isLoading2,
+		token,
     } = GetFetcher(`http://localhost:8080/tweet/${userid}`);
 
 	const { data: myData } = GetFetcher('http://localhost:8080/user');
@@ -262,6 +263,7 @@ export default function ProfilePage() {
                         type={"tweet"}
 						isblocked={data.isblocked}
 						isprivate={data.isprivate}
+						token={token}
                     />
                 ))}
             </div>

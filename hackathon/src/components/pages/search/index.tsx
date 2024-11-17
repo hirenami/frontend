@@ -13,7 +13,7 @@ const SearchPage = () => {
     const searchParams = useSearchParams();
     const q = searchParams.get("q") || "";
 
-    const { data: search, error, isLoading } = GetFetcher(
+    const { data: search, error, isLoading,token } = GetFetcher(
         q ? `http://localhost:8080/search/${q}` : ""
     );
 
@@ -90,6 +90,7 @@ const SearchPage = () => {
                             initialisRetweeted={data.retweets}
 							isblocked={data.isblocked}
 							isprivate={data.isprivate}
+							token = {token}
                         />
                     ))}
                 </div>

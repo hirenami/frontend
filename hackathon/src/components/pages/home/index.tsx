@@ -61,6 +61,7 @@ export default function HomePage() {
                         initialisRetweeted={data.retweets}
 						isblocked={data.isblocked}
 						isprivate={data.isprivate}
+						token = {token}
                     />
                 ))}
             </div>

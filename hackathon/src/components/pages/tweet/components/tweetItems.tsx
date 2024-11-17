@@ -11,13 +11,13 @@ import { Tweet, TweetData, User } from "@/types/index";
 import Image from "next/image";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { createLike, deleteLike } from "@/features/like/likes";
-import GetFetcher from "@/routes/getfetcher";
 import RetweetItem from "@/components/pages/tweet/components/retweetItems";
 import { createRetweet, deleteRetweet } from "@/features/retweet/handleretweets";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";
 import { useRouter } from "next/navigation";
 import { fireAuth } from "@/features/firebase/auth";
+import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
@@ -27,6 +27,7 @@ interface TweetItemProps {
     type: string;
 	isblocked: boolean;
 	isprivate: boolean;
+	token: string | null;
 }
 
 export default function TweetItem({
@@ -37,6 +38,7 @@ export default function TweetItem({
     type,
 	isblocked,
 	isprivate,
+	token,
 }: TweetItemProps) {
     const [isLiked, setIsLiked] = useState(initialisLiked); // 状態を管理
     const [isRetweeted, setIsRetweeted] = useState(initialisRetweeted); // 状態を管理
@@ -46,23 +48,30 @@ export default function TweetItem({
     const router = useRouter();
     const auth = fireAuth;
 
-    const { data, error } = tweet.retweetid
-        ? GetFetcher(`http://localhost:8080/tweet/${tweet.retweetid}/tweetid`)
-        : { data: null, error: null };
 
     useEffect(() => {
-        if (data) {
-            setRetweet(data);
-        }
+		const fetchdata = async () => {
+			if(tweet.retweetid && token){
+			try {
+				 const data = await fetchOneTweet(token,tweet.retweetid);
+				 if (data) {
+					setRetweet(data);
+				}
+			} catch (error) {
+				console.error("フォロー操作中にエラーが発生しました:", error);
+			}
+		}
+		}
+		fetchdata();
 		if(tweet.likes){
         setLikeData(tweet.likes);
 		}
 		if(tweet.retweets){
         setRetweetData(tweet.retweets);
 		}
-    }, [data, tweet.likes, tweet.retweets]);
+    }, [tweet.retweetid, tweet.likes, tweet.retweets, token]);
 
-    if (!tweet || error) {
+    if (!tweet) {
         return (
             <div className="p-4 text-gray-500">
                 ツイートを読み込めませんでした。
@@ -348,6 +357,7 @@ export default function TweetItem({
                         type={"tweet"}
 						isblocked={retweet.isblocked}
 						isprivate={retweet.isprivate}
+						token={token}
                     />
                 </div>
             ) : (
