@@ -9,6 +9,8 @@ import {
     Search,
     User as UserIcon,
     UserPlus,
+	ShoppingCart,
+	Upload
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
@@ -24,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import GetFetcher from "@/routes/getfetcher";
 import { User } from "@/types/index";
+import Listing from "@/components/pages/layout/components/listing";
 
 const Sidebar = () => {
     const router = useRouter();
@@ -131,7 +134,31 @@ const Sidebar = () => {
                     <UserIcon className="mr-4 h-6 w-6" />
                     プロフィール
                 </Button>
+				<Button
+                    onClick={() => router.push(`/purchase`)}
+                    variant="ghost"
+                    size="lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath === ("/purchase") ? "font-bold" : ""
+                    }`}
+                >
+                    <ShoppingCart className="mr-4 h-6 w-6" />
+                    購入情報
+                </Button>
+				<Button
+                    onClick={() => router.push(`/profile/${user?.userid}`)}
+                    variant="ghost"
+                    size="lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath.startsWith("/profile/") ? "font-bold" : ""
+                    }`}
+                >
+                    <Upload className="mr-4 h-6 w-6" />
+                    出品情報
+                </Button>
+
             </nav>
+			<Listing />
 
             <div className="mt-auto">
                 {user && (

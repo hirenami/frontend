@@ -68,7 +68,7 @@ export default function PremiumAccountBilling() {
                                 d="M5 12l5 5L20 7"
                             ></path>
                         </svg>
-                        購入情報を管理
+                        購入時最大5%の割引
                     </li>
 					<li className="flex items-center text-sm text-gray-700">
                         <svg

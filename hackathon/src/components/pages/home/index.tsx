@@ -42,9 +42,6 @@ export default function HomePage() {
             <header className="border-b p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-bold">Home</h1>
-                    {/* <div className="relative">
-                        <h1 className="text-xl font-bold">Video</h1>
-                    </div> */}
                 </div>
             </header>
 

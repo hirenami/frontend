@@ -18,7 +18,7 @@ const SearchPage = () => {
     );
 
     useEffect(() => {
-        if (search && q) {
+        if (search) {
             setSearchData(search);
         }
     }, [search, q]);
@@ -75,7 +75,7 @@ const SearchPage = () => {
                 </div>
             </header>
             {searchData?.length === 0 ? (
-                <div className="flex min-h-screen items-center justify-center bg-white text-black pt-20">
+                <div className="flex  items-center justify-center bg-white text-black pt-20">
                     <p>該当するツイートが見つかりませんでした</p>
                 </div>
             ) : (
