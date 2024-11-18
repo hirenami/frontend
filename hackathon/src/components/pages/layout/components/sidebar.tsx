@@ -139,18 +139,18 @@ const Sidebar = () => {
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
-                        currentPath === ("/purchase") ? "font-bold" : ""
+                        currentPath.startsWith("/purchase") ? "font-bold" : ""
                     }`}
                 >
                     <ShoppingCart className="mr-4 h-6 w-6" />
                     購入情報
                 </Button>
 				<Button
-                    onClick={() => router.push(`/profile/${user?.userid}`)}
+                    onClick={() => router.push(`/listing`)}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
-                        currentPath.startsWith("/profile/") ? "font-bold" : ""
+                        currentPath.startsWith("/listing") ? "font-bold" : ""
                     }`}
                 >
                     <Upload className="mr-4 h-6 w-6" />

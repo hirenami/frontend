@@ -10,6 +10,7 @@ export interface Tweet {
 	media_url: string;
 	isquote: boolean;
 	isreply: boolean;
+	review: number;
 	isdeleted: boolean;
 	content: string;
 	likes: number;

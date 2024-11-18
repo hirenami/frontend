@@ -89,24 +89,9 @@ export default function Component() {
                 </CardContent>
             </Card>
 
-            {/* <Card className="mb-6">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="p-4 bg-emerald-50 rounded-md">
-              <span className="text-xs text-emerald-700">らくらくメルカリ便</span>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">{transaction.deliveryMethod}</h3>
-              <p className="text-sm text-gray-600">サイズ {transaction.deliverySize}</p>
-              <p className="text-sm text-gray-600">送料 ¥{transaction.deliveryPrice}（出品者負担）</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card> */}
-
             <Card>
                 <CardContent className="p-6">
-                    <h3 className="font-semibold mb-4">出品者情報</h3>
+                    <h3 className="font-semibold mb-4">購入者情報</h3>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 bg-gray-100 rounded-full" />
