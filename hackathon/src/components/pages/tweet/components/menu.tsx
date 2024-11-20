@@ -15,6 +15,7 @@ import GetFetcher from "@/routes/getfetcher";
 import { useEffect, useState } from "react";
 import { createLike, deleteLike } from "@/features/like/likes";
 import { createRetweet, deleteRetweet } from "@/features/retweet/handleretweets";
+import { deleteTweet } from "@/routes/tweet/deleteTweet";
 
 interface Props {
     tweet: Tweet;
@@ -68,6 +69,18 @@ export default function Component({ tweet, token, isliked , setIsLiked , likeDat
 		}
 	  }
 
+	  const handleDelete = async (e: React.MouseEvent) => {
+		e.stopPropagation()
+		try {
+			  if (token && tweet) {
+				await deleteTweet(tweet.tweetid, token)
+			  }
+		} catch (error) {
+					  console.error("ツイートの削除に失敗しました:", error)
+		}
+	  }						
+
+
 
     const [user, setUser] = useState<User | null>(null);
     const { data: UserData } = GetFetcher("http://localhost:8080/user");
@@ -108,7 +121,7 @@ export default function Component({ tweet, token, isliked , setIsLiked , likeDat
                 <DropdownMenuSeparator />
                 {tweet.userid == user?.userid && (
                     <DropdownMenuItem
-                        onClick={() => console.log("削除")}
+                        onClick={(e) => handleDelete(e)}
                         className="text-red-600"
                     >
                         削除
