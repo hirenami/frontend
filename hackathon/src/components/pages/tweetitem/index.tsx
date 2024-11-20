@@ -37,7 +37,7 @@ export default function TweetItem({
     const [isLiked, setIsLiked] = useState(initialisLiked); // 状態を管理
     const [isRetweeted, setIsRetweeted] = useState(initialisRetweeted); // 状態を管理
     const [likeData, setLikeData] = useState<number>(0);
-    const [retweetData, setRetweetData] = useState<number>(0);
+    const [retweetCount, setRetweetCount] = useState<number>(0);
     const [retweet, setRetweet] = useState<TweetData | null>(null);
     const router = useRouter();
     const auth = fireAuth;
@@ -63,7 +63,7 @@ export default function TweetItem({
             setLikeData(tweet.likes);
         }
         if (tweet.retweets) {
-            setRetweetData(tweet.retweets);
+            setRetweetCount(tweet.retweets);
         }
     }, [tweet.retweetid, tweet.likes, tweet.retweets, token]);
 
@@ -148,8 +148,8 @@ export default function TweetItem({
                             setLikeData={setLikeData}
                             isretweet={isRetweeted}
                             setIsRetweet={setIsRetweeted}
-                            retweetCount={retweetData}
-                            setRetweetCount={setRetweetData}
+                            retweetCount={retweetCount}
+                            setRetweetCount={setRetweetCount}
                         />
                     </div>
 
@@ -210,8 +210,8 @@ export default function TweetItem({
                             setLikeData={setLikeData}
                             isretweet={isRetweeted}
                             setIsRetweet={setIsRetweeted}
-                            retweetCount={retweetData}
-                            setRetweetCount={setRetweetData}
+                            retweetCount={retweetCount}
+                            setRetweetCount={setRetweetCount}
                             isblocked={isblocked}
                             isprivate={isprivate}
                         />
