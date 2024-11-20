@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TweetData } from "@/types";
-import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import TweetItem from "@/components/pages/tweetitem";
 import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
 

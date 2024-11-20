@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { fireAuth } from "@/features/firebase/auth";
-import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import TweetItem from "@/components/pages/tweetitem";
 import { TweetData, User } from "@/types";
 import { Button } from "@/components/ui/button";
 import GetFetcher from "@/routes/getfetcher";

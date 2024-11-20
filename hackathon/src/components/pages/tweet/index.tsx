@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Tweet, User, TweetData } from "@/types";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import TweetItem from "@/components/pages/tweetitem";
 import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
 import  Header  from "@/components/pages/tweet/components/header";
@@ -119,6 +119,8 @@ export default function TweetPage() {
 						setIsRetweet={setIsRetweet}
 						retweetCount={retweetCount}
 						setRetweetCount={setRetweetCount}
+						isblocked={tweetData.isblocked}
+						isprivate={tweetData.isprivate}
 					/>
 					}
                     

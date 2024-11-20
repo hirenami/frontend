@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import GetFetcher from "@/routes/getfetcher";
-import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import TweetItem from "@/components/pages/tweetitem";
 import { TweetData } from "@/types";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, Search, Settings2 } from "lucide-react";
