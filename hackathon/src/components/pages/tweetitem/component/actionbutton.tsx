@@ -22,7 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import RetweetItem from "@/components/pages/tweet/components/retweetItems"
-import CreateTweet from "./createquote"
+import CreateQuote from "./createquote"
 
 interface ActionButtonProps {
   tweet: Tweet
@@ -54,7 +54,6 @@ export default function ActionButton({
   isprivate,
 }: ActionButtonProps) {
   const [isQuoteDialogOpen, setIsQuoteDialogOpen] = useState(false)
-  const [quoteText, setQuoteText] = useState("")
 
   const handleLikeToggle = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -93,23 +92,6 @@ export default function ActionButton({
       console.error("リツイートのトグルに失敗しました:", error)
     }
   }
-
-  const handleQuoteRetweet = async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    try {
-      if (token && tweet && quoteText) {
-        // ここで引用リツイートのAPIを呼び出す
-        console.log("引用リツイート:", quoteText)
-        // 成功したら以下を実行
-        setIsQuoteDialogOpen(false)
-        setQuoteText("")
-        setRetweetCount(retweetCount + 1)
-      }
-    } catch (error) {
-      console.error("引用リツイートに失敗しました:", error)
-    }
-  }
-
 
   return (
     <div className="mt-3 flex justify-between max-w-md">
@@ -184,7 +166,8 @@ export default function ActionButton({
             <DialogTitle>引用リツイート</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <CreateTweet type={"tweeet"} tweetId={0} userToken={"name"}  />
+            <CreateQuote  tweetId={tweet.tweetid}  retweetCount={retweetCount} setIsQuoteDialogOpen={setIsQuoteDialogOpen} setRetweetCount={setRetweetCount} 
+			/>
             <div className="border rounded-md p-4">
               <RetweetItem
                 tweet={tweet}
@@ -192,9 +175,6 @@ export default function ActionButton({
                 isprivate={isprivate}
               />
             </div>
-            <Button onClick={(e) => handleQuoteRetweet(e)}>
-              引用リツイート
-            </Button>
           </div>
         </DialogContent>
       </Dialog>

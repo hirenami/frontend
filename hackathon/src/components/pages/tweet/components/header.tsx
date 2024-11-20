@@ -7,10 +7,18 @@ interface HeaderProps {
 	user: User | null;
 	tweet: Tweet | null;
 	token: string | null;
+	isliked: boolean;
+    setIsLiked: (isLiked: boolean) => void;
+	likeData: number;
+    setLikeData: (likeData: number) => void;
+    isretweet: boolean;
+    setIsRetweet: (isRetweet: boolean) => void;
+    retweetCount: number;
+    setRetweetCount: (retweetCount: number) => void;
 }
 
 
-export default function Header( { user, tweet ,token }: HeaderProps) {
+export default function Header( { user, tweet ,token, isliked, setIsLiked, likeData,setLikeData,isretweet, setIsRetweet , retweetCount, setRetweetCount}: HeaderProps) {
 	
 	const hundleUserClick = async () => {
 		try {
@@ -56,7 +64,18 @@ export default function Header( { user, tweet ,token }: HeaderProps) {
 						</button>
 					</div>
 				</div>
-				{ tweet && <MenuComponent tweet={tweet} />}
+				{ tweet && <MenuComponent
+                            tweet={tweet}
+                            token={token}
+                            isliked={isliked}
+                            setIsLiked={setIsLiked}
+                            likeData={likeData}
+                            setLikeData={setLikeData}
+                            isretweet={isretweet}
+                            setIsRetweet={setIsRetweet}
+                            retweetCount={retweetCount}
+                            setRetweetCount={setRetweetCount}
+                        />}
 			</div>
 	)
 }

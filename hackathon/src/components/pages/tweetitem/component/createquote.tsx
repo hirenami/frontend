@@ -1,7 +1,5 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { User } from "@/types";
 import { useEffect, useRef, useState } from "react";
@@ -10,16 +8,17 @@ import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
 
 interface TweetComponentProps {
-	userToken: string | null;
-    type: string;
     tweetId: number;
+	setRetweetCount: (retweetCount: number) => void;
+	retweetCount: number;
+	setIsQuoteDialogOpen: (isQuoteDialogOpen: boolean) => void;
 }
-const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
+const CreateTweet = ({  tweetId, setIsQuoteDialogOpen, setRetweetCount , retweetCount }: TweetComponentProps) => {
     const [tweetText, setTweetText] = useState("");
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false); // ローディング状態
-	const { data: UserData } = GetFetcher('http://localhost:8080/user');
+	const { data: UserData,token } = GetFetcher('http://localhost:8080/user');
 	const [user , setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -43,15 +42,10 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
             media_url = await uploadFile(fileInputRef.current.files[0]);
         }
 
-        const endpoint =
-            type === "tweet"
-                ? "http://localhost:8080/tweet"
-                : `http://localhost:8080/reply/${tweetId}`;
-
-        const response = await fetch(endpoint, {
+        const response = await fetch(`http://localhost:8080/retweet/${tweetId}/quote`, {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${userToken}`,
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -64,11 +58,8 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
             console.log("ツイートが正常に投稿されました");
             setTweetText("");
             setMediaFile(null);
-            router.push(
-                type == "tweet"
-                    ? `http://localhost:3000/home`
-                    : `http://localhost:3000/tweet/${tweetId}`
-            );
+            setIsQuoteDialogOpen(false)
+			setRetweetCount(retweetCount + 1)
         } else {
             console.error("ツイートの投稿中にエラーが発生しました");
         }
@@ -87,25 +78,13 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
         fileInputRef.current?.click();
     };
 
-    const router = useRouter();
     return (
         <div className="border-b p-4">
             <div className="flex space-x-4">
-                <button
-                    onClick={() => router.push(`/profile/${user?.userid}`)}
-                    className="w-10 h-10"
-                >
-                    <Avatar className="w-full h-full">
-                        <AvatarImage src={user?.icon_image} alt="@username" />
-                    </Avatar>
-                </button>
+               
                 <div className="flex-1 space-y-2">
                     <Textarea
-                        placeholder={
-                            type === "tweet"
-                                ? "いまどうしてる？"
-                                : "返信をツイート"
-                        }
+                        placeholder={"コメントする"}
                         value={tweetText}
                         onChange={(e) => setTweetText(e.target.value)}
                         className="min-h-[100px] text-xl resize-none focus:ring-0 focus:border-transparent border-transparent p-0 shadow-none bg-transparent"
@@ -173,9 +152,7 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
                             >
                                 {isLoading
                                     ? "投稿中..."
-                                    : type === "tweet"
-                                    ? "ポストする"
-                                    : "返信する"}
+                                    : "コメントする"}
                             </Button>
                         </div>
                     </div>

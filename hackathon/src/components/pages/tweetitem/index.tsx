@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Repeat} from "lucide-react";
+import { Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tweet, TweetData, User } from "@/types/index";
 import Image from "next/image";
@@ -14,14 +14,14 @@ import MenuComponent from "@/components/pages/tweet/components/menu";
 import ActionButton from "./component/actionbutton";
 
 interface TweetItemProps {
-    tweet: Tweet; 
+    tweet: Tweet;
     user: User;
     initialisLiked: boolean;
     initialisRetweeted: boolean;
     type: string;
-	isblocked: boolean;
-	isprivate: boolean;
-	token: string | null;
+    isblocked: boolean;
+    isprivate: boolean;
+    token: string | null;
 }
 
 export default function TweetItem({
@@ -30,9 +30,9 @@ export default function TweetItem({
     initialisLiked,
     initialisRetweeted,
     type,
-	isblocked,
-	isprivate,
-	token,
+    isblocked,
+    isprivate,
+    token,
 }: TweetItemProps) {
     const [isLiked, setIsLiked] = useState(initialisLiked); // 状態を管理
     const [isRetweeted, setIsRetweeted] = useState(initialisRetweeted); // 状態を管理
@@ -42,27 +42,29 @@ export default function TweetItem({
     const router = useRouter();
     const auth = fireAuth;
 
-
     useEffect(() => {
-		const fetchdata = async () => {
-			if(tweet.retweetid && token){
-			try {
-				 const data = await fetchOneTweet(token,tweet.retweetid);
-				 if (data) {
-					setRetweet(data);
-				}
-			} catch (error) {
-				console.error("フォロー操作中にエラーが発生しました:", error);
-			}
-		}
-		}
-		fetchdata();
-		if(tweet.likes){
-        setLikeData(tweet.likes);
-		}
-		if(tweet.retweets){
-        setRetweetData(tweet.retweets);
-		}
+        const fetchdata = async () => {
+            if (tweet.retweetid && token) {
+                try {
+                    const data = await fetchOneTweet(token, tweet.retweetid);
+                    if (data) {
+                        setRetweet(data);
+                    }
+                } catch (error) {
+                    console.error(
+                        "フォロー操作中にエラーが発生しました:",
+                        error
+                    );
+                }
+            }
+        };
+        fetchdata();
+        if (tweet.likes) {
+            setLikeData(tweet.likes);
+        }
+        if (tweet.retweets) {
+            setRetweetData(tweet.retweets);
+        }
     }, [tweet.retweetid, tweet.likes, tweet.retweets, token]);
 
     if (!tweet) {
@@ -137,7 +139,18 @@ export default function TweetItem({
                                 {formatDate(tweet.created_at)}
                             </span>
                         </div>
-                        <MenuComponent tweet={tweet}  />
+                        <MenuComponent
+                            tweet={tweet}
+                            token={token}
+                            isliked={isLiked}
+                            setIsLiked={setIsLiked}
+                            likeData={likeData}
+                            setLikeData={setLikeData}
+                            isretweet={isRetweeted}
+                            setIsRetweet={setIsRetweeted}
+                            retweetCount={retweetData}
+                            setRetweetCount={setRetweetData}
+                        />
                     </div>
 
                     {/* ツイートのテキスト */}
@@ -179,54 +192,63 @@ export default function TweetItem({
                                 handleTweetClick(tweet.retweetid);
                             }}
                         >
-                            <RetweetItem tweet={retweet.tweet} isblocked={retweet.isblocked} isprivate={retweet.isprivate}/>
+                            <RetweetItem
+                                tweet={retweet.tweet}
+                                isblocked={retweet.isblocked}
+                                isprivate={retweet.isprivate}
+                            />
                         </div>
                     )}
 
-					{ isblocked ||isprivate || tweet.isdeleted ? null :
-					<ActionButton 
-						tweet={tweet}
-						token={token}
-						isliked={isLiked}
-						setIsLiked={setIsLiked}
-						likeData={likeData}
-						setLikeData={setLikeData}
-						isretweet={isRetweeted}
-						setIsRetweet={setIsRetweeted}
-						retweetCount={retweetData}
-						setRetweetCount={setRetweetData}
-						isblocked={isblocked}
-						isprivate={isprivate}
-					/>
-					}
+                    {isblocked || isprivate || tweet.isdeleted ? null : (
+                        <ActionButton
+                            tweet={tweet}
+                            token={token}
+                            isliked={isLiked}
+                            setIsLiked={setIsLiked}
+                            likeData={likeData}
+                            setLikeData={setLikeData}
+                            isretweet={isRetweeted}
+                            setIsRetweet={setIsRetweeted}
+                            retweetCount={retweetData}
+                            setRetweetCount={setRetweetData}
+                            isblocked={isblocked}
+                            isprivate={isprivate}
+                        />
+                    )}
                 </div>
             </div>
         );
     };
 
-	if(tweet.isdeleted){
-		return (
-			<div className="flex flex-col items-center justify-center p-4 border rounded-md bg-gray-50 text-gray-600">
-			  <p className="text-sm font-medium text-gray-800">このツイートは、ツイートの制作者により削除されました。</p>
-			</div>
-		  );
-	}
+    if (tweet.isdeleted) {
+        return (
+            <div className="flex flex-col items-center justify-center p-4 border rounded-md bg-gray-50 text-gray-600">
+                <p className="text-sm font-medium text-gray-800">
+                    このツイートは、ツイートの制作者により削除されました。
+                </p>
+            </div>
+        );
+    }
 
-	if(isblocked){
-		return (
-			<div className="flex flex-col items-center justify-center p-4 border  rounded-md text-gray-600">
-			  <p className="text-sm font-medium text-gray-800">ブロックされているため、このツイートは表示できません。</p>
-			</div>
-		  );
-	}
-	if(isprivate){
-		return (
-			<div className="flex flex-col items-center justify-center  p-4 border rounded-md  text-gray-600">
-			  <p className="text-sm font-medium text-gray-800">作成者が表示範囲を設定しているため、このツイートは表示できません。</p>
-			</div>
-		  );
-	}
-
+    if (isblocked) {
+        return (
+            <div className="flex flex-col items-center justify-center p-4 border  rounded-md text-gray-600">
+                <p className="text-sm font-medium text-gray-800">
+                    ブロックされているため、このツイートは表示できません。
+                </p>
+            </div>
+        );
+    }
+    if (isprivate) {
+        return (
+            <div className="flex flex-col items-center justify-center  p-4 border rounded-md  text-gray-600">
+                <p className="text-sm font-medium text-gray-800">
+                    作成者が表示範囲を設定しているため、このツイートは表示できません。
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -250,9 +272,9 @@ export default function TweetItem({
                         initialisLiked={retweet.likes}
                         initialisRetweeted={retweet.retweets}
                         type={"tweet"}
-						isblocked={retweet.isblocked}
-						isprivate={retweet.isprivate}
-						token={token}
+                        isblocked={retweet.isblocked}
+                        isprivate={retweet.isprivate}
+                        token={token}
                     />
                 </div>
             ) : (

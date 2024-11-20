@@ -1,58 +1,120 @@
-'use client'
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from 'lucide-react'
-import { Tweet, User } from "@/types"
-import GetFetcher from "@/routes/getfetcher"
-import { useEffect,useState } from "react"
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import { Tweet, User } from "@/types";
+import GetFetcher from "@/routes/getfetcher";
+import { useEffect, useState } from "react";
+import { createLike, deleteLike } from "@/features/like/likes";
+import { createRetweet, deleteRetweet } from "@/features/retweet/handleretweets";
 
 interface Props {
-	tweet: Tweet; 
+    tweet: Tweet;
+    token: string | null;
+    isliked: boolean;
+    setIsLiked: (isLiked: boolean) => void;
+    likeData: number;
+    setLikeData: (likeData: number) => void;
+    isretweet: boolean;
+    setIsRetweet: (isRetweet: boolean) => void;
+    retweetCount: number;
+    setRetweetCount: (retweetCount: number) => void;
 }
 
-export default function Component( {tweet}: Props) {
-	const [user, setUser] = useState<User | null>(null);
-	const { data: UserData } = GetFetcher('http://localhost:8080/user');
-	useEffect(() => {
-		if (UserData) {
-			setUser(UserData.user);
+export default function Component({ tweet, token, isliked , setIsLiked , likeData , setLikeData , isretweet , setIsRetweet  , retweetCount , setRetweetCount  }: Props) {
+	const handleLikeToggle = async (e: React.MouseEvent) => {
+		e.stopPropagation()
+		try {
+		  if (token && tweet) {
+			if (isliked) {
+			  await deleteLike(tweet, token)
+			  setIsLiked(false)
+			  setLikeData(likeData - 1)
+			} else {
+			  await createLike(tweet, token)
+			  setIsLiked(true)
+			  setLikeData(likeData + 1)
+			}
+		  }
+		} catch (error) {
+		  console.error("いいねのトグルに失敗しました:", error)
 		}
-	},[UserData]);
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="その他のオプション">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>メニュー</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        { tweet.userid== user?.userid && <DropdownMenuItem onClick={() => console.log('編集')}>
-          編集
-        </DropdownMenuItem>}
-        <DropdownMenuItem onClick={() => console.log('お気に入りに追加')}>
-          いいねする
-        </DropdownMenuItem>
-		<DropdownMenuItem onClick={() => console.log('お気に入りに追加')}>
-          リツイートする
-        </DropdownMenuItem>
-		<DropdownMenuItem onClick={() => console.log('お気に入りに追加')}>
-          引用リツイートする
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        { tweet.userid== user?.userid &&  <DropdownMenuItem onClick={() => console.log('削除')} className="text-red-600">
-          削除
-        </DropdownMenuItem>}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
+	  }
+	
+	  const handleRetweetToggle = async (e: React.MouseEvent) => {
+		e.stopPropagation()
+		try {
+		  if (token && tweet) {
+			if (isretweet) {
+			  await deleteRetweet(tweet, token)
+			  setIsRetweet(false)
+			  setRetweetCount(retweetCount - 1)
+			} else {
+			  await createRetweet(tweet, token)
+			  setIsRetweet(true)
+			  setRetweetCount(retweetCount + 1)
+			}
+		  }
+		} catch (error) {
+		  console.error("リツイートのトグルに失敗しました:", error)
+		}
+	  }
+
+
+    const [user, setUser] = useState<User | null>(null);
+    const { data: UserData } = GetFetcher("http://localhost:8080/user");
+    useEffect(() => {
+        if (UserData) {
+            setUser(UserData.user);
+        }
+    }, [UserData]);
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="その他のオプション"
+                >
+                    <MoreHorizontal className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>メニュー</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {tweet.userid == user?.userid && (
+                    <DropdownMenuItem onClick={() => console.log("編集")}>
+                        編集
+                    </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                    onClick={(e) => handleLikeToggle(e)}
+                >
+                    {isliked ?  "いいねを取り消す" : "いいねする" }
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                    onClick={(e) => handleRetweetToggle(e)}
+                >
+                    {isretweet ? "リツイートを取り消す" : "リツイートする"}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {tweet.userid == user?.userid && (
+                    <DropdownMenuItem
+                        onClick={() => console.log("削除")}
+                        className="text-red-600"
+                    >
+                        削除
+                    </DropdownMenuItem>
+                )}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
 }
