@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import GetFetcher from "@/routes/getfetcher";
-import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import TweetItem from "@/components/pages/tweetitem";
 import { TweetData } from "@/types";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, Search, Settings2 } from "lucide-react";
@@ -13,12 +13,12 @@ const SearchPage = () => {
     const searchParams = useSearchParams();
     const q = searchParams.get("q") || "";
 
-    const { data: search, error, isLoading } = GetFetcher(
+    const { data: search, error, isLoading,token } = GetFetcher(
         q ? `http://localhost:8080/search/${q}` : ""
     );
 
     useEffect(() => {
-        if (search && q) {
+        if (search) {
             setSearchData(search);
         }
     }, [search, q]);
@@ -75,7 +75,7 @@ const SearchPage = () => {
                 </div>
             </header>
             {searchData?.length === 0 ? (
-                <div className="flex min-h-screen items-center justify-center bg-white text-black pt-20">
+                <div className="flex  items-center justify-center bg-white text-black pt-20">
                     <p>該当するツイートが見つかりませんでした</p>
                 </div>
             ) : (
@@ -88,6 +88,9 @@ const SearchPage = () => {
                             user={data.user}
                             initialisLiked={data.likes}
                             initialisRetweeted={data.retweets}
+							isblocked={data.isblocked}
+							isprivate={data.isprivate}
+							token = {token}
                         />
                     ))}
                 </div>

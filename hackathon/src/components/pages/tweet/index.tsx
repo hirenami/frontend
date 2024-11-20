@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Tweet, User, TweetData } from "@/types";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import TweetItem from "@/components/pages/tweetitem";
 import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
 import  Header  from "@/components/pages/tweet/components/header";
@@ -100,13 +100,14 @@ export default function TweetPage() {
         return (
             <div className="flex space-x-3 flex-col p-2 border-b">
                 {/* ユーザーのアイコン */}
-               <Header user={user} token={token} />
+               <Header user={user} token={token} tweet={tweet} />
 
                 <div className="flex-1 min-w-0">
                     {/* ツイートの内容 */}
-					<TweetComponent tweet={tweet} retweet={retweet}/>
+					<TweetComponent tweet={tweet} retweet={retweet} isblocked={tweetData.isblocked} isprivate={tweetData.isprivate}/>
 
                     {/* アクションボタン群 */}
+					{ tweetData.isblocked || tweetData.isprivate || tweet.isdeleted ? null :
 					<ActionButton 
 						tweet={tweet}
 						token={token}
@@ -118,7 +119,10 @@ export default function TweetPage() {
 						setIsRetweet={setIsRetweet}
 						retweetCount={retweetCount}
 						setRetweetCount={setRetweetCount}
+						isblocked={tweetData.isblocked}
+						isprivate={tweetData.isprivate}
 					/>
+					}
                     
                 </div>
             </div>
@@ -152,6 +156,9 @@ export default function TweetPage() {
                             user={data.user}
                             initialisLiked={data.likes}
                             initialisRetweeted={data.retweets}
+							isblocked={data.isblocked}
+							isprivate={data.isprivate}
+							token={token}
                         />
                     ))}
             </div>
@@ -175,6 +182,9 @@ export default function TweetPage() {
                                     initialisLiked={data.likes}
                                     initialisRetweeted={data.retweets}
                                     type={"tweet"}
+									isblocked={data.isblocked}
+									isprivate={data.isprivate}
+									token={token}
                                 />
                             ))}
                     </div>

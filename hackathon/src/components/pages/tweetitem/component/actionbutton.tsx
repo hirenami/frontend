@@ -2,9 +2,12 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { MessageCircle, Repeat, Heart, Quote } from 'lucide-react'
+import { MessageCircle, Repeat, Heart, Quote, BarChart } from 'lucide-react'
 import { createLike, deleteLike } from "@/features/like/likes"
-import { createRetweet, deleteRetweet } from "@/features/retweet/handleretweets"
+import {
+  createRetweet,
+  deleteRetweet,
+} from "@/features/retweet/handleretweets"
 import { Tweet } from "@/types"
 import {
   DropdownMenu,
@@ -18,8 +21,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
-import RetweetItem from "./retweetItems"
+import RetweetItem from "@/components/pages/tweet/components/retweetItems"
+import CreateTweet from "./createquote"
 
 interface ActionButtonProps {
   tweet: Tweet
@@ -53,7 +56,8 @@ export default function ActionButton({
   const [isQuoteDialogOpen, setIsQuoteDialogOpen] = useState(false)
   const [quoteText, setQuoteText] = useState("")
 
-  const handleLikeToggle = async () => {
+  const handleLikeToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation()
     try {
       if (token && tweet) {
         if (isliked) {
@@ -71,7 +75,8 @@ export default function ActionButton({
     }
   }
 
-  const handleRetweetToggle = async () => {
+  const handleRetweetToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation()
     try {
       if (token && tweet) {
         if (isretweet) {
@@ -89,7 +94,8 @@ export default function ActionButton({
     }
   }
 
-  const handleQuoteRetweet = async () => {
+  const handleQuoteRetweet = async (e: React.MouseEvent) => {
+    e.stopPropagation()
     try {
       if (token && tweet && quoteText) {
         // ここで引用リツイートのAPIを呼び出す
@@ -103,6 +109,7 @@ export default function ActionButton({
       console.error("引用リツイートに失敗しました:", error)
     }
   }
+
 
   return (
     <div className="mt-3 flex justify-between max-w-md">
@@ -122,17 +129,27 @@ export default function ActionButton({
             className={`flex items-center space-x-2 ${
               isretweet ? "text-green-500" : "text-gray-500"
             } hover:text-green-500`}
+            onClick={(e) => e.stopPropagation()}
           >
             <Repeat className="h-4 w-4" />
             <span className="text-xs">{retweetCount}</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onClick={handleRetweetToggle}>
+        <DropdownMenuContent
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
+        >
+          <DropdownMenuItem onClick={(e) => handleRetweetToggle(e)}>
             <Repeat className="mr-2 h-4 w-4" />
             <span>リツイート</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsQuoteDialogOpen(true)}>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsQuoteDialogOpen(true)
+            }}
+          >
             <Quote className="mr-2 h-4 w-4" />
             <span>引用リツイート</span>
           </DropdownMenuItem>
@@ -144,7 +161,7 @@ export default function ActionButton({
         className={`flex items-center space-x-2 ${
           isliked ? "text-red-500" : "text-gray-500"
         } hover:text-red-500`}
-        onClick={handleLikeToggle}
+        onClick={(e) => handleLikeToggle(e)}
       >
         <Heart
           className={`h-4 w-4 ${
@@ -153,21 +170,31 @@ export default function ActionButton({
         />
         <span className="text-xs">{likeData}</span>
       </Button>
-      <Dialog open={isQuoteDialogOpen} onOpenChange={setIsQuoteDialogOpen}>
-        <DialogContent>
+      <div className="flex items-center space-x-2 text-gray-500">
+        <BarChart className="h-4 w-4" />
+        <span className="text-xs">{tweet.impressions}</span>
+      </div>
+      <Dialog open={isQuoteDialogOpen} onOpenChange={(open) => {
+    if (!open) {
+      setIsQuoteDialogOpen(false);
+    }
+  }}>
+        <DialogContent onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
             <DialogTitle>引用リツイート</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <Textarea
-              placeholder="コメントを追加"
-              value={quoteText}
-              onChange={(e) => setQuoteText(e.target.value)}
-            />
-			<div className="border rounded-md p-4">
-			<RetweetItem tweet={tweet} isblocked={isblocked} isprivate={isprivate}/>
-			</div>
-            <Button onClick={handleQuoteRetweet}>引用リツイート</Button>
+            <CreateTweet type={"tweeet"} tweetId={0} userToken={"name"}  />
+            <div className="border rounded-md p-4">
+              <RetweetItem
+                tweet={tweet}
+                isblocked={isblocked}
+                isprivate={isprivate}
+              />
+            </div>
+            <Button onClick={(e) => handleQuoteRetweet(e)}>
+              引用リツイート
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

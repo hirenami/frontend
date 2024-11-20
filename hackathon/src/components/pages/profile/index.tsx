@@ -6,21 +6,22 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { fireAuth } from "@/features/firebase/auth";
-import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import TweetItem from "@/components/pages/tweetitem";
 import { TweetData, User } from "@/types";
 import { Button } from "@/components/ui/button";
 import GetFetcher from "@/routes/getfetcher";
-import Cookies from "js-cookie";
 import {
     handleFollowCount,
     handleFollowerCount,
-    handleEditProfile,
 } from "@/features/profile/handleprofile";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import UserEditor from "@/components/pages/profile/components/edit";
 
 export default function ProfilePage() {
     const { userId } = useParams();
     const router = useRouter();
     const userid = userId as string;
+	const [open, setOpen] = useState(false);
 
     const [user, setUser] = useState<User | null>(null);
     const [tweets, setTweets] = useState<TweetData[]>([]);
@@ -38,15 +39,16 @@ export default function ProfilePage() {
         data: tweetData,
         error: error2,
         isLoading: isLoading2,
+		token,
     } = GetFetcher(`http://localhost:8080/tweet/${userid}`);
+
+	const { data: myData } = GetFetcher('http://localhost:8080/user');
 
     // dataが変更されたときにtimelineDataを更新する
     useEffect(() => {
-        const userCookie = Cookies.get("user");
-        if (userCookie) {
-            const CurrentUser = JSON.parse(userCookie) as User; // JSON文字列をオブジェクトに変換
-            setCurrentUserId(CurrentUser.firebaseuid);
-        }
+        if (myData) {
+			setCurrentUserId(myData.user.firebaseuid);
+		}
         if (userData) {
             setUser(userData.user);
             setFollowCount(userData.follows);
@@ -57,7 +59,7 @@ export default function ProfilePage() {
         if (tweetData) {
             setTweets(tweetData);
         }
-    }, [userData, tweetData]); // dataが変わるたびにsetTimelineDataが実行される
+    }, [userData, tweetData, myData]); // dataが変わるたびにsetTimelineDataが実行される
 
     if (isLoading1 || isLoading2 || !user) {
         return (
@@ -106,7 +108,7 @@ export default function ProfilePage() {
 
     return (
         <>
-            <header className="sticky top-0 z-10 bg-white bg-opacity-80 p-4 backdrop-blur-sm">
+            <header className="sticky top-0 z-10 bg-white bg-opacity-80 p-2 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <button
@@ -140,15 +142,30 @@ export default function ProfilePage() {
                 {/* プロフィール編集ボタンをヘッダーのすぐ下、右側に配置 */}
                 <div className="absolute top-56 right-4">
                     {currentUserId === user.firebaseuid ? (
+						<>
                         <Button
                             variant="outline"
                             size="sm"
                             className="rounded-full border-gray-300 text-gray-900 hover:bg-gray-100"
-                            onClick={() => handleEditProfile(router)}
+                            onClick={() => setOpen(true)}
                         >
                             <Edit3 className="h-4 w-4 mr-2" />
                             プロフィールを編集
                         </Button>
+						<Dialog open={open} onOpenChange={setOpen}>
+						<DialogContent 
+						className="max-w-[600px] max-h-[90vh] p-4"
+						style={{
+						  width: "600px", // 横幅を固定
+						  height: "auto", // 高さを自動調整
+						}} >
+						  <DialogHeader>
+							<DialogTitle></DialogTitle>
+						  </DialogHeader>
+						  <UserEditor setOpen={setOpen}/>
+						</DialogContent>
+					  </Dialog>
+					  	</>
                     ) : (
                         <Button
                             variant={isFollowing ? "outline" : "default"}
@@ -244,6 +261,9 @@ export default function ProfilePage() {
                         initialisLiked={data.likes}
                         initialisRetweeted={data.retweets}
                         type={"tweet"}
+						isblocked={data.isblocked}
+						isprivate={data.isprivate}
+						token={token}
                     />
                 ))}
             </div>

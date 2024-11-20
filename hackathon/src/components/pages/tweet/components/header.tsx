@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { MoreHorizontal } from "lucide-react";
-import { User } from "@/types";
+import { User,Tweet } from "@/types";
+import MenuComponent from "@/components/pages/tweet/components/menu";
 
 interface HeaderProps {
 	user: User | null;
+	tweet: Tweet | null;
 	token: string | null;
 }
 
 
-export default function Header( { user, token }: HeaderProps) {
+export default function Header( { user, tweet ,token }: HeaderProps) {
 	
 	const hundleUserClick = async () => {
 		try {
@@ -55,13 +56,7 @@ export default function Header( { user, token }: HeaderProps) {
 						</button>
 					</div>
 				</div>
-				<Button
-					variant="ghost"
-					size="icon"
-					className="text-gray-500 hover:text-primary"
-				>
-					<MoreHorizontal className="h-5 w-5" />
-				</Button>
+				{ tweet && <MenuComponent tweet={tweet} />}
 			</div>
 	)
 }

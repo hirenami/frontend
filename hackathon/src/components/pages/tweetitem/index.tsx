@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from "react";
-import {
-    MessageCircle,
-    Repeat,
-    Heart,
-    BarChart,
-    MoreHorizontal,
-} from "lucide-react";
+import {Repeat} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tweet, TweetData, User } from "@/types/index";
 import Image from "next/image";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { createLike, deleteLike } from "@/features/like/likes";
-import GetFetcher from "@/routes/getfetcher";
 import RetweetItem from "@/components/pages/tweet/components/retweetItems";
-import { createRetweet, deleteRetweet } from "@/features/retweet/handleretweets";
 import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";
 import { useRouter } from "next/navigation";
 import { fireAuth } from "@/features/firebase/auth";
+import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
+import MenuComponent from "@/components/pages/tweet/components/menu";
+import ActionButton from "./component/actionbutton";
 
 interface TweetItemProps {
-    tweet: Tweet; // tweetをオプショナルに変更
+    tweet: Tweet; 
     user: User;
     initialisLiked: boolean;
     initialisRetweeted: boolean;
     type: string;
+	isblocked: boolean;
+	isprivate: boolean;
+	token: string | null;
 }
 
 export default function TweetItem({
@@ -33,6 +30,9 @@ export default function TweetItem({
     initialisLiked,
     initialisRetweeted,
     type,
+	isblocked,
+	isprivate,
+	token,
 }: TweetItemProps) {
     const [isLiked, setIsLiked] = useState(initialisLiked); // 状態を管理
     const [isRetweeted, setIsRetweeted] = useState(initialisRetweeted); // 状態を管理
@@ -42,23 +42,30 @@ export default function TweetItem({
     const router = useRouter();
     const auth = fireAuth;
 
-    const { data, error } = tweet.retweetid
-        ? GetFetcher(`http://localhost:8080/tweet/${tweet.retweetid}/tweetid`)
-        : { data: null, error: null };
 
     useEffect(() => {
-        if (data) {
-            setRetweet(data);
-        }
+		const fetchdata = async () => {
+			if(tweet.retweetid && token){
+			try {
+				 const data = await fetchOneTweet(token,tweet.retweetid);
+				 if (data) {
+					setRetweet(data);
+				}
+			} catch (error) {
+				console.error("フォロー操作中にエラーが発生しました:", error);
+			}
+		}
+		}
+		fetchdata();
 		if(tweet.likes){
         setLikeData(tweet.likes);
 		}
 		if(tweet.retweets){
         setRetweetData(tweet.retweets);
 		}
-    }, [data, tweet.likes, tweet.retweets]);
+    }, [tweet.retweetid, tweet.likes, tweet.retweets, token]);
 
-    if (!tweet || error) {
+    if (!tweet) {
         return (
             <div className="p-4 text-gray-500">
                 ツイートを読み込めませんでした。
@@ -74,60 +81,6 @@ export default function TweetItem({
             }
         } catch (error) {
             console.error("ユーザーページへの遷移に失敗しました:", error);
-        }
-    };
-
-    const handleLikeToggle = async () => {
-        try {
-            const token = await auth.currentUser?.getIdToken();
-            if (token) {
-                if (isLiked) {
-                    try {
-                        await deleteLike(tweet, token); // トークンを渡す
-                        setIsLiked(false); // いいねを消した後に状態を更新
-                        setLikeData((prev) => prev - 1);
-                    } catch (error) {
-                        console.error("いいねの削除に失敗しました:", error);
-                    }
-                } else {
-                    try {
-                        await createLike(tweet, token); // トークンを渡す
-                        setIsLiked(true); // いいねを追加した後に状態を更新
-                        setLikeData((prev) => prev + 1);
-                    } catch (error) {
-                        console.error("いいねの追加に失敗しました:", error);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error("いいねのトグルに失敗しました:", error);
-        }
-    };
-
-    const handleRetweetToggle = async () => {
-        try {
-            const token = await auth.currentUser?.getIdToken();
-            if (token) {
-                if (isRetweeted) {
-                    try {
-                        await deleteRetweet(tweet, token); // トークンを渡す
-                        setIsRetweeted(false); // いいねを消した後に状態を更新
-                        setRetweetData(retweetData - 1);
-                    } catch (error) {
-                        console.error("いいねの削除に失敗しました:", error);
-                    }
-                } else {
-                    try {
-                        await createRetweet(tweet, token); // トークンを渡す
-                        setIsRetweeted(true); // いいねを追加した後に状態を更新
-                        setRetweetData(retweetData + 1);
-                    } catch (error) {
-                        console.error("いいねの追加に失敗しました:", error);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error("いいねのトグルに失敗しました:", error);
         }
     };
 
@@ -184,13 +137,7 @@ export default function TweetItem({
                                 {formatDate(tweet.created_at)}
                             </span>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-gray-500 hover:text-primary"
-                        >
-                            <MoreHorizontal className="h-5 w-5" />
-                        </Button>
+                        <MenuComponent tweet={tweet}  />
                     </div>
 
                     {/* ツイートのテキスト */}
@@ -232,69 +179,54 @@ export default function TweetItem({
                                 handleTweetClick(tweet.retweetid);
                             }}
                         >
-                            <RetweetItem tweet={retweet.tweet} />
+                            <RetweetItem tweet={retweet.tweet} isblocked={retweet.isblocked} isprivate={retweet.isprivate}/>
                         </div>
                     )}
 
-                    {/* アクションボタン群 */}
-                    <div className="mt-3 flex justify-between max-w-md">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center space-x-2 text-gray-500 hover:text-primary"
-                            //onClick={handleReplyClick}
-                        >
-                            <MessageCircle className="h-4 w-4" />
-                            <span className="text-xs">{tweet.replies}</span>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`flex items-center space-x-2 ${
-                                isRetweeted ? "text-green-500" : "text-gray-500"
-                            } hover:text-red-500`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleRetweetToggle();
-                            }}
-                        >
-                            <Repeat className="h-4 w-4" />
-                            <span className="text-xs">{retweetData}</span>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`flex items-center space-x-2 ${
-                                isLiked ? "text-red-500" : "text-gray-500"
-                            } hover:text-red-500`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleLikeToggle();
-                            }}
-                        >
-                            <Heart
-                                className={`h-4 w-4 ${
-                                    isLiked
-                                        ? "fill-current text-red-500"
-                                        : "text-gray-500"
-                                }`}
-                            />
-                            <span className="text-xs">{likeData}</span>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center space-x-2 text-gray-500"
-                            //onClick={handleImpressionsClick}
-                        >
-                            <BarChart className="h-4 w-4" />
-                            <span className="text-xs">{tweet.impressions}</span>
-                        </Button>
-                    </div>
+					{ isblocked ||isprivate || tweet.isdeleted ? null :
+					<ActionButton 
+						tweet={tweet}
+						token={token}
+						isliked={isLiked}
+						setIsLiked={setIsLiked}
+						likeData={likeData}
+						setLikeData={setLikeData}
+						isretweet={isRetweeted}
+						setIsRetweet={setIsRetweeted}
+						retweetCount={retweetData}
+						setRetweetCount={setRetweetData}
+						isblocked={isblocked}
+						isprivate={isprivate}
+					/>
+					}
                 </div>
             </div>
         );
     };
+
+	if(tweet.isdeleted){
+		return (
+			<div className="flex flex-col items-center justify-center p-4 border rounded-md bg-gray-50 text-gray-600">
+			  <p className="text-sm font-medium text-gray-800">このツイートは、ツイートの制作者により削除されました。</p>
+			</div>
+		  );
+	}
+
+	if(isblocked){
+		return (
+			<div className="flex flex-col items-center justify-center p-4 border  rounded-md text-gray-600">
+			  <p className="text-sm font-medium text-gray-800">ブロックされているため、このツイートは表示できません。</p>
+			</div>
+		  );
+	}
+	if(isprivate){
+		return (
+			<div className="flex flex-col items-center justify-center  p-4 border rounded-md  text-gray-600">
+			  <p className="text-sm font-medium text-gray-800">作成者が表示範囲を設定しているため、このツイートは表示できません。</p>
+			</div>
+		  );
+	}
+
 
     return (
         <div>
@@ -318,6 +250,9 @@ export default function TweetItem({
                         initialisLiked={retweet.likes}
                         initialisRetweeted={retweet.retweets}
                         type={"tweet"}
+						isblocked={retweet.isblocked}
+						isprivate={retweet.isprivate}
+						token={token}
                     />
                 </div>
             ) : (

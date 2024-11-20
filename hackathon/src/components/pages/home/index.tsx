@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TweetData } from "@/types";
-import TweetItem from "@/components/pages/tweet/components/tweetItems";
+import TweetItem from "@/components/pages/tweetitem";
 import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
 
@@ -42,9 +42,6 @@ export default function HomePage() {
             <header className="border-b p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-bold">Home</h1>
-                    {/* <div className="relative">
-                        <h1 className="text-xl font-bold">Video</h1>
-                    </div> */}
                 </div>
             </header>
 
@@ -59,6 +56,9 @@ export default function HomePage() {
                         user={data.user}
                         initialisLiked={data.likes}
                         initialisRetweeted={data.retweets}
+						isblocked={data.isblocked}
+						isprivate={data.isprivate}
+						token = {token}
                     />
                 ))}
             </div>

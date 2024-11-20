@@ -10,6 +10,7 @@ export interface Tweet {
 	media_url: string;
 	isquote: boolean;
 	isreply: boolean;
+	review: number;
 	isdeleted: boolean;
 	content: string;
 	likes: number;
@@ -28,7 +29,7 @@ export interface User {
 	icon_image: string; // 修正: null 値を許可
 	biography: string; // 修正: null 値を許可
 	isprivate: boolean;
-	isfrozen: boolean;
+	ispremium: boolean;
 	isdeleted: boolean;
 	isadmin: boolean;
 }
@@ -47,6 +48,8 @@ export interface TweetData {
 	user: User;
 	likes: boolean;
 	retweets: boolean;
+	isblocked: boolean;
+	isprivate: boolean;
 }
 
 export interface Notification {
@@ -71,4 +74,6 @@ export interface FollowData {
 	followers: number;
 	isfollows: boolean;
 	isfollowers: boolean;
+	isblocked: boolean;
+	isprivate: boolean;
 }

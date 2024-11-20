@@ -9,6 +9,8 @@ import {
     Search,
     User as UserIcon,
     UserPlus,
+	ShoppingCart,
+	Upload
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
@@ -22,20 +24,21 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Cookies from "js-cookie";
+import GetFetcher from "@/routes/getfetcher";
 import { User } from "@/types/index";
+import Listing from "@/components/pages/layout/components/listing";
 
 const Sidebar = () => {
     const router = useRouter();
 	const currentPath = usePathname();
     const [user, setUser] = useState<User | null>(null);
+	const { data: UserData } = GetFetcher('http://localhost:8080/user');
 
     useEffect(() => {
-        const userCookie = Cookies.get("user");
-        if (userCookie) {
-            setUser(JSON.parse(userCookie) as User); // JSON文字列をオブジェクトに変換
-        }
-    }, []);
+		if (UserData) {
+			setUser(UserData.user);
+		}
+    }, [ UserData ]);
 
     const signOutEmailAndPassword = (): void => {
         signOut(fireAuth)
@@ -99,20 +102,22 @@ const Sidebar = () => {
                     通知
                 </Button>
                 <Button
+					onClick={() => router.push("/message")}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
-                        currentPath === "/home" ? "font-bold" : ""
+                        currentPath === "/message" ? "font-bold" : ""
                     }`}
                 >
                     <Mail className="mr-4 h-6 w-6" />
                     メッセージ
                 </Button>
                 <Button
+					onClick={() => router.push(`/setting`)}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
-                        currentPath === "/home" ? "font-bold" : ""
+                        currentPath === "/setting" ? "font-bold" : ""
                     }`}
                 >
                     <Settings className="mr-4 h-6 w-6" />
@@ -129,7 +134,31 @@ const Sidebar = () => {
                     <UserIcon className="mr-4 h-6 w-6" />
                     プロフィール
                 </Button>
+				<Button
+                    onClick={() => router.push(`/purchase`)}
+                    variant="ghost"
+                    size="lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath.startsWith("/purchase") ? "font-bold" : ""
+                    }`}
+                >
+                    <ShoppingCart className="mr-4 h-6 w-6" />
+                    購入情報
+                </Button>
+				<Button
+                    onClick={() => router.push(`/listing`)}
+                    variant="ghost"
+                    size="lg"
+                    className={`w-full justify-start text-lg ${
+                        currentPath.startsWith("/listing") ? "font-bold" : ""
+                    }`}
+                >
+                    <Upload className="mr-4 h-6 w-6" />
+                    出品情報
+                </Button>
+
             </nav>
+			<Listing />
 
             <div className="mt-auto">
                 {user && (
