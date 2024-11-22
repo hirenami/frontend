@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { MessageCircle, Repeat, Heart, Quote } from 'lucide-react'
+import { MessageCircle, Repeat, Heart, Quote, ShoppingCart } from 'lucide-react'
 import { createLike, deleteLike } from "@/features/like/likes"
 import { createRetweet, deleteRetweet } from "@/features/retweet/handleretweets"
 import { Tweet } from "@/types"
@@ -137,6 +137,16 @@ export default function ActionButton({
         />
         <span className="text-xs">{likeData}</span>
       </Button>
+	  {tweet.review == -1 && ( 
+		<Button
+			variant="ghost"
+			size="sm"
+			className="flex items-center space-x-2 text-gray-500 hover:text-primary"
+		>
+			<ShoppingCart className="h-4 w-4" />
+			<span className="text-xs">購入</span>
+		</Button>
+	  )}
       <Dialog open={isQuoteDialogOpen} onOpenChange={setIsQuoteDialogOpen}>
         <DialogContent>
           <DialogHeader>

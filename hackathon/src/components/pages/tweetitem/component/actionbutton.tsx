@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { MessageCircle, Repeat, Heart, Quote, BarChart } from 'lucide-react'
+import { MessageCircle, Repeat, Heart, Quote, BarChart, ShoppingCart } from 'lucide-react'
 import { createLike, deleteLike } from "@/features/like/likes"
 import {
   createRetweet,
@@ -152,10 +152,22 @@ export default function ActionButton({
         />
         <span className="text-xs">{likeData}</span>
       </Button>
-      <div className="flex items-center space-x-2 text-gray-500">
+	  {tweet.review == -1 ? ( 
+		<Button
+		variant="ghost"
+		size="sm"
+		className="flex items-center space-x-2 text-gray-500 hover:text-primary pl-0 pr-0"
+	>
+		<ShoppingCart className="h-4 w-4" />
+		<span className="text-xs">購入</span>
+	</Button>
+	  ):
+	  (
+		<div className="flex items-center space-x-2 text-gray-500">
         <BarChart className="h-4 w-4" />
         <span className="text-xs">{tweet.impressions}</span>
       </div>
+	  )}
       <Dialog open={isQuoteDialogOpen} onOpenChange={(open) => {
     if (!open) {
       setIsQuoteDialogOpen(false);

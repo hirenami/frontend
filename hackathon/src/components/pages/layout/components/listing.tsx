@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, ChangeEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -29,9 +31,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { Image, X, Camera, Smile, MapPin } from "lucide-react";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
+import { LucideImage } from "lucide-react";
+import { User } from "@/types";
+import { uploadFile } from "@/features/firebase/strage";
+import GetFetcher from "@/routes/getfetcher";
 
 const tweetSchema = z.object({
     content: z
@@ -57,10 +62,15 @@ const combinedSchema = tweetSchema.merge(productSchema.partial()).extend({
     isProductListing: z.boolean().default(false),
 });
 
-export default function TweetProductListingDialog() {
+
+export default function CombinedTweetProductListing() {
     const [isOpen, setIsOpen] = useState(false);
     const [media, setMedia] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const { data: UserData , token } = GetFetcher("http://localhost:8080/user");
+    const [user, setUser] = useState<User | null>(null);
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof combinedSchema>>({
         resolver: zodResolver(combinedSchema),
@@ -74,26 +84,68 @@ export default function TweetProductListingDialog() {
         },
     });
 
+    useEffect(() => {
+        if (UserData) {
+            setUser(UserData.user);
+        }
+    }, [UserData]);
+
     const handleMediaUpload = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             setMedia([...media, ...Array.from(event.target.files)]);
         }
     };
 
-    const removeMedia = (index: number) => {
-        setMedia(media.filter((_, i) => i !== index));
+    const triggerFileUpload = () => {
+        fileInputRef.current?.click();
     };
 
-    function onSubmit(values: z.infer<typeof combinedSchema>) {
+    async function onSubmit(values: z.infer<typeof combinedSchema>) {
         setIsSubmitting(true);
-        // 実際のAPIコールをここで行います
-        console.log({ ...values, media });
-        setTimeout(() => {
-            setIsSubmitting(false);
+        let media_url = "";
+
+        if (media.length > 0) {
+            media_url = await uploadFile(media[0]);
+        }
+
+        const endpoint =
+            values.isProductListing
+                ? "http://localhost:8080/listing"
+                : "http://localhost:8080/tweet";
+
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                content: values.content,
+                media_url: media_url,
+                ...(values.isProductListing && {
+                    listing: {
+                        listingname: values.name,
+						listingdescription: values.description,
+						listingprice: values.price,
+						listingstock: values.stock,
+						type: values.category,
+						condition: values.condition,
+                    },
+                }),
+            }),
+        });
+
+        if (response.ok) {
+            console.log("ツイートが正常に投稿されました");
             form.reset();
             setMedia([]);
             setIsOpen(false);
-        }, 2000);
+            router.push("/home");
+        } else {
+            console.error("ツイートの投稿中にエラーが発生しました");
+        }
+
+        setIsSubmitting(false);
     }
 
     return (
@@ -112,104 +164,98 @@ export default function TweetProductListingDialog() {
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-6 p-4"
                     >
-                        <FormField
-                            control={form.control}
-                            name="content"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder="いまどうしてる？"
-                                            className="resize-none text-xl border-none focus:ring-0"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <div>
-                            <div className="flex items-center space-x-4 mb-4">
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() =>
-                                        document
-                                            .getElementById("media-upload")
-                                            ?.click()
-                                    }
-                                >
-                                    <Camera className="w-5 h-5 text-primary" />
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                >
-                                    <Smile className="w-5 h-5 text-primary" />
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon"
-                                >
-                                    <MapPin className="w-5 h-5 text-primary" />
-                                </Button>
-                                <div className="flex-grow" />
+                        <div className="flex space-x-4">
+                            <Avatar className="w-10 h-10">
+                                <AvatarImage
+                                    src={user?.icon_image}
+                                    alt="@username"
+                                />
+                            </Avatar>
+                            <div className="flex-1 space-y-2">
                                 <FormField
                                     control={form.control}
-                                    name="isProductListing"
+                                    name="content"
                                     render={({ field }) => (
-                                        <FormItem className="flex items-center space-x-2">
-                                            <FormLabel>
-                                                商品を出品する
-                                            </FormLabel>
+                                        <FormItem>
                                             <FormControl>
-                                                <Switch
-                                                    checked={field.value}
-                                                    onCheckedChange={
-                                                        field.onChange
-                                                    }
+                                                <Textarea
+                                                    placeholder={"いまどうしてる？"}
+                                                    className="min-h-[100px] text-xl resize-none focus:ring-0 focus:border-transparent border-transparent p-0 shadow-none bg-transparent"
+                                                    {...field}
                                                 />
                                             </FormControl>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                            </div>
-                            <Input
-                                id="media-upload"
-                                type="file"
-                                accept="image/*,video/*"
-                                onChange={handleMediaUpload}
-                                multiple
-                                className="hidden"
-                            />
-                            {media.length > 0 && (
-                                <div className="mt-4 grid grid-cols-2 gap-4">
-                                    {media.map((file, index) => (
-                                        <Card key={index}>
-                                            <CardContent className="p-2 flex items-center justify-between">
-                                                <div className="flex items-center space-x-2">
-                                                    <Image className="w-5 h-5" />
-                                                    <span className="text-sm truncate">
-                                                        {file.name}
-                                                    </span>
-                                                </div>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        removeMedia(index)
-                                                    }
-                                                >
-                                                    <X className="w-4 h-4" />
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
+                                {media.length > 0 && (
+                                    <div className="relative w-full h-60 bg-gray-200 rounded-xl overflow-hidden">
+                                        {media[0].type.startsWith("image/") ? (
+                                            <Image
+                                                src={URL.createObjectURL(
+                                                    media[0]
+                                                )}
+                                                alt="Uploaded media"
+                                                className="w-full h-full object-cover"
+                                                layout="fill"
+                                            />
+                                        ) : (
+                                            <video
+                                                src={URL.createObjectURL(
+                                                    media[0]
+                                                )}
+                                                className="w-full h-full object-cover"
+                                                controls
+                                            />
+                                        )}
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            className="absolute top-2 right-2"
+                                            onClick={() => setMedia([])}
+                                        >
+                                            削除
+                                        </Button>
+                                    </div>
+                                )}
+                                <div className="flex items-center justify-between pt-2 border-t">
+                                    <div className="flex space-x-2">
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleMediaUpload}
+                                            accept="image/*,video/*"
+                                            className="hidden"
+                                        />
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={triggerFileUpload}
+                                        >
+                                            <LucideImage className="h-5 w-5 text-primary" />
+                                        </Button>
+                                    </div>
+                                    <FormField
+                                        control={form.control}
+                                        name="isProductListing"
+                                        render={({ field }) => (
+                                            <FormItem className="flex items-center space-x-2">
+                                                <FormLabel>
+                                                    商品を出品する
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Switch
+                                                        checked={field.value}
+                                                        onCheckedChange={
+                                                            field.onChange
+                                                        }
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
-                            )}
+                            </div>
                         </div>
                         {form.watch("isProductListing") && (
                             <div className="space-y-4">
@@ -318,11 +364,13 @@ export default function TweetProductListingDialog() {
                                                         type="number"
                                                         placeholder="価格を入力してください"
                                                         {...field}
-                                                        onChange={(e) =>
-                                                            field.onChange(
-                                                                +e.target.value
-                                                            )
-                                                        }
+														onChange={(e) =>
+															field.onChange(
+																+e.target.value
+															)
+														}
+														min = "1"
+                                                        
                                                         className="pl-8"
                                                     />
                                                 </div>
@@ -363,6 +411,7 @@ export default function TweetProductListingDialog() {
                                                             +e.target.value
                                                         )
                                                     }
+													min = "1"
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -373,10 +422,26 @@ export default function TweetProductListingDialog() {
                         )}
                         <div className="sticky bottom-0 bg-background pt-2 pb-4 flex justify-between items-center">
                             <div className="text-sm text-muted-foreground">
-                                {280 - form.watch("content").length} 文字残り
+                                {user?.ispremium
+                                    ? "∞"
+                                    : 140 - form.watch("content").length}{" "}
+                                文字残り
                             </div>
-                            <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? "投稿中..." : "ツイートする"}
+                            <Button
+                                type="submit"
+                                disabled={
+                                    isSubmitting ||
+                                    (form.watch("content").length === 0 &&
+                                        media.length === 0) ||
+                                    (!user?.ispremium &&
+                                        form.watch("content").length > 280)
+                                }
+                            >
+                                {isSubmitting
+                                    ? "投稿中..."
+                                    : form.watch("isProductListing")
+                                    ? "出品する"
+                                    : "ツイートする"}
                             </Button>
                         </div>
                     </form>

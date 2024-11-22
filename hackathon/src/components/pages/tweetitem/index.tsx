@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Repeat } from "lucide-react";
+import { Repeat, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tweet, TweetData, User } from "@/types/index";
 import Image from "next/image";
@@ -52,7 +52,7 @@ export default function TweetItem({
                     }
                 } catch (error) {
                     console.error(
-                        "フォロー操作中にエラーが発生しました:",
+                        "エラーが発生しました:",
                         error
                     );
                 }
@@ -139,6 +139,18 @@ export default function TweetItem({
                                 {formatDate(tweet.created_at)}
                             </span>
                         </div>
+						{tweet.review > 0 &&  (
+							<div className="flex items-center space-x-1">
+							<span className="sr-only">{tweet.review}つ星のレビュー</span>
+							{[...Array(5)].map((_, i) => (
+							  <Star
+								key={i}
+								className={`w-4 h-4 ${
+								  i < tweet.review ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+								}`}
+							  />
+							))}
+						  </div>)}
                         <MenuComponent
                             tweet={tweet}
                             token={token}
