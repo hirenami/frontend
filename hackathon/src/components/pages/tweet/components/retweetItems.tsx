@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User } from "@/types/index";
 import { formatDate } from "@/lib/formatDate";
-import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
+import { RenderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import GetFetcher from "@/routes/getfetcher";
 
 interface TweetItemProps {
@@ -102,7 +102,7 @@ export default function RetweetItem({ tweet, isblocked, isprivate }: TweetItemPr
                     </div>
                 </div>
                 <p className="mt-2 text-sm text-gray-900 whitespace-pre-wrap">
-                    {renderContentWithHashtags(tweet.content)}
+                    {RenderContentWithHashtags(tweet.content)}
                 </p>
                 {tweet.media_url && tweet.media_url !== '""' && (
                     <div className="mt-3 rounded-2xl overflow-hidden border border-gray-200 max-w-[400px]">

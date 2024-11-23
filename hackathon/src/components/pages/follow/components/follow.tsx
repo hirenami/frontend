@@ -20,10 +20,10 @@ export default function Follow({ follower, index }: FollowProps) {
 
     useEffect(() => {
         if(UserData) {
-			setUser(UserData);
+			setUser(UserData.user);
 		}
 		setIsFollowing(follower.isfollows);
-    }, [follower.isfollows ,UserData]);
+    }, [follower.isfollows, UserData]);
 
     const handleFollow = async () => {
         try {

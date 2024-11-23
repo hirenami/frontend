@@ -13,7 +13,7 @@ interface TweetComponentProps {
 	retweetCount: number;
 	setIsQuoteDialogOpen: (isQuoteDialogOpen: boolean) => void;
 }
-const CreateTweet = ({  tweetId, setIsQuoteDialogOpen, setRetweetCount , retweetCount }: TweetComponentProps) => {
+const CreateQuote = ({  tweetId, setIsQuoteDialogOpen, setRetweetCount , retweetCount }: TweetComponentProps) => {
     const [tweetText, setTweetText] = useState("");
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -162,4 +162,4 @@ const CreateTweet = ({  tweetId, setIsQuoteDialogOpen, setRetweetCount , retweet
     );
 };
 
-export default CreateTweet;
+export default CreateQuote;

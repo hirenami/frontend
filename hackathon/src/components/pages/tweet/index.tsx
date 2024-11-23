@@ -187,7 +187,7 @@ export default function TweetPage() {
                     <CreateTweet
                         userToken={token}
                         type={"reply"}
-                        tweetId={tweetid}
+                        tweet={tweet}
                     />
 
                     <div>

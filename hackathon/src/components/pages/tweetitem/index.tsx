@@ -5,7 +5,7 @@ import { Tweet, TweetData, User } from "@/types/index";
 import Image from "next/image";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import RetweetItem from "@/components/pages/tweet/components/retweetItems";
-import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
+import { RenderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";
 import { useRouter } from "next/navigation";
 import { fireAuth } from "@/features/firebase/auth";
@@ -167,7 +167,7 @@ export default function TweetItem({
 
                     {/* ツイートのテキスト */}
                     <p className="text-sm text-gray-900 whitespace-pre-wrap">
-                        {renderContentWithHashtags(tweet.content)}
+                        {RenderContentWithHashtags(tweet.content)}
                     </p>
 
                     {/* メディア（画像または動画） */}
