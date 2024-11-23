@@ -135,11 +135,11 @@ const Sidebar = () => {
                     プロフィール
                 </Button>
 				<Button
-                    onClick={() => router.push(`/purchase`)}
+                    onClick={() => router.push(`/purchaselist`)}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
-                        currentPath.startsWith("/purchase") ? "font-bold" : ""
+                        currentPath.startsWith("/purchaselist") ? "font-bold" : ""
                     }`}
                 >
                     <ShoppingCart className="mr-4 h-6 w-6" />

@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog"
 import RetweetItem from "@/components/pages/tweet/components/retweetItems"
 import CreateQuote from "./createquote"
+import { useRouter } from "next/navigation"
 
 interface ActionButtonProps {
   tweet: Tweet
@@ -54,6 +55,7 @@ export default function ActionButton({
   isprivate,
 }: ActionButtonProps) {
   const [isQuoteDialogOpen, setIsQuoteDialogOpen] = useState(false)
+  const router = useRouter()
 
   const handleLikeToggle = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -157,6 +159,11 @@ export default function ActionButton({
 		variant="ghost"
 		size="sm"
 		className="flex items-center space-x-2 text-gray-500 hover:text-primary pl-0 pr-0"
+		onClick = {(e) => {
+			e.stopPropagation();
+			router.push(`/purchase/${tweet.tweetid}`)
+		}
+		}
 	>
 		<ShoppingCart className="h-4 w-4" />
 		<span className="text-xs">購入</span>

@@ -77,3 +77,22 @@ export interface FollowData {
 	isblocked: boolean;
 	isprivate: boolean;
 }
+
+export interface ListingData {
+	listingid: number;
+	userid: string;
+	tweetid: number;
+	created_at: string;
+	listingname: string;
+	listingdescription: string;
+	listingprice: number;
+	type: string;
+	stock: number;
+	condition: string;
+}
+
+export interface ListingItem {
+	listing : ListingData;
+	user 	: User;
+	tweet   : Tweet;
+}
