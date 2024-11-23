@@ -1,36 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight,  ShoppingCartIcon } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-interface PurchaseItem {
-    id: string;
-    name: string;
-    image: string;
-    purchaseDate: string;
-    status?: "取引中" | "完了";
-}
-
-const purchaseHistory: PurchaseItem[] = [
-    {
-        id: "1",
-        name: "中学実力練成テキスト 英語1年",
-        image: "/placeholder.svg",
-        purchaseDate: "2022/12/29 11:59",
-        status: "完了",
-    },
-    {
-        id: "2",
-        name: "EarFun Air Pro 充電ケース　充電器",
-        image: "/placeholder.svg",
-        purchaseDate: "2022/04/11 10:05",
-        status: "完了",
-    },
-];
+import GetFetcher from "@/routes/getfetcher";
+import { PurchaseItem} from "@/types";
+import { useState,useEffect } from "react";
+import {date} from "@/lib/Date";
 
 export default function PurchaseHistory() {
-    const router = useRouter();
+	const router = useRouter();
+	const [purchase, setpurchase] = useState<PurchaseItem[]>([]);
+	const { data:purchasedata } = GetFetcher(`http://localhost:8080/purchase`);
+
+	useEffect(() => {
+		if (purchasedata) {
+			setpurchase(purchasedata);
+		}
+	}
+	, [purchasedata]);
+
+
     return (
         <div className="container mx-auto p-4">
             <div className="flex items-center w-full border-b pb-4">
@@ -44,32 +34,36 @@ export default function PurchaseHistory() {
             </div>
 
             <div className="bg-white rounded-lg">
-                {purchaseHistory.map((item) => (
+                {purchase.map((item) => (
                     <Link
-                        key={item.id}
-                        href={`/purchase/${item.id}`}
+                        key={item.purchase.purchaseid}
+                        href={`/purchaselist/${item.purchase.purchaseid}`}
                         className="flex items-center gap-4 p-4 hover:bg-gray-50 border-b last:border-b-0"
                     >
                         <div className="relative w-16 h-16 flex-shrink-0">
+							{item.tweet.media_url ? (
                             <Image
-                                src={item.image}
-                                alt={item.name}
+                                src={item.tweet.media_url}
+                                alt={item.listing.listingname}
                                 fill
                                 className="object-cover rounded-md"
                             />
+							):(
+								<ShoppingCartIcon className="w-16 h-16 text-gray-400" />
+							)}
                         </div>
                         <div className="flex-1 min-w-0">
                             <h3 className="text-sm font-medium text-gray-900 truncate">
-                                {item.name}
+                                商品名：{item.listing.listingname}
                             </h3>
                             <p className="text-xs text-gray-500 mt-1">
-                                {item.purchaseDate}
+                                購入日時：{date(item.purchase.created_at)}
                             </p>
-                            {item.status && (
-                                <span className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded mt-1">
-                                    {item.status}
-                                </span>
-                            )}
+                           
+                            <p className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded mt-1">
+                                配送状況: {item.purchase.status}
+                             </p>
+                            
                         </div>
                         <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
                     </Link>

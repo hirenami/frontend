@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import GetFetcher from "@/routes/getfetcher";
-import { ListingItem } from "@/types";
+import { ListingItem, User } from "@/types";
 import PaypalButton from "./components/paypalbutton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback,AvatarImage } from "@/components/ui/avatar";
+import { purchase } from "@/routes/purchase/tweetpost";
 
 
 export default function PurchaseForm() {
@@ -16,20 +17,28 @@ export default function PurchaseForm() {
     const tweetid = tweetId as unknown as number;
     const router = useRouter();
     const [listing, setListing] = useState<ListingItem | null>(null);
+	const [user, setUser] = useState<User | null>(null);
     const [isPaypalOpen, setIsPaypalOpen] = useState(false);
-    const { data: listingData, error } = GetFetcher(
+    const { data: listingData, error, token } = GetFetcher(
         `http://localhost:8080/listing/${tweetid}/tweetid`
     );
+	const { data: userdata } = GetFetcher(`http://localhost:8080/user`);
 
     useEffect(() => {
         if (listingData) {
             setListing(listingData);
         }
-    }, [listingData]);
+		if (userdata) {
+			setUser(userdata.user);
+		}
+    }, [listingData, userdata]);
 
     const handlePaymentSuccess = () => {
         // 支払い成功後の処理
         alert("購入が完了しました！");
+		if(token && listing){
+		purchase(token,listing.listing.listingid);
+		}
         router.push(`/tweet/${tweetid}`); // 購入履歴ページなどに遷移
     };
 
@@ -93,8 +102,8 @@ export default function PurchaseForm() {
 				<p className="text-gray-700 mb-4">{listing.listing.listingdescription}</p>
 				<div className="space-y-4">
 					<div className="flex justify-between items-center py-2 border-b">
-						<span className="text-gray-600">価格:</span>
-						<span className="font-bold text-lg">¥{listing.listing.listingprice.toLocaleString()}</span>
+						<span className="text-gray-600">価格:{user?.ispremium && "プレミアム特典により2%の割引"}</span>
+						<span className="font-bold text-lg">¥{user?.ispremium ? Math.floor(listing.listing.listingprice * 0.98).toLocaleString() : listing.listing.listingprice.toLocaleString()}</span>
 					</div>
 					<div className="flex justify-between items-center py-2 border-b">
 						<span className="text-gray-600">商品の状態:</span>
@@ -108,7 +117,7 @@ export default function PurchaseForm() {
 						isPaypalOpen ? (
 							<PaypalButton
 								productId={listing.listing.listingid.toString()}
-								value={listing.listing.listingprice}
+								value={user?.ispremium ? Math.floor(listing.listing.listingprice * 0.98): listing.listing.listingprice}
 								isOpen={isPaypalOpen}
 								onPaymentSuccess={handlePaymentSuccess}
 							/>

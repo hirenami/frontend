@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ShoppingBagIcon } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import GetFetcher from "@/routes/getfetcher";
 import { ListingItem} from "@/types";
 import { useState,useEffect } from "react";
+import {date} from "@/lib/Date";
 
 export default function ListingHistory() {
     const router = useRouter();
@@ -42,21 +43,23 @@ export default function ListingHistory() {
                         className="flex items-center gap-4 p-4 hover:bg-gray-50 border-b last:border-b-0"
                     >
                         <div className="relative w-16 h-16 flex-shrink-0">
-							{item.tweet.media_url && (
+							{item.tweet.media_url ? (
                             <Image
                                 src={item.tweet.media_url}
                                 alt={item.listing.listingname}
                                 fill
                                 className="object-cover rounded-md"
                             />
+							):(
+								<ShoppingBagIcon className="w-16 h-16 text-gray-400" />
 							)}
                         </div>
                         <div className="flex-1 min-w-0">
                             <h3 className="text-sm font-medium text-gray-900 truncate">
-                                {item.listing.listingname}
+                                商品名：{item.listing.listingname}
                             </h3>
                             <p className="text-xs text-gray-500 mt-1">
-                                {item.listing.listingdescription}
+                                出品日時：{date(item.listing.created_at)}
                             </p>
                            
                             <p className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded mt-1">

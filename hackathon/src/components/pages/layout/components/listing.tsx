@@ -235,7 +235,7 @@ export default function CombinedTweetProductListing() {
                                             <LucideImage className="h-5 w-5 text-primary" />
                                         </Button>
                                     </div>
-                                    <FormField
+                                    {user?.ispremium &&<FormField
                                         control={form.control}
                                         name="isProductListing"
                                         render={({ field }) => (
@@ -253,7 +253,7 @@ export default function CombinedTweetProductListing() {
                                                 </FormControl>
                                             </FormItem>
                                         )}
-                                    />
+                                    />}
                                 </div>
                             </div>
                         </div>
@@ -328,19 +328,19 @@ export default function CombinedTweetProductListing() {
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    <SelectItem value="new">
+                                                    <SelectItem value="新品・未使用">
                                                         新品・未使用
                                                     </SelectItem>
-                                                    <SelectItem value="like-new">
+                                                    <SelectItem value="未使用に近い">
                                                         未使用に近い
                                                     </SelectItem>
-                                                    <SelectItem value="good">
+                                                    <SelectItem value="目立った傷や汚れなし">
                                                         目立った傷や汚れなし
                                                     </SelectItem>
-                                                    <SelectItem value="fair">
+                                                    <SelectItem value="やや傷や汚れあり">
                                                         やや傷や汚れあり
                                                     </SelectItem>
-                                                    <SelectItem value="poor">
+                                                    <SelectItem value="傷や汚れあり">
                                                         傷や汚れあり
                                                     </SelectItem>
                                                 </SelectContent>

@@ -96,3 +96,18 @@ export interface ListingItem {
 	user 	: User;
 	tweet   : Tweet;
 }
+
+export interface PurchaseData {
+	purchaseid: number;
+	userid: string;
+	listingid: number;
+	created_at: string;
+	status: string;
+}
+
+export interface PurchaseItem {
+	purchase : PurchaseData;
+	user 	: User;
+	tweet   : Tweet;
+	listing : ListingData;
+}

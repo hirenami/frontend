@@ -51,7 +51,7 @@ export default function PremiumAccountBilling() {
                                 d="M5 12l5 5L20 7"
                             ></path>
                         </svg>
-                        商品を無制限に出品可能
+                        商品を出品可能
                     </li>
                     <li className="flex items-center text-sm text-gray-700">
                         <svg
@@ -68,7 +68,7 @@ export default function PremiumAccountBilling() {
                                 d="M5 12l5 5L20 7"
                             ></path>
                         </svg>
-                        購入時最大5%の割引
+                        購入時2%の割引
                     </li>
 					<li className="flex items-center text-sm text-gray-700">
                         <svg

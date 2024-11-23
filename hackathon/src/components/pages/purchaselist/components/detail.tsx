@@ -1,33 +1,40 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, Clock, Shield, ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, ChevronRight, ShoppingCartIcon} from "lucide-react";
+import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-interface TransactionDetails {
-    productName: string;
-    price: number;
-    coupon: string;
-    purchaseDate: string;
-    productId: string;
-    sellerName: string;
-    sellerRating: string;
-}
+import { useEffect, useState } from "react";
+import { PurchaseItem, User } from "@/types";
+import GetFetcher from "@/routes/getfetcher";
+import {date} from "@/lib/Date";
+import { Avatar } from "@radix-ui/react-avatar";
+import { AvatarImage } from "@/components/ui/avatar";
 
 export default function Component() {
     const router = useRouter();
+	const { id } = useParams();
+	const Id = id as unknown as number;
 
-    const transaction: TransactionDetails = {
-        productName: "中学英力練成テキスト 英語1年",
-        price: 700,
-        coupon: "なし",
-        purchaseDate: "2022年12月29日 11:58",
-        productId: "m50765246892",
-        sellerName: "まとめ購入お値下5%以内",
-        sellerRating: "本人確認済",
-    };
+	const [purchase, setPurchase] = useState<PurchaseItem>();
+	const [user , setUser] = useState<User>();
+	const { data: purchasedata } = GetFetcher(`http://localhost:8080/purchase/${Id}`);
+	const { data: userdata } = GetFetcher(`http://localhost:8080/user`);
+
+	useEffect(() => {
+		if (purchasedata) {
+			setPurchase(purchasedata);
+		}
+		if (userdata) {
+			setUser(userdata.user);
+		}
+	}
+	, [purchasedata , userdata]);
+
+	if (!purchase) {
+		return null;
+	}
 
     return (
         <div className="max-w-4xl mx-auto p-4">
@@ -53,19 +60,23 @@ export default function Component() {
             <Card className="mb-6">
                 <CardContent className="p-6">
                     <div className="flex gap-4 mb-6">
+						{purchase.tweet.media_url ? (
                         <Image
-                            src="/placeholder.svg"
-                            alt={transaction.productName}
+                            src={purchase.tweet.media_url}
+                            alt={purchase.listing.listingname}
                             width={100}
                             height={100}
                             className="rounded-md object-cover"
                         />
+						):(
+							<ShoppingCartIcon className="w-16 h-16 text-gray-400" />
+						)}
                         <div className="flex-1">
                             <h2 className="text-lg font-semibold mb-2">
-                                {transaction.productName}
+                                {purchase.listing.listingname}
                             </h2>
                             <p className="text-2xl font-bold">
-                                ¥{transaction.price.toLocaleString()}
+                                ¥{purchase.listing.listingprice.toLocaleString()}
                             </p>
                         </div>
                     </div>
@@ -73,50 +84,36 @@ export default function Component() {
                     <dl className="space-y-4">
                         <div className="flex justify-between py-2 border-b">
                             <dt className="text-gray-600">プレミアム特典</dt>
-                            <dd>{transaction.coupon}</dd>
+                            { user?.ispremium ? <dd>2%割引</dd> : <dd>なし</dd>}
                         </div>
                         <div className="flex justify-between py-2 border-b">
                             <dt className="text-gray-600">購入日時</dt>
-                            <dd>{transaction.purchaseDate}</dd>
+                            <dd>{date(purchase.purchase.created_at)}</dd>
                         </div>
                         <div className="flex justify-between py-2 border-b">
                             <dt className="text-gray-600">商品ID</dt>
                             <dd className="flex items-center gap-2">
-                                {transaction.productId}
+                                {purchase.listing.listingid}
                             </dd>
                         </div>
                     </dl>
                 </CardContent>
             </Card>
 
-            {/* <Card className="mb-6">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="p-4 bg-emerald-50 rounded-md">
-              <span className="text-xs text-emerald-700">らくらくメルカリ便</span>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">{transaction.deliveryMethod}</h3>
-              <p className="text-sm text-gray-600">サイズ {transaction.deliverySize}</p>
-              <p className="text-sm text-gray-600">送料 ¥{transaction.deliveryPrice}（出品者負担）</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card> */}
-
             <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-6 hover:bg-gray-100" onClick={() =>router.push(`/profile/${purchase.user.userid}`)}>
                     <h3 className="font-semibold mb-4">出品者情報</h3>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-gray-100 rounded-full" />
+							<Avatar className="w-12 h-12 bg-gray-100 rounded-full overflow-hidden">
+								<AvatarImage src={purchase.user.icon_image} />
+							</Avatar>
                             <div>
                                 <p className="font-medium">
-                                    {transaction.sellerName}
+                                    {purchase.user.username}
                                 </p>
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                                    <Shield className="w-4 h-4" />
-                                    <span>{transaction.sellerRating}</span>
+                                    <span>@{purchase.user.userid}</span>
                                 </div>
                             </div>
                         </div>
@@ -124,12 +121,7 @@ export default function Component() {
                     </div>
                     <div className="mt-4 flex gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            <span>24時間以内発送</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <Shield className="w-4 h-4" />
-                            <span>まとめ買い対応実績あり</span>
+                            <span>{purchase.user.biography}</span>
                         </div>
                     </div>
                 </CardContent>
