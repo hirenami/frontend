@@ -91,14 +91,14 @@ export default function FollowPage() {
                 className="w-full"
                 onValueChange={setActiveTab}
             >
-                <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="followers">
+                <TabsList className="grid w-full grid-cols-2 bg-white">
+                    <TabsTrigger value="followers" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">
                         フォロワー
                         <span className="ml-2 text-sm text-muted-foreground">
                             {followersCount}
                         </span>
                     </TabsTrigger>
-                    <TabsTrigger value="follows">
+                    <TabsTrigger value="follows" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">
                         フォロー中
                         <span className="ml-2 text-sm text-muted-foreground">
                             {followsCount}

@@ -104,9 +104,9 @@ const SearchPage = () => {
                 </div>
             </header>
             <Tabs defaultValue="tweets" className="w-full" >
-                <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="tweets">ツイート</TabsTrigger>
-                    <TabsTrigger value="users">ユーザー</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 bg-white">
+                    <TabsTrigger value="tweets" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">ツイート</TabsTrigger>
+                    <TabsTrigger value="users" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">ユーザー</TabsTrigger>
                 </TabsList>
                 <TabsContent value="tweets">
                     {displayData?.length === 0 ? (
