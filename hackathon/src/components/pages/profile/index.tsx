@@ -54,7 +54,7 @@ export default function ProfilePage() {
     } = GetFetcher(`http://localhost:8080/tweet/${userid}`);
     const { data: myData } = GetFetcher("http://localhost:8080/user");
     const { data: replyData } = GetFetcher(
-        `http://localhost:8080/reply/${userid}`
+        `http://localhost:8080/reply/${userid}/user`
     );
     const { data: likeData } = GetFetcher(
         `http://localhost:8080/like/${userid}`
@@ -323,7 +323,7 @@ export default function ProfilePage() {
                             user={data.user}
                             initialisLiked={data.likes}
                             initialisRetweeted={data.retweets}
-                            type={"reply"}
+                            type={"tweet"}
                             isblocked={data.isblocked}
                             isprivate={data.isprivate}
                             token={token}
