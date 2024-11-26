@@ -37,6 +37,8 @@ import { LucideImage } from "lucide-react";
 import { User } from "@/types";
 import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
+import { sendProductData } from "@/routes/listing/importretail";
+import { customAlphabet } from 'nanoid';
 
 const tweetSchema = z.object({
     content: z
@@ -101,52 +103,73 @@ export default function CombinedTweetProductListing() {
     };
 
     async function onSubmit(values: z.infer<typeof combinedSchema>) {
-        setIsSubmitting(true);
-        let media_url = "";
-
-        if (media.length > 0) {
-            media_url = await uploadFile(media[0]);
-        }
-
-        const endpoint =
-            values.isProductListing
-                ? "http://localhost:8080/listing"
-                : "http://localhost:8080/tweet";
-
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                content: values.content,
-                media_url: media_url,
-                ...(values.isProductListing && {
-                    listing: {
-                        listingname: values.name,
+		setIsSubmitting(true);
+		let media_url = "";
+		const generateNumericID = customAlphabet('0123456789', 12); // 長さ12の数字IDを生成
+		const id = generateNumericID(); // 数字IDを数値に変換
+	
+		try {
+			if (media.length > 0) {
+				media_url = await uploadFile(media[0]);
+			}
+	
+			const endpoint = values.isProductListing
+				? "http://localhost:8080/listing"
+				: "http://localhost:8080/tweet";
+	
+			const payload = {
+				content: values.content,
+				media_url: media_url,
+				...(values.isProductListing && {
+					listing: {
+						listingid: Number(id),
+						listingname: values.name,
 						listingdescription: values.description,
 						listingprice: values.price,
 						listingstock: values.stock,
 						type: values.category,
 						condition: values.condition,
-                    },
-                }),
-            }),
-        });
-
-        if (response.ok) {
-            console.log("ツイートが正常に投稿されました");
-            form.reset();
-            setMedia([]);
-            setIsOpen(false);
-            router.push("/home");
-        } else {
-            console.error("ツイートの投稿中にエラーが発生しました");
-        }
-
-        setIsSubmitting(false);
-    }
+					},
+				}),
+			};
+	
+			// POST to either listing or tweet endpoint
+			const response = await fetch(endpoint, {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
+	
+			if (!response.ok) {
+				throw new Error("Error posting tweet or listing");
+			}
+	
+			// If it's a product listing, send additional data to the import-products API
+			if (values.isProductListing) {
+				await sendProductData(
+					id, // Assuming a fixed or dynamic ID
+					values.category as string,
+					values.name as string,
+					values.price as number,
+					values.description as string,
+					media_url // Use uploaded media URL as the image
+				);
+			}
+	
+			console.log("投稿が正常に完了しました");
+			form.reset();
+			setMedia([]);
+			setIsOpen(false);
+			router.push("/home");
+		} catch (error) {
+			console.error("投稿中にエラーが発生しました", error);
+		} finally {
+			setIsSubmitting(false);
+		}
+	}
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -303,7 +326,7 @@ export default function CombinedTweetProductListing() {
                                                     <SelectItem value="sports">
                                                         スポーツ・レジャー
                                                     </SelectItem>
-                                                    <SelectItem value="interior">
+                                                    <SelectItem value="Home & Garden > Decor">
                                                         インテリア・住まい・小物
                                                     </SelectItem>
                                                 </SelectContent>
