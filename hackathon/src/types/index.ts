@@ -34,15 +34,6 @@ export interface User {
 	isadmin: boolean;
 }
 
-export interface Profile {
-	firebaseuid: string;
-	userId: string;
-	username: string;
-	biography: string;
-	header_image: string;
-	icon_image: string;
-}
-
 export interface TweetData {
 	tweet: Tweet;
 	user: User;
@@ -76,6 +67,21 @@ export interface FollowData {
 	isfollowers: boolean;
 	isblocked: boolean;
 	isprivate: boolean;
+}
+
+export interface Dm{
+	dmsid: number;
+	senderid: string;
+	receiverid: string;
+	createdat : string;
+	content: string;
+	media_url: string;
+	status: string;
+}
+
+export interface DmData {
+	user : User;
+	dms : Dm[];
 }
 
 export interface ListingData {
