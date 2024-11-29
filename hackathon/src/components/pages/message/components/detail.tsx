@@ -5,7 +5,6 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { date } from "@/lib/Date";
-import GetFetcher from "@/routes/getfetcher";
 import { CreateDM } from "@/routes/message/createdm";
 import { LucideImage, X } from 'lucide-react';
 import Image from "next/image";
@@ -14,42 +13,31 @@ import { GetDMs } from "@/routes/message/getmessage";
 
 interface Props {
     dmdata: DmData | undefined;
+    user: User | undefined;
+    token: string | null;
 }
 
-export default function Detail({ dmdata }: Props) {
+export default function Detail({ dmdata, user, token }: Props) {
     const [messages, setMessages] = useState<Dm[]>([]);
     const [inputMessage, setInputMessage] = useState("");
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    const [user, setUser] = useState<User>();
     const [isConnected, setIsConnected] = useState(false);
-    const { data, token } = GetFetcher("http://localhost:8080/user");
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (data) {
-            setUser(data.user);
-            console.log(data.user);
+        if (dmdata) {
+            const fetchData = async () => {
+                const response = await GetDMs(token, dmdata.user.userid);
+                if (response) {
+                    setMessages(response);
+                }
+            }
+            fetchData();
         }
-		if(dmdata){
-		const fetchData = async () => {
-			const response = await GetDMs(token, dmdata.user.userid);
-			if (response) {
-				setMessages(response);
-			}
-		}
-		fetchData();
-		}
-
-    }, [data, dmdata,token]);
-
-    // useEffect(() => {
-    //     if (dmdata) {
-    //         setMessages(dmdata.dms);
-    //     }
-    // }, [dmdata]);
+    }, [dmdata, token]);
 
     const connectWebSocket = useCallback(() => {
         if (dmdata?.user.userid && user) {
@@ -63,8 +51,7 @@ export default function Detail({ dmdata }: Props) {
 
             ws.onmessage = (event) => {
                 const newMessage = JSON.parse(event.data);
-				console.log(dmdata.user.userid);
-                if (newMessage.type === 'MESSAGE' && newMessage.receiverId === user.userid && newMessage.senderId === dmdata.user.userid) {
+                if (newMessage.type === 'MESSAGE' && newMessage.receiverId === user.userid) {
                     setMessages((prevMessages) => {
                         const isDuplicate = prevMessages.some(
                             (msg) => msg.dmsid === newMessage.dmsid
@@ -124,10 +111,17 @@ export default function Detail({ dmdata }: Props) {
     }, [connectWebSocket, isConnected]);
 
     useEffect(() => {
-        if (scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-        }
+        scrollToBottom();
     }, [messages]);
+
+    const scrollToBottom = () => {
+        if (scrollAreaRef.current) {
+            const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+            if (scrollContainer) {
+                scrollContainer.scrollTop = scrollContainer.scrollHeight;
+            }
+        }
+    };
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -200,7 +194,7 @@ export default function Detail({ dmdata }: Props) {
         }
     };
 
-    if (!dmdata || !user ) {
+    if (!dmdata || !user) {
         return null;
     }
 
@@ -330,7 +324,7 @@ export default function Detail({ dmdata }: Props) {
                     >
                         <LucideImage className="h-5 w-5 text-primary" />
                     </Button>
-					<Input
+                    <Input
                         type="text"
                         placeholder="メッセージを入力..."
                         value={inputMessage}

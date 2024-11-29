@@ -264,7 +264,7 @@ export default function TweetItem({
 
     return (
         <div>
-            {retweet && !tweet.isquote ? (
+            {retweet  && !retweet.tweet.isdeleted  && !tweet.isquote ? (
                 <div
                     className="relative hover:bg-gray-50 transition-colors duration-200"
                     onClick={() => handleTweetClick(tweet.retweetid)}

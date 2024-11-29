@@ -8,18 +8,24 @@ import { useRouter } from "next/navigation";
 import GetFetcher from "@/routes/getfetcher";
 import { DmData } from "@/types";
 import Detail from "./components/detail";
+import { User } from "@/types";
 
 export default function DirectMessage() {
     const [selectedUserDm, setSelectedUserDm] = useState<DmData>();
     const router = useRouter();
-	const { data, error } = GetFetcher("http://localhost:8080/dm");
+	const { data, error,token } = GetFetcher("http://localhost:8080/dm");
 	const [dmsdata, setDmsData] = useState<DmData[]>([]);
+	const { data: userdata } = GetFetcher("http://localhost:8080/user");
+	const [user, setUser] = useState<User>();
 
 	useEffect(() => {
 		if (data) {
 			setDmsData(data);
 		}
-	}, [data]);
+		if (userdata) {
+			setUser(userdata.user);
+		}
+	}, [data,userdata]);
 
 	
 	if(error) return <div>Error: {error.message}</div>
@@ -42,11 +48,15 @@ export default function DirectMessage() {
                     {dmsdata.map((dmdata) => (
                         <div
                             key={dmdata.dms[0].dmsid}
-                            className={`flex items-center p-4 cursor-pointer hover:bg-gray-100 border-b ${
+                            className={`relative flex items-center p-4 cursor-pointer hover:bg-gray-100 border-b ${
                                 selectedUserDm?.user.userid === dmdata.user.userid ? "bg-gray-100" : ""
                             }`}
                             onClick={() => setSelectedUserDm(dmdata)}
-                        >
+                        >	
+							{/* 未読の場合、右上に青い◯を表示 */}
+							{dmdata.dms.length > 0 &&  dmdata.dms[0].status === 'unread' && dmdata.dms[0].senderid !== user?.userid   && (
+								<div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+							)}
                             <Avatar className="h-12 w-12">
                                 <AvatarImage
                                     src={dmdata.user.icon_image}
@@ -59,7 +69,7 @@ export default function DirectMessage() {
                                     @{dmdata.user.userid}
                                 </div>
                                 <div className="text-sm text-gray-500 mt-1">
-								{dmdata.dms.length > 0 && dmdata.dms[dmdata.dms.length - 1].content}
+								{dmdata.dms.length > 0 && dmdata.dms[0].content}
                                 </div>
                             </div>
                         </div>
@@ -68,7 +78,7 @@ export default function DirectMessage() {
             </div>
 
 			{/* メッセージ詳細 */}
-			<Detail dmdata={selectedUserDm}/>
+			<Detail dmdata={selectedUserDm} user={user} token={token}/>
 
         </div>
     );
