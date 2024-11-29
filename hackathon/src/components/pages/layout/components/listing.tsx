@@ -38,7 +38,7 @@ import { User } from "@/types";
 import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
 import { sendProductData } from "@/routes/listing/importretail";
-import { customAlphabet } from 'nanoid';
+import { customAlphabet } from "nanoid";
 
 const tweetSchema = z.object({
     content: z
@@ -64,13 +64,12 @@ const combinedSchema = tweetSchema.merge(productSchema.partial()).extend({
     isProductListing: z.boolean().default(false),
 });
 
-
 export default function CombinedTweetProductListing() {
     const [isOpen, setIsOpen] = useState(false);
     const [media, setMedia] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { data: UserData , token } = GetFetcher("http://localhost:8080/user");
+    const { data: UserData, token } = GetFetcher("http://localhost:8080/user");
     const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
 
@@ -103,73 +102,74 @@ export default function CombinedTweetProductListing() {
     };
 
     async function onSubmit(values: z.infer<typeof combinedSchema>) {
-		setIsSubmitting(true);
-		let media_url = "";
-		const generateNumericID = customAlphabet('0123456789', 12); // 長さ12の数字IDを生成
-		const id = generateNumericID(); // 数字IDを数値に変換
-	
-		try {
-			if (media.length > 0) {
-				media_url = await uploadFile(media[0]);
-			}
-	
-			const endpoint = values.isProductListing
-				? "http://localhost:8080/listing"
-				: "http://localhost:8080/tweet";
-	
-			const payload = {
-				content: values.content,
-				media_url: media_url,
-				...(values.isProductListing && {
-					listing: {
-						listingid: Number(id),
-						listingname: values.name,
-						listingdescription: values.description,
-						listingprice: values.price,
-						listingstock: values.stock,
-						type: values.category,
-						condition: values.condition,
-					},
-				}),
-			};
-	
-			// POST to either listing or tweet endpoint
-			const response = await fetch(endpoint, {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(payload),
-			});
-	
-			if (!response.ok) {
-				throw new Error("Error posting tweet or listing");
-			}
-	
-			// If it's a product listing, send additional data to the import-products API
-			if (values.isProductListing) {
-				await sendProductData(
-					id, // Assuming a fixed or dynamic ID
-					values.category as string,
-					values.name as string,
-					values.price as number,
-					values.description as string,
-					media_url // Use uploaded media URL as the image
-				);
-			}
-	
-			console.log("投稿が正常に完了しました");
-			form.reset();
-			setMedia([]);
-			setIsOpen(false);
-			router.push("/home");
-		} catch (error) {
-			console.error("投稿中にエラーが発生しました", error);
-		} finally {
-			setIsSubmitting(false);
-		}
-	}
+        setIsSubmitting(true);
+        let media_url = "";
+        const generateNumericID = customAlphabet("0123456789", 12); // 長さ12の数字IDを生成
+        const id = generateNumericID(); // 数字IDを数値に変換
+
+        try {
+            if (media.length > 0) {
+                media_url = await uploadFile(media[0]);
+            }
+
+            const endpoint = values.isProductListing
+                ? "http://localhost:8080/listing"
+                : "http://localhost:8080/tweet";
+
+            const payload = {
+                content: values.content,
+                media_url: media_url,
+                ...(values.isProductListing && {
+                    listing: {
+                        listingid: Number(id),
+                        listingname: values.name,
+                        listingdescription: values.description,
+                        listingprice: values.price,
+                        listingstock: values.stock,
+                        type: values.category,
+                        condition: values.condition,
+                        stock: values.stock,
+                    },
+                }),
+            };
+
+            // POST to either listing or tweet endpoint
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error("Error posting tweet or listing");
+            }
+
+            // If it's a product listing, send additional data to the import-products API
+            if (values.isProductListing) {
+                await sendProductData(
+                    id, // Assuming a fixed or dynamic ID
+                    values.category as string,
+                    values.name as string,
+                    values.price as number,
+                    values.description as string,
+                    media_url // Use uploaded media URL as the image
+                );
+            }
+
+            console.log("投稿が正常に完了しました");
+            form.reset();
+            setMedia([]);
+            setIsOpen(false);
+            router.push("/home");
+        } catch (error) {
+            console.error("投稿中にエラーが発生しました", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -202,7 +202,9 @@ export default function CombinedTweetProductListing() {
                                         <FormItem>
                                             <FormControl>
                                                 <Textarea
-                                                    placeholder={"いまどうしてる？"}
+                                                    placeholder={
+                                                        "いまどうしてる？"
+                                                    }
                                                     className="min-h-[100px] text-xl resize-none focus:ring-0 focus:border-transparent border-transparent p-0 shadow-none bg-transparent"
                                                     {...field}
                                                 />
@@ -258,25 +260,29 @@ export default function CombinedTweetProductListing() {
                                             <LucideImage className="h-5 w-5 text-primary" />
                                         </Button>
                                     </div>
-                                    {user?.ispremium &&<FormField
-                                        control={form.control}
-                                        name="isProductListing"
-                                        render={({ field }) => (
-                                            <FormItem className="flex items-center space-x-2">
-                                                <FormLabel>
-                                                    商品を出品する
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Switch
-                                                        checked={field.value}
-                                                        onCheckedChange={
-                                                            field.onChange
-                                                        }
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />}
+                                    {user?.ispremium && (
+                                        <FormField
+                                            control={form.control}
+                                            name="isProductListing"
+                                            render={({ field }) => (
+                                                <FormItem className="flex items-center space-x-2">
+                                                    <FormLabel>
+                                                        商品を出品する
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Switch
+                                                            checked={
+                                                                field.value
+                                                            }
+                                                            onCheckedChange={
+                                                                field.onChange
+                                                            }
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -387,13 +393,21 @@ export default function CombinedTweetProductListing() {
                                                         type="number"
                                                         placeholder="価格を入力してください"
                                                         {...field}
-														onChange={(e) =>
-															field.onChange(
-																+e.target.value
-															)
-														}
-														min = "1"
-                                                        
+                                                        value={
+                                                            field.value !==
+                                                            undefined
+                                                                ? String(
+                                                                      field.value
+                                                                  )
+                                                                : ""
+                                                        } // 型を一致させる
+                                                        onChange={(e) =>
+                                                            field.onChange(
+                                                                +e.target
+                                                                    .value || 0
+                                                            )
+                                                        } // 入力値を数値に変換
+                                                        min="1"
                                                         className="pl-8"
                                                     />
                                                 </div>
@@ -429,12 +443,20 @@ export default function CombinedTweetProductListing() {
                                                     type="number"
                                                     placeholder="在庫数を入力してください"
                                                     {...field}
+                                                    value={
+                                                        field.value !==
+                                                        undefined
+                                                            ? String(
+                                                                  field.value
+                                                              )
+                                                            : ""
+                                                    } // 型を一致させる
                                                     onChange={(e) =>
                                                         field.onChange(
-                                                            +e.target.value
+                                                            +e.target.value || 0
                                                         )
-                                                    }
-													min = "1"
+                                                    } // 入力値を数値に変換
+                                                    min="0"
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -459,6 +481,7 @@ export default function CombinedTweetProductListing() {
                                     (!user?.ispremium &&
                                         form.watch("content").length > 280)
                                 }
+                                className="rounded-full px-4 py-2 bg-blue-500 text-white"
                             >
                                 {isSubmitting
                                     ? "投稿中..."

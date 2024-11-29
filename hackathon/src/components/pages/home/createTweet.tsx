@@ -201,7 +201,7 @@ const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
                                     (tweetText.length === 0 && !mediaFile) ||
                                     (!user?.ispremium && tweetText.length > 140)
                                 }
-                                className="rounded-full px-4 py-2"
+                                className="rounded-full px-4 py-2 bg-blue-500 text-white"
                             >
                                 {isLoading
                                     ? "投稿中..."
