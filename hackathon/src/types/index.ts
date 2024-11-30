@@ -103,6 +103,13 @@ export interface ListingItem {
 	tweet   : Tweet;
 }
 
+export interface ListingDetails {
+	listing : ListingData;
+	user 	: FollowData[];
+	tweet   : Tweet;
+}
+
+
 export interface PurchaseData {
 	purchaseid: number;
 	userid: string;
