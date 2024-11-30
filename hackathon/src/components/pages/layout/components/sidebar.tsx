@@ -55,16 +55,8 @@ const Sidebar = () => {
 
     return (
         <aside className="w-80 p-4 flex flex-col fixed min-h-screen">
-            <div className="mb-8">
-                <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    className="h-10 w-10 fill-primary"
-                >
-                    <g>
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                    </g>
-                </svg>
+            <div className="mb-8 ml-6" onClick={() =>router.push("/home")}> 
+				<Image src="https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/%E6%AE%B5%E8%90%BD%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88.png?alt=media&token=30c714d3-8dae-4d91-8c83-77fa1fae733e" alt="logo" width={100} height={100} />
             </div>
 
             <nav className="space-y-2">
