@@ -80,7 +80,7 @@ export default function ProfilePage() {
                         このアカウントのツイートは表示できません
                     </p>
                 </div>
-            ) : user?.isprivate ? (
+            ) : user?.isprivate  ? (
                 <div className="flex flex-col items-center justify-center space-y-2 p-8 rounded-lg mt-10">
                     <LockIcon className="w-12 h-12 text-gray-400" />
                     <span className="font-bold text-xl text-gray-900">

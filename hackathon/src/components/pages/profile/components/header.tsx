@@ -100,7 +100,9 @@ export const Header = ( {userData, currentUserId,userid, tweets, token}: HeaderP
                 />
 
                 <div className="absolute top-56 right-4">
-				<Menu userData={userData} />
+				{!(currentUserId === user.firebaseuid) && (
+				<Menu userData={userData} token={token} />
+				)}
                     {currentUserId === user.firebaseuid ? (
                         <>
                             <Button

@@ -209,6 +209,7 @@ export default function Detail({ dmdata, user, token }: Props) {
 
             <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
                 {messages.map((dm) => (
+					dm.content && (
                     <div
                         key={`${dm.dmsid}-${dm.createdat}`}
                         className={`mb-4 flex ${
@@ -269,6 +270,7 @@ export default function Detail({ dmdata, user, token }: Props) {
                             </div>
                         </div>
                     </div>
+					)
                 ))}
             </ScrollArea>
 

@@ -12,13 +12,17 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { FollowData } from "@/types";
 import { useState } from "react";
+import { CreateDM } from "@/routes/message/createdm";
+import { useRouter } from "next/navigation";
 
 interface Props {
 	userData : FollowData | null;
+	token : string | null;
 }
 
-export default function Component({ userData  }: Props) {		
+export default function Component({ userData, token  }: Props) {		
 	const [isblocked, setIsBlocked] = useState(userData?.isblocked);
+	const router = useRouter();
 
 	const handleBlockToggle = async (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -26,9 +30,10 @@ export default function Component({ userData  }: Props) {
 		console.log("ブロックトグル");
 	}
 
-	const CreateDM = async (e: React.MouseEvent) => {
+	const handleDM = async (e: React.MouseEvent) => {
 		e.preventDefault();
-		console.log("ダイレクトメッセージ");
+		CreateDM(token, userData?.user.userid, "", "");
+		router.push("/message");
 	}
 
     return (
@@ -52,7 +57,7 @@ export default function Component({ userData  }: Props) {
                     {isblocked ?  "ブロック解除" : "ブロックする" }
                 </DropdownMenuItem>
 				<DropdownMenuItem
-                    onClick={(e) => CreateDM(e)}
+                    onClick={(e) => handleDM(e)}
                 >
                     {"ダイレクトメッセージ"}
                 </DropdownMenuItem>
