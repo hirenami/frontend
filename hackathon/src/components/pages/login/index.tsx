@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Sign } from "@/types";
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 export const LoginForm = (props: Sign) => {
     const [email, setEmail] = useState("");
@@ -23,12 +22,7 @@ export const LoginForm = (props: Sign) => {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-            <motion.div 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="w-full max-w-md space-y-8 rounded-xl bg-gray-800 p-8 shadow-2xl"
-            >
+            <div className="w-full max-w-md space-y-8 rounded-xl bg-gray-800 p-8 shadow-2xl animate-fadeIn">
                 <div className="text-center">
                     <div className="flex justify-center">
                         <Image
@@ -40,16 +34,12 @@ export const LoginForm = (props: Sign) => {
                         />
                     </div>
                     <h2 className="text-3xl font-extrabold text-white">
-                        {isSignUp ? "アカウントを作成" : "Xにログイン"}
+                        {isSignUp ? "アカウントを作成" : "ログイン"}
                     </h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="space-y-4">
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.2 }}
-                        >
+                        <div className="animate-slideIn" style={{animationDelay: '0.2s'}}>
                             <label htmlFor="email-address" className="sr-only">
                                 メールアドレス
                             </label>
@@ -59,17 +49,13 @@ export const LoginForm = (props: Sign) => {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                className="relative block w-full appearance-none rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+                                className="relative block w-full appearance-none rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm transition duration-300 ease-in-out"
                                 placeholder="メールアドレス"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
+                        </div>
+                        <div className="animate-slideIn" style={{animationDelay: '0.3s'}}>
                             <label htmlFor="password" className="sr-only">
                                 パスワード
                             </label>
@@ -79,18 +65,14 @@ export const LoginForm = (props: Sign) => {
                                 type="password"
                                 autoComplete="current-password"
                                 required
-                                className="relative block w-full appearance-none rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+                                className="relative block w-full appearance-none rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm transition duration-300 ease-in-out"
                                 placeholder="パスワード"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
-                        </motion.div>
+                        </div>
                         {isSignUp && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.4 }}
-                            >
+                            <div className="animate-slideIn" style={{animationDelay: '0.4s'}}>
                                 <label htmlFor="username" className="sr-only">
                                     ユーザー名
                                 </label>
@@ -100,24 +82,22 @@ export const LoginForm = (props: Sign) => {
                                     type="text"
                                     autoComplete="username"
                                     required
-                                    className="relative block w-full appearance-none rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+                                    className="relative block w-full appearance-none rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm transition duration-300 ease-in-out"
                                     placeholder="ユーザー名"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                 />
-                            </motion.div>
+                            </div>
                         )}
                     </div>
 
                     <div>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                        <button
                             type="submit"
-                            className="group relative flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            className="group relative flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
                         >
                             {isSignUp ? "アカウントを作成" : "ログイン"}
-                        </motion.button>
+                        </button>
                     </div>
                 </form>
                 <div className="text-center">
@@ -130,7 +110,7 @@ export const LoginForm = (props: Sign) => {
                             : "アカウントをお持ちでないですか？新規登録"}
                     </button>
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 };
