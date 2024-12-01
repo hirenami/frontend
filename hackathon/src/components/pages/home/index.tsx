@@ -53,6 +53,7 @@ export default function HomePage() {
                         key={index}
                         type={"tweet"}
                         tweet={data.tweet}
+						retweet={data.retweet}
                         user={data.user}
                         initialisLiked={data.likes}
                         initialisRetweeted={data.retweets}

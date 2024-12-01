@@ -124,6 +124,7 @@ export default function ProfilePage() {
                                 key={index}
                                 tweet={data.tweet}
                                 user={data.user}
+								retweet={data.retweet}
                                 initialisLiked={data.likes}
                                 initialisRetweeted={data.retweets}
                                 type={"tweet"}
@@ -139,6 +140,7 @@ export default function ProfilePage() {
                                 key={index}
                                 tweet={data.tweet}
                                 user={data.user}
+								retweet={data.retweet}
                                 initialisLiked={data.likes}
                                 initialisRetweeted={data.retweets}
                                 type={"tweet"}
@@ -154,6 +156,7 @@ export default function ProfilePage() {
                                 key={index}
                                 tweet={data.tweet}
                                 user={data.user}
+								retweet={data.retweet}
                                 initialisLiked={data.likes}
                                 initialisRetweeted={data.retweets}
                                 type={"tweet"}

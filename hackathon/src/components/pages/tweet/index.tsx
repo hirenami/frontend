@@ -172,6 +172,7 @@ export default function TweetPage() {
                             type={"reply"}
                             tweet={data.tweet}
                             user={data.user}
+							retweet={data.retweet}
                             initialisLiked={data.likes}
                             initialisRetweeted={data.retweets}
                             isblocked={data.isblocked}
@@ -197,6 +198,7 @@ export default function TweetPage() {
                                     key={index}
                                     tweet={data.tweet}
                                     user={data.user}
+									retweet={data.retweet}
                                     initialisLiked={data.likes}
                                     initialisRetweeted={data.retweets}
                                     type={"tweet"}

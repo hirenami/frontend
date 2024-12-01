@@ -37,6 +37,16 @@ export interface User {
 export interface TweetData {
 	tweet: Tweet;
 	user: User;
+	retweet : ReTweetData;
+	likes: boolean;
+	retweets: boolean;
+	isblocked: boolean;
+	isprivate: boolean;
+}
+
+export interface ReTweetData {
+	tweet: Tweet;
+	user: User;
 	likes: boolean;
 	retweets: boolean;
 	isblocked: boolean;

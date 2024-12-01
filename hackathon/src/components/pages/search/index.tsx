@@ -121,6 +121,7 @@ const SearchPage = () => {
                                     type={"tweet"}
                                     tweet={data.tweet}
                                     user={data.user}
+									retweet={data.retweet}
                                     initialisLiked={data.likes}
                                     initialisRetweeted={data.retweets}
                                     isblocked={data.isblocked}

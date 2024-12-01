@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Repeat, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tweet, TweetData, User } from "@/types/index";
+import { ReTweetData, Tweet, User } from "@/types/index";
 import Image from "next/image";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import RetweetItem from "@/components/pages/tweet/components/retweetItems";
@@ -9,13 +9,13 @@ import { RenderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { formatDate } from "@/lib/formatDate";
 import { useRouter } from "next/navigation";
 import { fireAuth } from "@/features/firebase/auth";
-import { fetchOneTweet } from "@/features/tweet/fetchOneTweet";
 import MenuComponent from "@/components/pages/tweet/components/menu";
 import ActionButton from "./component/actionbutton";
 
 interface TweetItemProps {
     tweet: Tweet;
     user: User;
+	retweet: ReTweetData | null;
     initialisLiked: boolean;
     initialisRetweeted: boolean;
     type: string;
@@ -27,6 +27,7 @@ interface TweetItemProps {
 export default function TweetItem({
     tweet,
     user,
+	retweet,
     initialisLiked,
     initialisRetweeted,
     type,
@@ -38,34 +39,21 @@ export default function TweetItem({
     const [isRetweeted, setIsRetweeted] = useState(initialisRetweeted); // 状態を管理
     const [likeData, setLikeData] = useState<number>(0);
     const [retweetCount, setRetweetCount] = useState<number>(0);
-    const [retweet, setRetweet] = useState<TweetData | null>(null);
+    const [retweetData, setRetweetData] = useState<ReTweetData | null>(null);
     const router = useRouter();
     const auth = fireAuth;
 
     useEffect(() => {
-        const fetchdata = async () => {
-            if (tweet.retweetid && token) {
-                try {
-                    const data = await fetchOneTweet(token, tweet.retweetid);
-                    if (data) {
-                        setRetweet(data);
-                    }
-                } catch (error) {
-                    console.error(
-                        "エラーが発生しました:",
-                        error
-                    );
-                }
-            }
-        };
-        fetchdata();
+		if(tweet.retweetid){
+			setRetweetData(retweet);
+		}
         if (tweet.likes) {
             setLikeData(tweet.likes);
         }
         if (tweet.retweets) {
             setRetweetCount(tweet.retweets);
         }
-    }, [tweet.retweetid, tweet.likes, tweet.retweets, token]);
+    }, [tweet.retweetid, tweet.likes, tweet.retweets, token, retweet]);
 
     if (!tweet) {
         return (
@@ -196,7 +184,7 @@ export default function TweetItem({
                     )}
 
                     {/* 引用リツイートされたツイート */}
-                    {tweet.isquote && retweet && (
+                    {tweet.isquote && retweetData && retweetData.tweet.tweetid &&  (
                         <div
                             className="mt-3 mr-10 p-3 border border-gray-200 rounded-lg  hover:bg-gray-100"
                             onClick={(e) => {
@@ -205,9 +193,9 @@ export default function TweetItem({
                             }}
                         >
                             <RetweetItem
-                                tweet={retweet.tweet}
-                                isblocked={retweet.isblocked}
-                                isprivate={retweet.isprivate}
+                                tweet={retweetData.tweet}
+                                isblocked={retweetData.isblocked}
+                                isprivate={retweetData.isprivate}
                             />
                         </div>
                     )}
@@ -264,7 +252,7 @@ export default function TweetItem({
 
     return (
         <div>
-            {retweet  && !retweet.tweet.isdeleted  && !tweet.isquote ? (
+            {retweet && retweet.tweet.tweetid!=0  && !retweet?.tweet.isdeleted  && !tweet.isquote ? (
                 <div
                     className="relative hover:bg-gray-50 transition-colors duration-200"
                     onClick={() => handleTweetClick(tweet.retweetid)}
@@ -281,6 +269,7 @@ export default function TweetItem({
                     <TweetItem
                         tweet={retweet.tweet}
                         user={retweet.user}
+						retweet={null}
                         initialisLiked={retweet.likes}
                         initialisRetweeted={retweet.retweets}
                         type={"tweet"}
