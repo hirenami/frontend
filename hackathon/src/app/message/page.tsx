@@ -1,7 +1,7 @@
 "use client";
 
 import Sidebar from "@/components/pages/layout/components/sidebar";
-import DirectMessage from "@/components/pages/message/page";
+import DirectMessage from "@/components/pages/message";
 
 export default function Component() {
     return (

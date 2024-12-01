@@ -1,41 +1,67 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import GetFetcher from "@/routes/getfetcher";
-import TweetItem from "@/components/pages/tweetitem";
-import { TweetData } from "@/types";
-import { useSearchParams, useRouter } from "next/navigation";
-import { ArrowLeft, Search, Settings2 } from "lucide-react";
+import { useState, useEffect } from "react"
+import GetFetcher from "@/routes/getfetcher"
+import TweetItem from "@/components/pages/tweetitem"
+import Follow from "@/components/pages/follow/components/follow"
+import { TweetData, FollowData } from "@/types"
+import { useSearchParams, useRouter } from "next/navigation"
+import { ArrowLeft, Search, Settings2 } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const SearchPage = () => {
-    const [searchData, setSearchData] = useState<TweetData[]>([]);
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const q = searchParams.get("q") || "";
+    const [searchData, setSearchData] = useState<TweetData[]>([])
+    const [userData, setUserData] = useState<FollowData[]>([])
+    const [hashtagData, setHashtagData] = useState<TweetData[]>([])
 
-    const { data: search, error, isLoading,token } = GetFetcher(
-        q ? `http://localhost:8080/search/${q}` : ""
-    );
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const q = searchParams.get("q") || ""
+    const hashtag = q.startsWith("#") ? q.replace(/^(#|＃)/, "") : q
+
+    const { data: search, error, isLoading, token } = GetFetcher(
+        q ? `http://localhost:8080/search/${hashtag}` : ""
+    )
+
+    const { data: user } = GetFetcher(
+        q ? `http://localhost:8080/search/${hashtag}/user` : ""
+    )
+
+    const { data: Hashtag } = GetFetcher(
+        hashtag ? `http://localhost:8080/search/＃${hashtag}/hashtag` : ""
+    )
 
     useEffect(() => {
+		setSearchData([]);
+        setUserData([]);
+        setHashtagData([]);
+
         if (search) {
-            setSearchData(search);
+            setSearchData(search)
         }
-    }, [search, q]);
+        if (user) {
+            setUserData(user)
+        }
+        if (Hashtag) {
+            setHashtagData(Hashtag)
+        }
+		console.log(q)
+    }, [search, user, Hashtag, q])
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && !e.nativeEvent.isComposing) {
-            const query = (e.target as HTMLInputElement).value;
-            router.push(`/search?q=${query}`);
+            const query = (e.target as HTMLInputElement).value
+			const encode = encodeURIComponent(query)
+            router.push(`/search?q=${encode}`)
         }
-    };
+    }
 
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-white text-black">
                 <p>読み込み中...</p>
             </div>
-        );
+        )
     }
 
     if (error) {
@@ -43,8 +69,10 @@ const SearchPage = () => {
             <div className="flex min-h-screen items-center justify-center bg-white text-black">
                 <p>再読み込みしてください</p>
             </div>
-        );
+        )
     }
+
+    const displayData = q.startsWith("#") ? hashtagData : searchData
 
     return (
         <>
@@ -63,6 +91,7 @@ const SearchPage = () => {
                             placeholder="検索"
                             className="w-full rounded-full bg-gray-100 py-2 pl-10 pr-4 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                             onKeyDown={handleKeyPress}
+                            defaultValue={q}
                         />
                         <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
                     </div>
@@ -74,29 +103,55 @@ const SearchPage = () => {
                     </button>
                 </div>
             </header>
-            {searchData?.length === 0 ? (
-                <div className="flex  items-center justify-center bg-white text-black pt-20">
-                    <p>該当するツイートが見つかりませんでした</p>
-                </div>
-            ) : (
-                <div>
-                    {searchData?.map((data, index) => (
-                        <TweetItem
-                            key={index}
-                            type={"tweet"}
-                            tweet={data.tweet}
-                            user={data.user}
-                            initialisLiked={data.likes}
-                            initialisRetweeted={data.retweets}
-							isblocked={data.isblocked}
-							isprivate={data.isprivate}
-							token = {token}
-                        />
-                    ))}
-                </div>
-            )}
+            <Tabs defaultValue="tweets" className="w-full" >
+                <TabsList className="grid w-full grid-cols-2 bg-white">
+                    <TabsTrigger value="tweets" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">ツイート</TabsTrigger>
+                    <TabsTrigger value="users" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">ユーザー</TabsTrigger>
+                </TabsList>
+                <TabsContent value="tweets">
+                    {displayData?.length === 0 ? (
+                        <div className="flex items-center justify-center bg-white text-black pt-20">
+                            <p>該当するツイートが見つかりませんでした</p>
+                        </div>
+                    ) : (
+                        <div>
+                            {displayData?.map((data, index) => (
+                                <TweetItem
+                                    key={index}
+                                    type={"tweet"}
+                                    tweet={data.tweet}
+                                    user={data.user}
+									retweet={data.retweet}
+                                    initialisLiked={data.likes}
+                                    initialisRetweeted={data.retweets}
+                                    isblocked={data.isblocked}
+                                    isprivate={data.isprivate}
+                                    token={token}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </TabsContent>
+                <TabsContent value="users">
+                    {userData?.length === 0 ? (
+                        <div className="flex items-center justify-center bg-white text-black pt-20">
+                            <p>該当するユーザーが見つかりませんでした</p>
+                        </div>
+                    ) : (
+                        <div>
+                            {userData?.map((data, index) => (
+                                <Follow
+                                    key={index}
+									index={index}
+                                    follower={data}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </TabsContent>
+            </Tabs>
         </>
-    );
-};
+    )
+}
 
-export default SearchPage;
+export default SearchPage

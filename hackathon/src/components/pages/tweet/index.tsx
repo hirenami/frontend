@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import TweetItem from "@/components/pages/tweetitem";
 import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
-import  Header  from "@/components/pages/tweet/components/header";
+import Header from "@/components/pages/tweet/components/header";
 import TweetComponent from "@/components/pages/tweet/components/tweetcontent";
 import ActionButton from "@/components/pages/tweet/components/actionbutton";
 
@@ -45,85 +45,103 @@ export default function TweetPage() {
     useEffect(() => {
         if (!tweetId) return;
 
-		if(tweetData) {
-
-        setTweet(tweetData.tweet);
-        setIsLiked(tweetData.likes);
-        setLikeData(tweetData.tweet.likes);
-        setIsRetweet(tweetData.retweets);
-        setRetweetCount(tweetData.tweet.retweets);
-        setUser(tweetData.user);
-		}
-		if(repliesData) {
-        setReplies(repliesData);
-		}
-		if(repliedData) {
-        setReplied(repliedData);
-		}
+        if (tweetData) {
+            setTweet(tweetData.tweet);
+            setIsLiked(tweetData.likes);
+            setLikeData(tweetData.tweet.likes);
+            setIsRetweet(tweetData.retweets);
+            setRetweetCount(tweetData.tweet.retweets);
+            setUser(tweetData.user);
+        }
+        if (repliesData) {
+            setReplies(repliesData);
+        }
+        if (repliedData) {
+            setReplied(repliedData);
+        }
 
         if (tweetData?.tweet.retweetid) {
-			const fetchData = async () => {
-				const res = await fetch(`http://localhost:8080/tweet/${tweetData.tweet.retweetid}/tweetid`,
-				{
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "application/json",
-					},
-				}
-				);
-				const data = await res.json();
-				setRetweet(data);
-			}
-			fetchData();
+            const fetchData = async () => {
+                const res = await fetch(
+                    `http://localhost:8080/tweet/${tweetData.tweet.retweetid}/tweetid`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                const data = await res.json();
+                setRetweet(data);
+            };
+            fetchData();
         }
-    }, [tweetId, tweetData, repliesData, repliedData,token]);
+    }, [tweetId, tweetData, repliesData, repliedData, token]);
 
-	if (isLoading1 || isLoading2 || isLoading3 || !tweet) {
-		return (
-			<div className="flex min-h-screen items-center justify-center bg-white text-black">
-				<p>読み込み中...</p>
-			</div>
-		);
-	}
+    if (isLoading1 || isLoading2 || isLoading3 || !tweet) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-white text-black">
+                <p>読み込み中...</p>
+            </div>
+        );
+    }
 
-	if (error1 || error2 || error3) {
-		return (
-			<div className="flex min-h-screen items-center justify-center bg-white text-black">
-				<p>再読み込みしてください。</p>
-			</div>
-		);
-	}
+    if (error1 || error2 || error3) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-white text-black">
+                <p>再読み込みしてください。</p>
+            </div>
+        );
+    }
 
     const Tweetobj = () => {
         if (!tweet || !user) return null;
         return (
             <div className="flex space-x-3 flex-col p-2 border-b">
                 {/* ユーザーのアイコン */}
-               <Header user={user} token={token} tweet={tweet} />
+                <Header
+                    user={user}
+                    token={token}
+                    tweet={tweet}
+                    isliked={isliked}
+                    setIsLiked={setIsLiked}
+                    likeData={likeData}
+                    setLikeData={setLikeData}
+                    isretweet={isretweet}
+                    setIsRetweet={setIsRetweet}
+                    retweetCount={retweetCount}
+                    setRetweetCount={setRetweetCount}
+                />
 
                 <div className="flex-1 min-w-0">
                     {/* ツイートの内容 */}
-					<TweetComponent tweet={tweet} retweet={retweet} isblocked={tweetData.isblocked} isprivate={tweetData.isprivate}/>
+                    <TweetComponent
+                        tweet={tweet}
+                        retweet={retweet}
+                        isblocked={tweetData.isblocked}
+                        isprivate={tweetData.isprivate}
+                    />
 
                     {/* アクションボタン群 */}
-					{ tweetData.isblocked || tweetData.isprivate || tweet.isdeleted ? null :
-					<ActionButton 
-						tweet={tweet}
-						token={token}
-						isliked={isliked}
-						setIsLiked={setIsLiked}
-						likeData={likeData}
-						setLikeData={setLikeData}
-						isretweet={isretweet}
-						setIsRetweet={setIsRetweet}
-						retweetCount={retweetCount}
-						setRetweetCount={setRetweetCount}
-						isblocked={tweetData.isblocked}
-						isprivate={tweetData.isprivate}
-					/>
-					}
-                    
+                    {tweetData.isblocked ||
+                    tweetData.isprivate ||
+                    tweet.isdeleted ? null : (
+                        <ActionButton
+                            tweet={tweet}
+                            token={token}
+                            isliked={isliked}
+                            setIsLiked={setIsLiked}
+                            likeData={likeData}
+                            setLikeData={setLikeData}
+                            isretweet={isretweet}
+                            setIsRetweet={setIsRetweet}
+                            retweetCount={retweetCount}
+                            setRetweetCount={setRetweetCount}
+                            isblocked={tweetData.isblocked}
+                            isprivate={tweetData.isprivate}
+                        />
+                    )}
                 </div>
             </div>
         );
@@ -154,11 +172,12 @@ export default function TweetPage() {
                             type={"reply"}
                             tweet={data.tweet}
                             user={data.user}
+							retweet={data.retweet}
                             initialisLiked={data.likes}
                             initialisRetweeted={data.retweets}
-							isblocked={data.isblocked}
-							isprivate={data.isprivate}
-							token={token}
+                            isblocked={data.isblocked}
+                            isprivate={data.isprivate}
+                            token={token}
                         />
                     ))}
             </div>
@@ -169,7 +188,7 @@ export default function TweetPage() {
                     <CreateTweet
                         userToken={token}
                         type={"reply"}
-                        tweetId={tweetid}
+                        tweet={tweet}
                     />
 
                     <div>
@@ -179,12 +198,13 @@ export default function TweetPage() {
                                     key={index}
                                     tweet={data.tweet}
                                     user={data.user}
+									retweet={data.retweet}
                                     initialisLiked={data.likes}
                                     initialisRetweeted={data.retweets}
                                     type={"tweet"}
-									isblocked={data.isblocked}
-									isprivate={data.isprivate}
-									token={token}
+                                    isblocked={data.isblocked}
+                                    isprivate={data.isprivate}
+                                    token={token}
                                 />
                             ))}
                     </div>

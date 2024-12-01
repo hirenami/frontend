@@ -1,43 +1,47 @@
+'use client'
+
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { User } from "@/types";
+import { User, Tweet } from "@/types";
 import { useEffect, useRef, useState } from "react";
-import {LucideImage} from "lucide-react";
+import { LucideImage, Star } from 'lucide-react';
 import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
 
 interface TweetComponentProps {
-	userToken: string | null;
+    userToken: string | null;
     type: string;
-    tweetId: number;
+    tweet: Tweet | null;
 }
-const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
+
+const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
     const [tweetText, setTweetText] = useState("");
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false); // ローディング状態
-	const { data: UserData } = GetFetcher('http://localhost:8080/user');
-	const [user , setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { data: UserData } = GetFetcher('http://localhost:8080/user');
+    const [user, setUser] = useState<User | null>(null);
+    const [rating, setRating] = useState<number>(0);
 
     useEffect(() => {
-		if (UserData) {
-			setUser(UserData.user);
-		}
-		console.log(UserData);
-	}, [UserData]);
+        if (UserData) {
+            setUser(UserData.user);
+        }
+        console.log(UserData);
+    }, [UserData]);
 
     const handleTweet = async () => {
-        if (tweetText.trim() === "" && !mediaFile) {
-            alert("ツイートの内容を入力してください"); // 空のツイートの警告
+        if (tweetText.trim() === "" && !mediaFile && rating === 0) {
+            alert("ツイートの内容を入力してください");
             return;
         }
 
-        setIsLoading(true); // ローディング開始
+        setIsLoading(true);
         let media_url = "";
-		if ( tweetText == "") console.log("tweetText is empty");
+        if (tweetText == "") console.log("tweetText is empty");
 
         if (fileInputRef.current?.files?.[0]) {
             media_url = await uploadFile(fileInputRef.current.files[0]);
@@ -46,7 +50,7 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
         const endpoint =
             type === "tweet"
                 ? "http://localhost:8080/tweet"
-                : `http://localhost:8080/reply/${tweetId}`;
+                : `http://localhost:8080/reply/${tweet?.tweetid}`;
 
         const response = await fetch(endpoint, {
             method: "POST",
@@ -55,8 +59,9 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                content:  tweetText,
+                content: tweetText,
                 media_url: media_url,
+                review: rating,
             }),
         });
 
@@ -64,16 +69,17 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
             console.log("ツイートが正常に投稿されました");
             setTweetText("");
             setMediaFile(null);
+            setRating(0);
             router.push(
                 type == "tweet"
                     ? `http://localhost:3000/home`
-                    : `http://localhost:3000/tweet/${tweetId}`
+                    : `http://localhost:3000/tweet/${tweet?.tweetid}`
             );
         } else {
             console.error("ツイートの投稿中にエラーが発生しました");
         }
 
-        setIsLoading(false); // ローディング終了
+        setIsLoading(false);
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +94,7 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
     };
 
     const router = useRouter();
+
     return (
         <div className="border-b p-4">
             <div className="flex space-x-4">
@@ -100,6 +107,30 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
                     </Avatar>
                 </button>
                 <div className="flex-1 space-y-2">
+                    {tweet?.review === -1 && type !== "tweet" && (
+                        <div className="flex justify-end items-center space-x-2 mb-2">
+                            <span className="text-sm text-gray-500">
+                                {rating === 0 ? "評価なし" : `${rating}つ星`}
+                            </span>
+                            <div className="flex justify-end space-x-1">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <Button
+                                        key={star}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="p-0"
+                                        onClick={() => setRating(star === rating ? 0 : star)}
+                                    >
+                                        <Star
+                                            className={`w-6 h-6 ${
+                                                star <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                                            }`}
+                                        />
+                                    </Button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     <Textarea
                         placeholder={
                             type === "tweet"
@@ -161,15 +192,16 @@ const CreateTweet = ({ type, tweetId, userToken }: TweetComponentProps) => {
                         </div>
                         <div className="flex items-center space-x-4">
                             <span className="text-sm text-gray-500">
-                                {user?.ispremium ?  "∞" : 140 - tweetText.length}
+                                {user?.ispremium ? "∞" : 140 - tweetText.length}
                             </span>
                             <Button
                                 onClick={handleTweet}
                                 disabled={
                                     isLoading ||
-                                    (tweetText.length === 0 && !mediaFile) || (!user?.ispremium && tweetText.length > 140)
+                                    (tweetText.length === 0 && !mediaFile) ||
+                                    (!user?.ispremium && tweetText.length > 140)
                                 }
-                                className="rounded-full px-4 py-2"
+                                className="rounded-full px-4 py-2 bg-blue-500 text-white"
                             >
                                 {isLoading
                                     ? "投稿中..."

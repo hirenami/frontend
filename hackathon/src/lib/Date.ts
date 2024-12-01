@@ -1,7 +1,7 @@
 export const date = (dateString: string) => {
 	// ISO文字列をDateオブジェクトに変換し、日本時間に変換 (UTC + 9)
 	const date = new Date(dateString);
-	date.setHours(date.getHours() + 9);
+	date.setHours(date.getHours() - 9);
 
 	// 午前/午後の判定
 	const hours = date.getHours();

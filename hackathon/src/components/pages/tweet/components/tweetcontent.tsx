@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { renderContentWithHashtags } from "@/lib/renderContentWithHashtags";
+import { RenderContentWithHashtags } from "@/lib/renderContentWithHashtags";
 import { date } from "@/lib/Date";
 import RetweetItem from "./retweetItems";
 import { Tweet, TweetData } from "@/types";
@@ -49,7 +49,7 @@ export default function TweetComponent({
         <>
             {/* ツイートのテキスト */}
             <p className="text-lg text-gray-900 whitespace-pre-wrap">
-                {renderContentWithHashtags(tweet.content)}
+                {RenderContentWithHashtags(tweet.content)}
             </p>
 
             {/* メディア（画像または動画） */}

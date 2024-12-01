@@ -45,7 +45,7 @@ export default function HomePage() {
                 </div>
             </header>
 
-            <CreateTweet userToken={token} type={"tweet"} tweetId={0} />
+            <CreateTweet userToken={token} type={"tweet"} tweet={null} />
 
             <div>
                 {timelineData.map((data, index) => (
@@ -53,6 +53,7 @@ export default function HomePage() {
                         key={index}
                         type={"tweet"}
                         tweet={data.tweet}
+						retweet={data.retweet}
                         user={data.user}
                         initialisLiked={data.likes}
                         initialisRetweeted={data.retweets}

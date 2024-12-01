@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { MessageCircle, Heart, Repeat, UserPlus } from "lucide-react";
+import { MessageCircle, Heart, Repeat, UserPlus, MessagesSquare } from "lucide-react";
 import { User,Notification,Tweet } from "@/types/index";
 import { onAuthStateChanged } from "firebase/auth";
 import {fireAuth} from "@/features/firebase/auth";
@@ -49,6 +49,8 @@ export default function NotificationItem({
 				return <Repeat className="w-5 h-5 text-green-500" />;
             case "follow":
                 return <UserPlus className="w-5 h-5 text-primary" />;
+			case "dm":
+				return <MessagesSquare className="w-5 h-5 text-primary" />;
         }
     };
 
@@ -64,6 +66,8 @@ export default function NotificationItem({
 				return `さんがあなたの投稿を引用リツイートしました`;
             case "follow":
                 return `さんがあなたをフォローしました`;
+			case "dm":
+				return `さんがあなたにDMを送りました`;
         }
     };
 
@@ -72,7 +76,9 @@ export default function NotificationItem({
 			console.log("Notification Clicked:", notification.notificationsid);
 			updateNotificationStatus(userToken, notification.notificationsid);
 		}
-		if (notification.contentid) {
+		if (notification.type === "dm") {
+			router.push(`/message`);
+		}else if (notification.contentid) {
 			router.push(`/tweet/${notification.contentid}`);
 		}else{
 			router.push(`/profile/${user.userid}`);

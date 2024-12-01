@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { MessageCircle, Repeat, Heart, Quote, BarChart } from 'lucide-react'
+import { MessageCircle, Repeat, Heart, Quote, BarChart, ShoppingCart } from 'lucide-react'
 import { createLike, deleteLike } from "@/features/like/likes"
 import {
   createRetweet,
@@ -22,7 +22,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import RetweetItem from "@/components/pages/tweet/components/retweetItems"
-import CreateTweet from "./createquote"
+import CreateQuote from "./createquote"
+import { useRouter } from "next/navigation"
 
 interface ActionButtonProps {
   tweet: Tweet
@@ -54,7 +55,7 @@ export default function ActionButton({
   isprivate,
 }: ActionButtonProps) {
   const [isQuoteDialogOpen, setIsQuoteDialogOpen] = useState(false)
-  const [quoteText, setQuoteText] = useState("")
+  const router = useRouter()
 
   const handleLikeToggle = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -93,23 +94,6 @@ export default function ActionButton({
       console.error("リツイートのトグルに失敗しました:", error)
     }
   }
-
-  const handleQuoteRetweet = async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    try {
-      if (token && tweet && quoteText) {
-        // ここで引用リツイートのAPIを呼び出す
-        console.log("引用リツイート:", quoteText)
-        // 成功したら以下を実行
-        setIsQuoteDialogOpen(false)
-        setQuoteText("")
-        setRetweetCount(retweetCount + 1)
-      }
-    } catch (error) {
-      console.error("引用リツイートに失敗しました:", error)
-    }
-  }
-
 
   return (
     <div className="mt-3 flex justify-between max-w-md">
@@ -170,10 +154,27 @@ export default function ActionButton({
         />
         <span className="text-xs">{likeData}</span>
       </Button>
-      <div className="flex items-center space-x-2 text-gray-500">
+	  {tweet.review == -1 ? ( 
+		<Button
+		variant="ghost"
+		size="sm"
+		className="flex items-center space-x-2 text-gray-500 hover:text-primary pl-0 pr-0"
+		onClick = {(e) => {
+			e.stopPropagation();
+			router.push(`/purchase/${tweet.tweetid}`)
+		}
+		}
+	>
+		<ShoppingCart className="h-4 w-4" />
+		<span className="text-xs">購入</span>
+	</Button>
+	  ):
+	  (
+		<div className="flex items-center space-x-2 text-gray-500">
         <BarChart className="h-4 w-4" />
         <span className="text-xs">{tweet.impressions}</span>
       </div>
+	  )}
       <Dialog open={isQuoteDialogOpen} onOpenChange={(open) => {
     if (!open) {
       setIsQuoteDialogOpen(false);
@@ -184,7 +185,8 @@ export default function ActionButton({
             <DialogTitle>引用リツイート</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <CreateTweet type={"tweeet"} tweetId={0} userToken={"name"}  />
+            <CreateQuote  tweetId={tweet.tweetid}  retweetCount={retweetCount} setIsQuoteDialogOpen={setIsQuoteDialogOpen} setRetweetCount={setRetweetCount} 
+			/>
             <div className="border rounded-md p-4">
               <RetweetItem
                 tweet={tweet}
@@ -192,9 +194,6 @@ export default function ActionButton({
                 isprivate={isprivate}
               />
             </div>
-            <Button onClick={(e) => handleQuoteRetweet(e)}>
-              引用リツイート
-            </Button>
           </div>
         </DialogContent>
       </Dialog>

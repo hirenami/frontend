@@ -1,33 +1,39 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, Clock, Shield, ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, ShoppingCartIcon } from "lucide-react";
+import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-
-interface TransactionDetails {
-    productName: string;
-    price: number;
-    coupon: string;
-    purchaseDate: string;
-    productId: string;
-    sellerName: string;
-    sellerRating: string;
-}
+import { useEffect, useState } from "react";
+import { ListingDetails, User } from "@/types";
+import GetFetcher from "@/routes/getfetcher";
+import { date } from "@/lib/Date";
+import Follow from "@/components/pages/follow/components/follow";
 
 export default function Component() {
     const router = useRouter();
+    const { id } = useParams();
+    const Id = id as unknown as number;
 
-    const transaction: TransactionDetails = {
-        productName: "中学英力練成テキスト 英語1年",
-        price: 700,
-        coupon: "なし",
-        purchaseDate: "2022年12月29日 11:58",
-        productId: "m50765246892",
-        sellerName: "まとめ購入お値下5%以内",
-        sellerRating: "本人確認済",
-    };
+    const [listing, setlisting] = useState<ListingDetails>();
+    const [user, setUser] = useState<User>();
+    const { data: listingdata } = GetFetcher(
+        `http://localhost:8080/listing/${Id}`
+    );
+    const { data: userdata } = GetFetcher(`http://localhost:8080/user`);
+
+    useEffect(() => {
+        if (listingdata) {
+            setlisting(listingdata);
+        }
+        if (userdata) {
+            setUser(userdata.user);
+        }
+    }, [listingdata, userdata]);
+
+    if (!listing) {
+        return null;
+    }
 
     return (
         <div className="max-w-4xl mx-auto p-4">
@@ -41,84 +47,55 @@ export default function Component() {
                 <h1 className="text-xl font-bold ml-4">取引詳細</h1>
             </div>
 
-            <Alert className="bg-yellow-50 border-yellow-100 mb-6">
-                <AlertDescription className="flex items-center gap-2">
-                    ✓ 取引が完了しました
-                    <p className="text-gray-600">
-                        このたびはXのご利用ありがとうございました。
-                    </p>
-                </AlertDescription>
-            </Alert>
-
             <Card className="mb-6">
                 <CardContent className="p-6">
                     <div className="flex gap-4 mb-6">
-                        <Image
-                            src="/placeholder.svg"
-                            alt={transaction.productName}
-                            width={100}
-                            height={100}
-                            className="rounded-md object-cover"
-                        />
+                        {listing.tweet.media_url ? (
+                            <Image
+                                src={listing.tweet.media_url}
+                                alt={listing.listing.listingname}
+                                width={100}
+                                height={100}
+                                className="rounded-md object-cover"
+                            />
+                        ) : (
+                            <ShoppingCartIcon className="w-16 h-16 text-gray-400" />
+                        )}
                         <div className="flex-1">
                             <h2 className="text-lg font-semibold mb-2">
-                                {transaction.productName}
+                                {listing.listing.listingname}
                             </h2>
                             <p className="text-2xl font-bold">
-                                ¥{transaction.price.toLocaleString()}
+                                ¥
+                                {user?.ispremium ? Math.floor(listing.listing.listingprice * 0.98).toLocaleString() : listing.listing.listingprice.toLocaleString()}
                             </p>
                         </div>
                     </div>
 
                     <dl className="space-y-4">
+						<div className="flex justify-between py-2 border-b">
+							<dt className="text-gray-600">商品説明</dt>
+							<dd>{listing.listing.listingdescription}</dd>
+						</div>
                         <div className="flex justify-between py-2 border-b">
-                            <dt className="text-gray-600">プレミアム特典</dt>
-                            <dd>{transaction.coupon}</dd>
-                        </div>
-                        <div className="flex justify-between py-2 border-b">
-                            <dt className="text-gray-600">購入日時</dt>
-                            <dd>{transaction.purchaseDate}</dd>
+                            <dt className="text-gray-600">出品日時</dt>
+                            <dd>{date(listing.listing.created_at)}</dd>
                         </div>
                         <div className="flex justify-between py-2 border-b">
                             <dt className="text-gray-600">商品ID</dt>
                             <dd className="flex items-center gap-2">
-                                {transaction.productId}
+                                {listing.listing.listingid}
                             </dd>
                         </div>
                     </dl>
                 </CardContent>
             </Card>
 
-            <Card>
-                <CardContent className="p-6">
-                    <h3 className="font-semibold mb-4">購入者情報</h3>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-gray-100 rounded-full" />
-                            <div>
-                                <p className="font-medium">
-                                    {transaction.sellerName}
-                                </p>
-                                <div className="flex items-center gap-2 text-sm text-gray-600">
-                                    <Shield className="w-4 h-4" />
-                                    <span>{transaction.sellerRating}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <ChevronRight className="w-6 h-6 text-gray-400" />
-                    </div>
-                    <div className="mt-4 flex gap-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            <span>24時間以内発送</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <Shield className="w-4 h-4" />
-                            <span>まとめ買い対応実績あり</span>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+			<h2 className="font-semibold mb-4">購入者情報</h2>
+			{listing.user.map((user,index) => (
+				<Follow key={index} follower={user} index={index} />
+			))}				
+            
         </div>
     );
 }

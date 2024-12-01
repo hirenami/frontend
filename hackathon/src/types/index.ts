@@ -34,16 +34,17 @@ export interface User {
 	isadmin: boolean;
 }
 
-export interface Profile {
-	firebaseuid: string;
-	userId: string;
-	username: string;
-	biography: string;
-	header_image: string;
-	icon_image: string;
+export interface TweetData {
+	tweet: Tweet;
+	user: User;
+	retweet : ReTweetData;
+	likes: boolean;
+	retweets: boolean;
+	isblocked: boolean;
+	isprivate: boolean;
 }
 
-export interface TweetData {
+export interface ReTweetData {
 	tweet: Tweet;
 	user: User;
 	likes: boolean;
@@ -76,4 +77,62 @@ export interface FollowData {
 	isfollowers: boolean;
 	isblocked: boolean;
 	isprivate: boolean;
+	isblock: boolean;
+	isrequest: boolean;
+}
+
+export interface Dm {
+	dmsid: number;
+	senderid: string;
+	receiverid: string;
+	createdat: string;
+	content: string;
+	media_url: string;
+	status: string;
+}
+
+export interface DmData {
+	user: User;
+	dms: Dm[];
+}
+
+export interface ListingData {
+	listingid: number;
+	userid: string;
+	tweetid: number;
+	created_at: string;
+	listingname: string;
+	listingdescription: string;
+	listingprice: number;
+	type: string;
+	stock: number;
+	condition: string;
+}
+
+export interface ListingItem {
+	listing: ListingData;
+	user: User;
+	tweet: Tweet;
+}
+
+export interface ListingDetails {
+	listing: ListingData;
+	user: FollowData[];
+	tweet: Tweet;
+}
+
+
+export interface PurchaseData {
+	purchaseid: number;
+	userid: string;
+	listingid: number;
+	created_at: string;
+	status: string;
+}
+
+export interface PurchaseItem {
+	purchase: PurchaseData;
+	user: User;
+	tweet: Tweet;
+	listing: ListingData;
 }

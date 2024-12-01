@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { MessageCircle, Repeat, Heart, Quote } from 'lucide-react'
+import { MessageCircle, Repeat, Heart, Quote, ShoppingCart } from 'lucide-react'
 import { createLike, deleteLike } from "@/features/like/likes"
 import { createRetweet, deleteRetweet } from "@/features/retweet/handleretweets"
 import { Tweet } from "@/types"
@@ -18,8 +18,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
 import RetweetItem from "./retweetItems"
+import CreateQuote from "@/components/pages/tweetitem/component/createquote"
+import {useRouter} from "next/navigation"
 
 interface ActionButtonProps {
   tweet: Tweet
@@ -51,7 +52,7 @@ export default function ActionButton({
   isprivate,
 }: ActionButtonProps) {
   const [isQuoteDialogOpen, setIsQuoteDialogOpen] = useState(false)
-  const [quoteText, setQuoteText] = useState("")
+  const router = useRouter()
 
   const handleLikeToggle = async () => {
     try {
@@ -86,21 +87,6 @@ export default function ActionButton({
       }
     } catch (error) {
       console.error("リツイートのトグルに失敗しました:", error)
-    }
-  }
-
-  const handleQuoteRetweet = async () => {
-    try {
-      if (token && tweet && quoteText) {
-        // ここで引用リツイートのAPIを呼び出す
-        console.log("引用リツイート:", quoteText)
-        // 成功したら以下を実行
-        setIsQuoteDialogOpen(false)
-        setQuoteText("")
-        setRetweetCount(retweetCount + 1)
-      }
-    } catch (error) {
-      console.error("引用リツイートに失敗しました:", error)
     }
   }
 
@@ -153,21 +139,31 @@ export default function ActionButton({
         />
         <span className="text-xs">{likeData}</span>
       </Button>
+	  {tweet.review == -1 && ( 
+		<Button
+			variant="ghost"
+			size="sm"
+			className="flex items-center space-x-2 text-gray-500 hover:text-primary"
+			onClick = {(e) => {
+				e.stopPropagation();
+				router.push(`/purchase/${tweet.tweetid}`)
+			}
+			}
+		>
+			<ShoppingCart className="h-4 w-4" />
+			<span className="text-xs">購入</span>
+		</Button>
+	  )}
       <Dialog open={isQuoteDialogOpen} onOpenChange={setIsQuoteDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>引用リツイート</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <Textarea
-              placeholder="コメントを追加"
-              value={quoteText}
-              onChange={(e) => setQuoteText(e.target.value)}
-            />
+		  <CreateQuote  tweetId={tweet.tweetid}  retweetCount={retweetCount} setIsQuoteDialogOpen={setIsQuoteDialogOpen} setRetweetCount={setRetweetCount} />
 			<div className="border rounded-md p-4">
 			<RetweetItem tweet={tweet} isblocked={isblocked} isprivate={isprivate}/>
 			</div>
-            <Button onClick={handleQuoteRetweet}>引用リツイート</Button>
           </div>
         </DialogContent>
       </Dialog>

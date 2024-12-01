@@ -32,9 +32,7 @@ export default function TrendsSidebar() {
                     // 日本語入力中（変換中）のエンターキーは抑制する
                     e.preventDefault();
                 } else {
-                    router.push(
-                        `/search?q=${(e.target as HTMLInputElement).value}`
-                    );
+					router.push(`/search?q=${encodeURIComponent((e.target as HTMLInputElement).value)}`);
                 }
             }
         }

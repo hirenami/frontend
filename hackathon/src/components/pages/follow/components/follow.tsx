@@ -6,7 +6,7 @@ import { FollowData, User } from "@/types";
 import GetFetcher from "@/routes/getfetcher";
 import { useState, useEffect } from "react";
 import { UserCheck, UserPlus } from "lucide-react";
-import { fireAuth } from "@/features/firebase/auth";
+import { handlekeyFollow } from "@/routes/profile/keyfollow";
 
 interface FollowProps {
     follower: FollowData;
@@ -15,40 +15,44 @@ interface FollowProps {
 
 export default function Follow({ follower, index }: FollowProps) {
     const [user, setUser] = useState<User | null>(null);
-	const [isFollowing, setIsFollowing] = useState(false);
-	const { data: UserData } = GetFetcher('http://localhost:8080/user');
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [isRequest, setIsRequest] = useState(false);
+    const { data: UserData, token } = GetFetcher("http://localhost:8080/user");
 
     useEffect(() => {
-        if(UserData) {
-			setUser(UserData);
-		}
-		setIsFollowing(follower.isfollows);
-    }, [follower.isfollows ,UserData]);
+        if (UserData) {
+            setUser(UserData.user);
+        }
+        setIsFollowing(follower.isfollows);
+        setIsRequest(follower.isrequest);
+    }, [follower.isfollows, UserData, follower.isrequest]);
 
-    const handleFollow = async () => {
+    const handleFollow = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         try {
-            const token = await fireAuth.currentUser?.getIdToken();
-            const response = await fetch(`http://localhost:8080/follow/${follower.user.userid}`, {
-                method: follower.isfollows ? "DELETE" : "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-			if (response.ok) {
-                setIsFollowing(!isFollowing);
-                
+            const response = await fetch(
+                `http://localhost:8080/follow/${follower.user.userid}`,
+                {
+                    method: isFollowing ? "DELETE" : "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            if (response.ok) {
+                setIsFollowing(prev => !prev);
+				console.log(isFollowing)
             } else {
                 throw new Error("フォロー操作に失敗しました");
-			}
+            }
         } catch (error) {
             console.error("フォロー操作中にエラーが発生しました:", error);
         }
     };
 
-	const hundleUserClick = async () => {
+    const hundleUserClick = async () => {
         try {
-            const token = await fireAuth.currentUser?.getIdToken();
             if (token) {
                 window.location.href = `/profile/${follower.user.userid}`; // ユーザーページへ遷移
             }
@@ -61,7 +65,7 @@ export default function Follow({ follower, index }: FollowProps) {
         <div
             key={index}
             className="flex items-center p-4 border-b hover:bg-gray-100 transition-colors duration-200"
-			onClick={hundleUserClick}
+            onClick={hundleUserClick}
         >
             <Avatar className="w-12 h-12">
                 <AvatarImage src={follower.user.icon_image} alt="@username" />
@@ -86,22 +90,42 @@ export default function Follow({ follower, index }: FollowProps) {
             {/* フォローボタン */}
             {follower.user.userid !== user?.userid && (
                 <Button
-                    variant={isFollowing ? "outline" : "default"}
+                    variant={
+                        isFollowing || (isRequest && follower?.isprivate)
+                            ? "outline"
+                            : "default"
+                    }
                     size="sm"
                     className={`rounded-full ${
-                        isFollowing
+                        isFollowing || (isRequest && follower?.isprivate)
                             ? "border-gray-300 text-gray-900 hover:bg-gray-100 hover:text-red-500 hover:border-red-500"
                             : "bg-gray-900 text-white hover:bg-gray-800"
                     }`}
-                    onClick={(e) => {
-						e.stopPropagation();
-						handleFollow();
-					}}
+                    onClick={
+                        follower?.isprivate
+                            ? (e) => {
+                                  e.stopPropagation();
+                                  handlekeyFollow(
+                                      follower.user.userid,
+                                      token,
+                                      isRequest,
+                                      setIsRequest
+                                  );
+                              }
+                            : (e) => handleFollow(e)
+                    }
                 >
                     {isFollowing ? (
                         <>
                             <UserCheck className="h-4 w-4 mr-2" />
                             フォロー中
+                        </>
+                    ) : follower?.isprivate ? (
+                        <>
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            {isRequest
+                                ? "リクエスト済み"
+                                : "フォローリクエスト"}
                         </>
                     ) : (
                         <>
