@@ -1,74 +1,64 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ArrowLeft, Calendar, Edit3, UserCheck, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {handleFollowCount,handleFollowerCount} from "@/features/profile/handleprofile";
-import {User, TweetData, FollowData} from "@/types";
+import {
+    handleFollowCount,
+    handleFollowerCount,
+} from "@/features/profile/handleprofile";
+import { User, TweetData, FollowData } from "@/types";
 import UserEditor from "@/components/pages/profile/components/edit";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Menu from "@/components/pages/profile/components/menu";
+import { handlekeyFollow } from "@/routes/profile/keyfollow";
+import { handleFollow } from "@/routes/profile/follow";
 
 interface HeaderProps {
-	userData : FollowData | null;
-	currentUserId : string | null;
-	userid : string;
-	tweets: TweetData[];
-	token : string | null;
+    userData: FollowData | null;
+    currentUserId: string | null;
+    userid: string;
+    tweets: TweetData[];
+    token: string | null;
 }
 
-export const Header = ( {userData, currentUserId,userid, tweets, token}: HeaderProps ) => {
-	const router = useRouter();
-	const [user, setUser] = useState<User | null>(null);
-	const [isFollowing, setIsFollowing] = useState(false);
+export const Header = ({
+    userData,
+    currentUserId,
+    userid,
+    tweets,
+    token,
+}: HeaderProps) => {
+    const router = useRouter();
+    const [user, setUser] = useState<User | null>(null);
+    const [isFollowing, setIsFollowing] = useState(false);
     const [isFollowers, setIsFollowers] = useState(false);
     const [followCount, setFollowCount] = useState(0);
     const [followerCount, setFollowerCount] = useState(0);
-	const [open, setOpen] = useState(false);
+    const [isRequest, setIsRequest] = useState(false);
+    const [open, setOpen] = useState(false);
 
-	useEffect(() => {
-		if (userData) {
+    useEffect(() => {
+        if (userData) {
             setUser(userData.user);
             setFollowCount(userData.follows);
             setFollowerCount(userData.followers);
             setIsFollowing(userData.isfollows);
             setIsFollowers(userData.isfollowers);
+            setIsRequest(userData.isrequest);
         }
-	}, [userData]);
+    }, [userData]);
 
-	const handleFollow = async () => {
-        if (!currentUserId || !userid) return;
+    if (!user) return null;
 
-        try {
-            const response = await fetch(
-                `http://localhost:8080/follow/${userid}`,
-                {
-                    method: isFollowing ? "DELETE" : "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            if (response.ok) {
-                setIsFollowing(!isFollowing);
-                setFollowerCount(
-                    isFollowing ? followerCount - 1 : followerCount + 1
-                );
-            } else {
-                throw new Error("フォロー操作に失敗しました");
-            }
-        } catch (error) {
-            console.error("フォロー操作中にエラーが発生しました:", error);
-        }
-    };
-
-	if (!user) return null;
-
-	return (
-		<>
-		<header className="sticky top-0 z-10 bg-white bg-opacity-80 p-2 backdrop-blur-sm">
+    return (
+        <>
+            <header className="sticky top-0 z-10 bg-white bg-opacity-80 p-2 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <button
@@ -100,9 +90,9 @@ export const Header = ( {userData, currentUserId,userid, tweets, token}: HeaderP
                 />
 
                 <div className="absolute top-56 right-4">
-				{!(currentUserId === user.firebaseuid) && (
-				<Menu userData={userData} token={token} />
-				)}
+                    {!(currentUserId === user.firebaseuid) && (
+                        <Menu userData={userData} token={token} />
+                    )}
                     {currentUserId === user.firebaseuid ? (
                         <>
                             <Button
@@ -131,19 +121,26 @@ export const Header = ( {userData, currentUserId,userid, tweets, token}: HeaderP
                         </>
                     ) : !userData?.isblocked ? (
                         <Button
-                            variant={isFollowing ? "outline" : "default"}
+                            variant={(isFollowing || (isRequest && userData?.isprivate)) ? "outline" : "default"}
                             size="sm"
                             className={`rounded-full ${
-                                isFollowing
+                                isFollowing || (isRequest && userData?.isprivate)
                                     ? "border-gray-300 text-gray-900 hover:bg-gray-100 hover:text-red-500 hover:border-red-500"
                                     : "bg-gray-900 text-white hover:bg-gray-800"
                             }`}
-                            onClick={handleFollow}
+                            onClick={userData?.isprivate ? () => handlekeyFollow(userid,token,isRequest,setIsRequest) : () => handleFollow(userid,token,isFollowing,followerCount,setIsFollowing,setFollowerCount)}
                         >
                             {isFollowing ? (
                                 <>
                                     <UserCheck className="h-4 w-4 mr-2" />
                                     フォロー中
+                                </>
+                            ) : userData?.isprivate ? (
+                                <>
+                                    <UserPlus className="h-4 w-4 mr-2" />
+                                    {isRequest
+                                        ? "リクエスト済み"
+                                        : "フォローリクエスト"}
                                 </>
                             ) : (
                                 <>
@@ -152,8 +149,7 @@ export const Header = ( {userData, currentUserId,userid, tweets, token}: HeaderP
                                 </>
                             )}
                         </Button>
-                    ) : null
-				}
+                    ) : null}
                 </div>
 
                 <Image
@@ -192,27 +188,25 @@ export const Header = ( {userData, currentUserId,userid, tweets, token}: HeaderP
                         : "登録日"}
                 </div>
 
-				
-				{!(userData?.isblocked || userData?.isprivate) ? (
-                <div className="mt-4 flex space-x-6 text-sm">
-                    <div
-                        className="flex items-center space-x-1 border-b border-transparent hover:border-black pb-0 leading-tight"
-                        onClick={() => handleFollowCount(router, userid)}
-                    >
-                        <p className="font-bold ">{followCount}</p>
-                        <p className="text-gray-500">フォロー中</p>
+                {!(userData?.isblocked || userData?.isprivate) ? (
+                    <div className="mt-4 flex space-x-6 text-sm">
+                        <div
+                            className="flex items-center space-x-1 border-b border-transparent hover:border-black pb-0 leading-tight"
+                            onClick={() => handleFollowCount(router, userid)}
+                        >
+                            <p className="font-bold ">{followCount}</p>
+                            <p className="text-gray-500">フォロー中</p>
+                        </div>
+                        <div
+                            className="flex items-center space-x-1 border-b border-transparent hover:border-black pb-0 leading-tight"
+                            onClick={() => handleFollowerCount(router, userid)}
+                        >
+                            <p className="font-bold">{followerCount}</p>
+                            <p className="text-gray-500">フォロワー</p>
+                        </div>
                     </div>
-                    <div
-                        className="flex items-center space-x-1 border-b border-transparent hover:border-black pb-0 leading-tight"
-                        onClick={() => handleFollowerCount(router, userid)}
-                    >
-                        <p className="font-bold">{followerCount}</p>
-                        <p className="text-gray-500">フォロワー</p>
-                    </div>
-                </div>
-				) : null}
-
+                ) : null}
             </div>
-		</>
-	)
-}
+        </>
+    );
+};
