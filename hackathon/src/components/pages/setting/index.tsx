@@ -24,6 +24,7 @@ import EmailChangeForm from "@/components/pages/setting/components/emailchangefo
 import PrivateAccountSettings from "./components/privatechange";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import BlockList from "./components/blocklist";
 
 type SettingOption = {
     id: string;
@@ -142,10 +143,6 @@ function UserIdChangeForm() {
 
 function AccountDeletionForm() {
     return <div>アカウント削除フォーム</div>;
-}
-
-function BlockList() {
-    return <div>ブロックされたユーザー一覧</div>;
 }
 
 function FollowRequests() {
