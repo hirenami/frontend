@@ -12,7 +12,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Lock,
     User,
-    Trash2,
     Shield,
     Key,
     CreditCard,
@@ -25,6 +24,7 @@ import PrivateAccountSettings from "./components/privatechange";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import BlockList from "./components/blocklist";
+import FollowRequest from "./components/keyfollow";
 
 type SettingOption = {
     id: string;
@@ -74,19 +74,13 @@ export default function SettingsPage() {
             id: "follow",
             title: "フォローリクエスト",
             icon: <UserPlus className="w-4 h-4" />,
-            content: <FollowRequests />,
+            content: <FollowRequest />,
         },
         {
             id: "block",
             title: "ブロック一覧",
             icon: <Shield className="w-4 h-4" />,
             content: <BlockList />,
-        },
-        {
-            id: "delete",
-            title: "アカウント削除",
-            icon: <Trash2 className="w-4 h-4" />,
-            content: <AccountDeletionForm />,
         },
     ];
 
@@ -139,12 +133,4 @@ export default function SettingsPage() {
 
 function UserIdChangeForm() {
     return <div>ユーザーID変更フォーム</div>;
-}
-
-function AccountDeletionForm() {
-    return <div>アカウント削除フォーム</div>;
-}
-
-function FollowRequests() {
-    return <div>フォローリクエスト一覧</div>;
 }

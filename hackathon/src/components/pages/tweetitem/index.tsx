@@ -115,6 +115,7 @@ export default function TweetItem({
                                 onClick={hundleUserClick}
                             >
                                 {user?.username}
+								{user?.isprivate ? "🔒️" : ""}
                             </button>
                             <button
                                 className="text-sm text-gray-500 bg-transparent p-0 focus:outline-none"

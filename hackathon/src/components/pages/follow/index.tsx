@@ -77,6 +77,7 @@ export default function FollowPage() {
                         <div>
                             <h1 className="text-xl font-bold">
                                 {user?.username}
+								{user?.isprivate ? "🔒️" : ""}
                             </h1>
                             <p className="text-sm text-muted-foreground">
                                 @{user?.userid}

@@ -69,6 +69,7 @@ export default function Header({
                         onClick={hundleUserClick}
                     >
                         {user?.username}
+						{user?.isprivate ? "🔒️" : ""}
                     </button>
                     <button
                         className="text-sm text-gray-500 bg-transparent pr-6 focus:outline-none whitespace-nowrap"

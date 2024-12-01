@@ -51,6 +51,8 @@ export default function NotificationItem({
                 return <UserPlus className="w-5 h-5 text-primary" />;
 			case "dm":
 				return <MessagesSquare className="w-5 h-5 text-primary" />;
+			case "keyfollow":
+				return <UserPlus className="w-5 h-5 text-primary" />;
         }
     };
 
@@ -68,6 +70,8 @@ export default function NotificationItem({
                 return `さんがあなたをフォローしました`;
 			case "dm":
 				return `さんがあなたにDMを送りました`;
+			case "keyfollow":
+				return `さんがあなたにフォローリクエストを送りました`;
         }
     };
 

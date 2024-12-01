@@ -10,7 +10,7 @@ import {
     User as UserIcon,
     UserPlus,
 	ShoppingCart,
-	Upload
+	Upload,
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
@@ -178,6 +178,7 @@ const Sidebar = () => {
                             <div>
                                 <p className="font-bold text-base">
                                     {user.username || "ゲスト"}
+									{UserData?.user.isprivate ? "🔒️" : ""}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     @{user?.userid}
