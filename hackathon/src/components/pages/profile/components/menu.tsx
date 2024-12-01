@@ -14,26 +14,36 @@ import { FollowData } from "@/types";
 import { useState } from "react";
 import { CreateDM } from "@/routes/message/createdm";
 import { useRouter } from "next/navigation";
+import { createblock,deleteblock } from "@/routes/profile/block";
 
 interface Props {
 	userData : FollowData | null;
 	token : string | null;
 }
 
-export default function Component({ userData, token  }: Props) {		
-	const [isblocked, setIsBlocked] = useState(userData?.isblocked);
+export default function Component({ userData, token  }: Props) {	
+	const [isblock, setIsBlock] = useState(userData?.isblock);	
 	const router = useRouter();
 
 	const handleBlockToggle = async (e: React.MouseEvent) => {
 		e.preventDefault();
-		setIsBlocked(!isblocked);
 		console.log("ブロックトグル");
+		setIsBlock(!isblock);
+		if(isblock){
+		deleteblock(token, userData?.user.userid);
+		}else{
+		createblock(token, userData?.user.userid);
+		}
 	}
 
 	const handleDM = async (e: React.MouseEvent) => {
 		e.preventDefault();
 		CreateDM(token, userData?.user.userid, "", "");
 		router.push("/message");
+	}
+
+	if(userData?.isblocked || userData?.isprivate){
+		return null;
 	}
 
     return (
@@ -54,7 +64,7 @@ export default function Component({ userData, token  }: Props) {
                 <DropdownMenuItem
                     onClick={(e) => handleBlockToggle(e)}
                 >
-                    {isblocked ?  "ブロック解除" : "ブロックする" }
+                    {isblock ?  "ブロック解除" : "ブロックする" }
                 </DropdownMenuItem>
 				<DropdownMenuItem
                     onClick={(e) => handleDM(e)}

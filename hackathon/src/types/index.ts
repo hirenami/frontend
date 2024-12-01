@@ -67,21 +67,23 @@ export interface FollowData {
 	isfollowers: boolean;
 	isblocked: boolean;
 	isprivate: boolean;
+	isblock: boolean;
+	isrequest: boolean;
 }
 
-export interface Dm{
+export interface Dm {
 	dmsid: number;
 	senderid: string;
 	receiverid: string;
-	createdat : string;
+	createdat: string;
 	content: string;
 	media_url: string;
 	status: string;
 }
 
 export interface DmData {
-	user : User;
-	dms : Dm[];
+	user: User;
+	dms: Dm[];
 }
 
 export interface ListingData {
@@ -98,15 +100,15 @@ export interface ListingData {
 }
 
 export interface ListingItem {
-	listing : ListingData;
-	user 	: User;
-	tweet   : Tweet;
+	listing: ListingData;
+	user: User;
+	tweet: Tweet;
 }
 
 export interface ListingDetails {
-	listing : ListingData;
-	user 	: FollowData[];
-	tweet   : Tweet;
+	listing: ListingData;
+	user: FollowData[];
+	tweet: Tweet;
 }
 
 
@@ -119,8 +121,8 @@ export interface PurchaseData {
 }
 
 export interface PurchaseItem {
-	purchase : PurchaseData;
-	user 	: User;
-	tweet   : Tweet;
-	listing : ListingData;
+	purchase: PurchaseData;
+	user: User;
+	tweet: Tweet;
+	listing: ListingData;
 }

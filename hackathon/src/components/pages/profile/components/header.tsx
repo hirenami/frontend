@@ -193,7 +193,7 @@ export const Header = ( {userData, currentUserId,userid, tweets, token}: HeaderP
                 </div>
 
 				
-				{!userData?.isblocked || !userData?.isprivate ? (
+				{!(userData?.isblocked || userData?.isprivate) ? (
                 <div className="mt-4 flex space-x-6 text-sm">
                     <div
                         className="flex items-center space-x-1 border-b border-transparent hover:border-black pb-0 leading-tight"
