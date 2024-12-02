@@ -6,10 +6,10 @@ import { Suspense } from "react";
 
 export default function Component() {
     return (
-        <SearchLayout>
-            <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
+            <SearchLayout>
                 <SearchPage />
-            </Suspense>
-        </SearchLayout>
+            </SearchLayout>
+        </Suspense>
     );
 }
