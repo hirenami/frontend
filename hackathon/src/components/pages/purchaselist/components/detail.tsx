@@ -147,6 +147,7 @@ export default function Component() {
                             <div>
                                 <p className="font-medium">
                                     {purchase.user.username}
+									{purchase.user.isprivate ? "🔒️" : ""}
                                 </p>
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <span>@{purchase.user.userid}</span>

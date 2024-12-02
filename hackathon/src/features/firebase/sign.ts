@@ -4,6 +4,7 @@ import {
 	signInWithEmailAndPassword,
 	setPersistence,
 	browserLocalPersistence,
+	signOut,
 } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
 import { fireAuth } from "./auth";
@@ -29,9 +30,8 @@ export const signIn = async (email: string, password: string) => {
 				"Content-Type": "application/json",
 			},
 		});
-
 		const data = await response.json();
-		console.log("Backend Response:", data);
+		return data;
 	} catch (err) {
 		if (err instanceof FirebaseError) {
 			alert(`${err}:SignInに失敗しました。`);
@@ -46,6 +46,7 @@ export const signUp = async (
 ) => {
 	try {
 		await createUserWithEmailAndPassword(fireAuth, email, password);
+		await signOut(fireAuth);
 		await setPersistence(fireAuth, browserLocalPersistence); // サインアップ後にセッションを保持
 		const userCredential = await signInWithEmailAndPassword(
 			fireAuth,

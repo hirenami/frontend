@@ -71,7 +71,7 @@ export default function Follow({ follower, index }: FollowProps) {
                 <AvatarImage src={follower.user.icon_image} alt="@username" />
             </Avatar>
             <div className="ml-4 flex-1">
-                <h2 className="font-bold">{follower.user.username}</h2>
+                <h2 className="font-bold">{follower.user.username}{follower.user.isprivate ? "🔒️" : ""}</h2>
                 <p className="text-sm text-muted-foreground">
                     @{follower.user.userid}
                     {follower.isfollowers && (

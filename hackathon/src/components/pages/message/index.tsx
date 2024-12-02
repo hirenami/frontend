@@ -64,7 +64,7 @@ export default function DirectMessage() {
                                 />
                             </Avatar>
                             <div className="ml-4">
-                                <div className="font-semibold">{dmdata.user.username}</div>
+                                <div className="font-semibold">{dmdata.user.username}{dmdata.user.isprivate ? "🔒️" : ""}</div>
                                 <div className="text-sm text-gray-400">
                                     @{dmdata.user.userid}
                                 </div>
