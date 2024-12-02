@@ -1,6 +1,6 @@
 
-export const createblock = (token: string|null, blockId: string|undefined) => {
-	fetch(`http://localhost:8080/block/${blockId}`, {
+export const createblock = (token: string | null, blockId: string | undefined) => {
+	fetch(`https://backend-71857953091.us-central1.run.app/block/${blockId}`, {
 		method: "POST",
 		headers: {
 			Authorization: `Bearer ${token}`,
@@ -19,8 +19,8 @@ export const createblock = (token: string|null, blockId: string|undefined) => {
 		});
 }
 
-export const deleteblock = (token: string|null, blockId: string|undefined) => {
-	fetch(`http://localhost:8080/block/${blockId}`, {
+export const deleteblock = (token: string | null, blockId: string | undefined) => {
+	fetch(`https://backend-71857953091.us-central1.run.app/block/${blockId}`, {
 		method: "DELETE",
 		headers: {
 			Authorization: `Bearer ${token}`,

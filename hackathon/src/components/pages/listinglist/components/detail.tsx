@@ -18,9 +18,11 @@ export default function Component() {
     const [listing, setlisting] = useState<ListingDetails>();
     const [user, setUser] = useState<User>();
     const { data: listingdata } = GetFetcher(
-        `http://localhost:8080/listing/${Id}`
+        `https://backend-71857953091.us-central1.run.app/listing/${Id}`
     );
-    const { data: userdata } = GetFetcher(`http://localhost:8080/user`);
+    const { data: userdata } = GetFetcher(
+        `https://backend-71857953091.us-central1.run.app/user`
+    );
 
     useEffect(() => {
         if (listingdata) {
@@ -67,16 +69,20 @@ export default function Component() {
                             </h2>
                             <p className="text-2xl font-bold">
                                 ¥
-                                {user?.ispremium ? Math.floor(listing.listing.listingprice * 0.98).toLocaleString() : listing.listing.listingprice.toLocaleString()}
+                                {user?.ispremium
+                                    ? Math.floor(
+                                          listing.listing.listingprice * 0.98
+                                      ).toLocaleString()
+                                    : listing.listing.listingprice.toLocaleString()}
                             </p>
                         </div>
                     </div>
 
                     <dl className="space-y-4">
-						<div className="flex justify-between py-2 border-b">
-							<dt className="text-gray-600">商品説明</dt>
-							<dd>{listing.listing.listingdescription}</dd>
-						</div>
+                        <div className="flex justify-between py-2 border-b">
+                            <dt className="text-gray-600">商品説明</dt>
+                            <dd>{listing.listing.listingdescription}</dd>
+                        </div>
                         <div className="flex justify-between py-2 border-b">
                             <dt className="text-gray-600">出品日時</dt>
                             <dd>{date(listing.listing.created_at)}</dd>
@@ -91,11 +97,10 @@ export default function Component() {
                 </CardContent>
             </Card>
 
-			<h2 className="font-semibold mb-4">購入者情報</h2>
-			{listing.user.map((user,index) => (
-				<Follow key={index} follower={user} index={index} />
-			))}				
-            
+            <h2 className="font-semibold mb-4">購入者情報</h2>
+            {listing.user.map((user, index) => (
+                <Follow key={index} follower={user} index={index} />
+            ))}
         </div>
     );
 }

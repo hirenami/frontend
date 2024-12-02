@@ -25,17 +25,23 @@ export default function FollowPage() {
         data: userData,
         error: error1,
         isLoading: isLoading1,
-    } = GetFetcher(`http://localhost:8080/user/${userid}`);
+    } = GetFetcher(
+        `https://backend-71857953091.us-central1.run.app/user/${userid}`
+    );
     const {
         data: followsData,
         error: error2,
         isLoading: isLoading2,
-    } = GetFetcher(`http://localhost:8080/follow/${userid}/following`);
+    } = GetFetcher(
+        `https://backend-71857953091.us-central1.run.app/follow/${userid}/following`
+    );
     const {
         data: followersData,
         error: error3,
         isLoading: isLoading3,
-    } = GetFetcher(`http://localhost:8080/follow/${userid}/follower`);
+    } = GetFetcher(
+        `https://backend-71857953091.us-central1.run.app/follow/${userid}/follower`
+    );
 
     useEffect(() => {
         if (userData && followsData && followersData) {
@@ -77,7 +83,7 @@ export default function FollowPage() {
                         <div>
                             <h1 className="text-xl font-bold">
                                 {user?.username}
-								{user?.isprivate ? "🔒️" : ""}
+                                {user?.isprivate ? "🔒️" : ""}
                             </h1>
                             <p className="text-sm text-muted-foreground">
                                 @{user?.userid}
@@ -93,13 +99,19 @@ export default function FollowPage() {
                 onValueChange={setActiveTab}
             >
                 <TabsList className="grid w-full grid-cols-2 bg-white">
-                    <TabsTrigger value="followers" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">
+                    <TabsTrigger
+                        value="followers"
+                        className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none"
+                    >
                         フォロワー
                         <span className="ml-2 text-sm text-muted-foreground">
                             {followersCount}
                         </span>
                     </TabsTrigger>
-                    <TabsTrigger value="follows" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">
+                    <TabsTrigger
+                        value="follows"
+                        className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none"
+                    >
                         フォロー中
                         <span className="ml-2 text-sm text-muted-foreground">
                             {followsCount}

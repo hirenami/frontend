@@ -1,7 +1,7 @@
 export const fetchTweetsData = async (token: string, userId: string) => {
 	try {
 		const tweetsResponse = await fetch(
-			`http://localhost:8080/tweet/${userId}`,
+			`https://backend-71857953091.us-central1.run.app/tweet/${userId}`,
 			{
 				method: "GET",
 				headers: {

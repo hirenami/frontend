@@ -9,12 +9,12 @@ import {
     Search,
     User as UserIcon,
     UserPlus,
-	ShoppingCart,
-	Upload,
+    ShoppingCart,
+    Upload,
 } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { fireAuth } from "@/features/firebase/auth";
-import { useRouter,usePathname  } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { MoreHorizontal, Settings } from "lucide-react";
@@ -30,15 +30,17 @@ import Listing from "@/components/pages/layout/components/listing";
 
 const Sidebar = () => {
     const router = useRouter();
-	const currentPath = usePathname();
+    const currentPath = usePathname();
     const [user, setUser] = useState<User | null>(null);
-	const { data: UserData } = GetFetcher('http://localhost:8080/user');
+    const { data: UserData } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
 
     useEffect(() => {
-		if (UserData) {
-			setUser(UserData.user);
-		}
-    }, [ UserData ]);
+        if (UserData) {
+            setUser(UserData.user);
+        }
+    }, [UserData]);
 
     const signOutEmailAndPassword = (): void => {
         signOut(fireAuth)
@@ -55,8 +57,13 @@ const Sidebar = () => {
 
     return (
         <aside className="w-80 p-4 flex flex-col fixed min-h-screen">
-            <div className="mb-8 ml-6" onClick={() =>router.push("/home")}> 
-				<Image src="https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/%E6%AE%B5%E8%90%BD%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88.png?alt=media&token=30c714d3-8dae-4d91-8c83-77fa1fae733e" alt="logo" width={100} height={100} />
+            <div className="mb-8 ml-6" onClick={() => router.push("/home")}>
+                <Image
+                    src="https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/%E6%AE%B5%E8%90%BD%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88.png?alt=media&token=30c714d3-8dae-4d91-8c83-77fa1fae733e"
+                    alt="logo"
+                    width={100}
+                    height={100}
+                />
             </div>
 
             <nav className="space-y-2">
@@ -72,7 +79,7 @@ const Sidebar = () => {
                     ホーム
                 </Button>
                 <Button
-					onClick={() => router.push("/search")}
+                    onClick={() => router.push("/search")}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
@@ -94,7 +101,7 @@ const Sidebar = () => {
                     通知
                 </Button>
                 <Button
-					onClick={() => router.push("/message")}
+                    onClick={() => router.push("/message")}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
@@ -105,7 +112,7 @@ const Sidebar = () => {
                     メッセージ
                 </Button>
                 <Button
-					onClick={() => router.push(`/setting`)}
+                    onClick={() => router.push(`/setting`)}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
@@ -126,18 +133,20 @@ const Sidebar = () => {
                     <UserIcon className="mr-4 h-6 w-6" />
                     プロフィール
                 </Button>
-				<Button
+                <Button
                     onClick={() => router.push(`/purchaselist`)}
                     variant="ghost"
                     size="lg"
                     className={`w-full justify-start text-lg ${
-                        currentPath.startsWith("/purchaselist") ? "font-bold" : ""
+                        currentPath.startsWith("/purchaselist")
+                            ? "font-bold"
+                            : ""
                     }`}
                 >
                     <ShoppingCart className="mr-4 h-6 w-6" />
                     購入情報
                 </Button>
-				<Button
+                <Button
                     onClick={() => router.push(`/listing`)}
                     variant="ghost"
                     size="lg"
@@ -148,9 +157,8 @@ const Sidebar = () => {
                     <Upload className="mr-4 h-6 w-6" />
                     出品情報
                 </Button>
-
             </nav>
-			<Listing />
+            <Listing />
 
             <div className="mt-auto">
                 {user && (
@@ -178,7 +186,7 @@ const Sidebar = () => {
                             <div>
                                 <p className="font-bold text-base">
                                     {user.username || "ゲスト"}
-									{UserData?.user.isprivate ? "🔒️" : ""}
+                                    {UserData?.user.isprivate ? "🔒️" : ""}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                     @{user?.userid}

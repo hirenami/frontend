@@ -9,14 +9,16 @@ import { useRouter } from "next/navigation";
 
 export default function NotificationsPage() {
     const [notifications, setNotifications] = useState<NotificationData[]>([]);
-    const { data, error, isLoading } = GetFetcher("http://localhost:8080/notifications");
-	const router = useRouter();
+    const { data, error, isLoading } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/notifications"
+    );
+    const router = useRouter();
 
     useEffect(() => {
         if (data) {
             setNotifications(data);
         }
-    }, [data]); 
+    }, [data]);
 
     if (isLoading) {
         return (

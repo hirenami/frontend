@@ -4,18 +4,18 @@ import { FollowData } from "@/types";
 import Follow from "./keyfollowdetail";
 
 export default function KeyFollow() {
-	const { data: FollowData, token } = GetFetcher(
-        "http://localhost:8080/keyfollow"
+    const { data: FollowData, token } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/keyfollow"
     );
     const [followData, setFollowData] = useState<FollowData[]>([]);
 
     useEffect(() => {
-       if(FollowData){
-		   setFollowData(FollowData);
-	   }
+        if (FollowData) {
+            setFollowData(FollowData);
+        }
     }, [FollowData]);
 
-    return followData.length!=0 ? (
+    return followData.length != 0 ? (
         <div>
             {followData.map((follows, index) => (
                 <Follow

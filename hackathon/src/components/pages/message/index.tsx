@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Avatar,  AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -13,23 +13,26 @@ import { User } from "@/types";
 export default function DirectMessage() {
     const [selectedUserDm, setSelectedUserDm] = useState<DmData>();
     const router = useRouter();
-	const { data, error,token } = GetFetcher("http://localhost:8080/dm");
-	const [dmsdata, setDmsData] = useState<DmData[]>([]);
-	const { data: userdata } = GetFetcher("http://localhost:8080/user");
-	const [user, setUser] = useState<User>();
+    const { data, error, token } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/dm"
+    );
+    const [dmsdata, setDmsData] = useState<DmData[]>([]);
+    const { data: userdata } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
+    const [user, setUser] = useState<User>();
 
-	useEffect(() => {
-		if (data) {
-			setDmsData(data);
-		}
-		if (userdata) {
-			setUser(userdata.user);
-		}
-	}, [data,userdata]);
+    useEffect(() => {
+        if (data) {
+            setDmsData(data);
+        }
+        if (userdata) {
+            setUser(userdata.user);
+        }
+    }, [data, userdata]);
 
-	
-	if(error) return <div>Error: {error.message}</div>
-	if(!dmsdata) return <div>No data</div>
+    if (error) return <div>Error: {error.message}</div>;
+    if (!dmsdata) return <div>No data</div>;
 
     return (
         <div className="flex h-screen overflow-hidden bg-white text-black">
@@ -49,14 +52,19 @@ export default function DirectMessage() {
                         <div
                             key={dmdata.dms[0].dmsid}
                             className={`relative flex items-center p-4 cursor-pointer hover:bg-gray-100 border-b ${
-                                selectedUserDm?.user.userid === dmdata.user.userid ? "bg-gray-100" : ""
+                                selectedUserDm?.user.userid ===
+                                dmdata.user.userid
+                                    ? "bg-gray-100"
+                                    : ""
                             }`}
                             onClick={() => setSelectedUserDm(dmdata)}
-                        >	
-							{/* 未読の場合、右上に青い◯を表示 */}
-							{dmdata.dms.length > 0 &&  dmdata.dms[0].status === 'unread' && dmdata.dms[0].senderid !== user?.userid   && (
-								<div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-blue-500"></div>
-							)}
+                        >
+                            {/* 未読の場合、右上に青い◯を表示 */}
+                            {dmdata.dms.length > 0 &&
+                                dmdata.dms[0].status === "unread" &&
+                                dmdata.dms[0].senderid !== user?.userid && (
+                                    <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                                )}
                             <Avatar className="h-12 w-12">
                                 <AvatarImage
                                     src={dmdata.user.icon_image}
@@ -64,12 +72,16 @@ export default function DirectMessage() {
                                 />
                             </Avatar>
                             <div className="ml-4">
-                                <div className="font-semibold">{dmdata.user.username}{dmdata.user.isprivate ? "🔒️" : ""}</div>
+                                <div className="font-semibold">
+                                    {dmdata.user.username}
+                                    {dmdata.user.isprivate ? "🔒️" : ""}
+                                </div>
                                 <div className="text-sm text-gray-400">
                                     @{dmdata.user.userid}
                                 </div>
                                 <div className="text-sm text-gray-500 mt-1">
-								{dmdata.dms.length > 0 && dmdata.dms[0].content}
+                                    {dmdata.dms.length > 0 &&
+                                        dmdata.dms[0].content}
                                 </div>
                             </div>
                         </div>
@@ -77,9 +89,8 @@ export default function DirectMessage() {
                 </ScrollArea>
             </div>
 
-			{/* メッセージ詳細 */}
-			<Detail dmdata={selectedUserDm} user={user} token={token}/>
-
+            {/* メッセージ詳細 */}
+            <Detail dmdata={selectedUserDm} user={user} token={token} />
         </div>
     );
 }

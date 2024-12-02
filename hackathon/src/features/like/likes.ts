@@ -2,7 +2,7 @@ import { Tweet } from "@/types/index";
 
 export const createLike = async (tweet: Tweet, token: string) => {
 	try {
-		const response = await fetch(`http://localhost:8080/like/${tweet.tweetid}`, {
+		const response = await fetch(`https://backend-71857953091.us-central1.run.app/like/${tweet.tweetid}`, {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -20,7 +20,7 @@ export const createLike = async (tweet: Tweet, token: string) => {
 
 export const deleteLike = async (tweet: Tweet, token: string) => {
 	try {
-		const response = await fetch(`http://localhost:8080/like/${tweet.tweetid}`, {
+		const response = await fetch(`https://backend-71857953091.us-central1.run.app/like/${tweet.tweetid}`, {
 			method: "DELETE",
 			headers: {
 				Authorization: `Bearer ${token}`,

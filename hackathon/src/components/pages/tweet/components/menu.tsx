@@ -14,7 +14,10 @@ import { Tweet, User } from "@/types";
 import GetFetcher from "@/routes/getfetcher";
 import { useEffect, useState } from "react";
 import { createLike, deleteLike } from "@/features/like/likes";
-import { createRetweet, deleteRetweet } from "@/features/retweet/handleretweets";
+import {
+    createRetweet,
+    deleteRetweet,
+} from "@/features/retweet/handleretweets";
 import { deleteTweet } from "@/routes/tweet/deleteTweet";
 
 interface Props {
@@ -30,60 +33,71 @@ interface Props {
     setRetweetCount: (retweetCount: number) => void;
 }
 
-export default function Component({ tweet, token, isliked , setIsLiked , likeData , setLikeData , isretweet , setIsRetweet  , retweetCount , setRetweetCount  }: Props) {
-	const handleLikeToggle = async (e: React.MouseEvent) => {
-		e.stopPropagation()
-		try {
-		  if (token && tweet) {
-			if (isliked) {
-			  await deleteLike(tweet, token)
-			  setIsLiked(false)
-			  setLikeData(likeData - 1)
-			} else {
-			  await createLike(tweet, token)
-			  setIsLiked(true)
-			  setLikeData(likeData + 1)
-			}
-		  }
-		} catch (error) {
-		  console.error("いいねのトグルに失敗しました:", error)
-		}
-	  }
-	
-	  const handleRetweetToggle = async (e: React.MouseEvent) => {
-		e.stopPropagation()
-		try {
-		  if (token && tweet) {
-			if (isretweet) {
-			  await deleteRetweet(tweet, token)
-			  setIsRetweet(false)
-			  setRetweetCount(retweetCount - 1)
-			} else {
-			  await createRetweet(tweet, token)
-			  setIsRetweet(true)
-			  setRetweetCount(retweetCount + 1)
-			}
-		  }
-		} catch (error) {
-		  console.error("リツイートのトグルに失敗しました:", error)
-		}
-	  }
+export default function Component({
+    tweet,
+    token,
+    isliked,
+    setIsLiked,
+    likeData,
+    setLikeData,
+    isretweet,
+    setIsRetweet,
+    retweetCount,
+    setRetweetCount,
+}: Props) {
+    const handleLikeToggle = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            if (token && tweet) {
+                if (isliked) {
+                    await deleteLike(tweet, token);
+                    setIsLiked(false);
+                    setLikeData(likeData - 1);
+                } else {
+                    await createLike(tweet, token);
+                    setIsLiked(true);
+                    setLikeData(likeData + 1);
+                }
+            }
+        } catch (error) {
+            console.error("いいねのトグルに失敗しました:", error);
+        }
+    };
 
-	  const handleDelete = async (e: React.MouseEvent) => {
-		e.stopPropagation()
-		try {
-			  if (token && tweet) {
-				await deleteTweet(tweet.tweetid, token)
-			  }
-		} catch (error) {
-					  console.error("ツイートの削除に失敗しました:", error)
-		}
-	  }						
+    const handleRetweetToggle = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            if (token && tweet) {
+                if (isretweet) {
+                    await deleteRetweet(tweet, token);
+                    setIsRetweet(false);
+                    setRetweetCount(retweetCount - 1);
+                } else {
+                    await createRetweet(tweet, token);
+                    setIsRetweet(true);
+                    setRetweetCount(retweetCount + 1);
+                }
+            }
+        } catch (error) {
+            console.error("リツイートのトグルに失敗しました:", error);
+        }
+    };
 
-
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            if (token && tweet) {
+                await deleteTweet(tweet.tweetid, token);
+            }
+        } catch (error) {
+            console.error("ツイートの削除に失敗しました:", error);
+        }
+    };
 
     const [user, setUser] = useState<User | null>(null);
-    const { data: UserData } = GetFetcher("http://localhost:8080/user");
+    const { data: UserData } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
     useEffect(() => {
         if (UserData) {
             setUser(UserData.user);
@@ -108,14 +122,10 @@ export default function Component({ tweet, token, isliked , setIsLiked , likeDat
                         編集
                     </DropdownMenuItem>
                 )}
-                <DropdownMenuItem
-                    onClick={(e) => handleLikeToggle(e)}
-                >
-                    {isliked ?  "いいねを取り消す" : "いいねする" }
+                <DropdownMenuItem onClick={(e) => handleLikeToggle(e)}>
+                    {isliked ? "いいねを取り消す" : "いいねする"}
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                    onClick={(e) => handleRetweetToggle(e)}
-                >
+                <DropdownMenuItem onClick={(e) => handleRetweetToggle(e)}>
                     {isretweet ? "リツイートを取り消す" : "リツイートする"}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

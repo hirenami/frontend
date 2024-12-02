@@ -17,7 +17,9 @@ export default function Follow({ follower, index }: FollowProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isFollowing, setIsFollowing] = useState(false);
     const [isRequest, setIsRequest] = useState(false);
-    const { data: UserData, token } = GetFetcher("http://localhost:8080/user");
+    const { data: UserData, token } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
 
     useEffect(() => {
         if (UserData) {
@@ -31,7 +33,7 @@ export default function Follow({ follower, index }: FollowProps) {
         e.stopPropagation();
         try {
             const response = await fetch(
-                `http://localhost:8080/follow/${follower.user.userid}`,
+                `https://backend-71857953091.us-central1.run.app/follow/${follower.user.userid}`,
                 {
                     method: isFollowing ? "DELETE" : "POST",
                     headers: {
@@ -41,8 +43,8 @@ export default function Follow({ follower, index }: FollowProps) {
                 }
             );
             if (response.ok) {
-                setIsFollowing(prev => !prev);
-				console.log(isFollowing)
+                setIsFollowing((prev) => !prev);
+                console.log(isFollowing);
             } else {
                 throw new Error("フォロー操作に失敗しました");
             }
@@ -71,7 +73,10 @@ export default function Follow({ follower, index }: FollowProps) {
                 <AvatarImage src={follower.user.icon_image} alt="@username" />
             </Avatar>
             <div className="ml-4 flex-1">
-                <h2 className="font-bold">{follower.user.username}{follower.user.isprivate ? "🔒️" : ""}</h2>
+                <h2 className="font-bold">
+                    {follower.user.username}
+                    {follower.user.isprivate ? "🔒️" : ""}
+                </h2>
                 <p className="text-sm text-muted-foreground">
                     @{follower.user.userid}
                     {follower.isfollowers && (

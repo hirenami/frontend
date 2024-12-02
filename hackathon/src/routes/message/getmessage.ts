@@ -1,7 +1,7 @@
-export const GetDMs = async (token: string | null, receiverid : string) => {
+export const GetDMs = async (token: string | null, receiverid: string) => {
 	try {
 		const Response = await fetch(
-			`http://localhost:8080/dm/${receiverid}/handle`,
+			`https://backend-71857953091.us-central1.run.app/dm/${receiverid}/handle`,
 			{
 				method: "GET",
 				headers: {

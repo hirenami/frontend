@@ -30,17 +30,23 @@ export default function TweetPage() {
         error: error1,
         isLoading: isLoading1,
         token,
-    } = GetFetcher(`http://localhost:8080/tweet/${tweetid}/tweetid`);
+    } = GetFetcher(
+        `https://backend-71857953091.us-central1.run.app/tweet/${tweetid}/tweetid`
+    );
     const {
         data: repliesData,
         error: error2,
         isLoading: isLoading2,
-    } = GetFetcher(`http://localhost:8080/reply/${tweetId}`);
+    } = GetFetcher(
+        `https://backend-71857953091.us-central1.run.app/reply/${tweetId}`
+    );
     const {
         data: repliedData,
         error: error3,
         isLoading: isLoading3,
-    } = GetFetcher(`http://localhost:8080/reply/${tweetId}/replied`);
+    } = GetFetcher(
+        `https://backend-71857953091.us-central1.run.app/reply/${tweetId}/replied`
+    );
 
     useEffect(() => {
         if (!tweetId) return;
@@ -63,7 +69,7 @@ export default function TweetPage() {
         if (tweetData?.tweet.retweetid) {
             const fetchData = async () => {
                 const res = await fetch(
-                    `http://localhost:8080/tweet/${tweetData.tweet.retweetid}/tweetid`,
+                    `https://backend-71857953091.us-central1.run.app/tweet/${tweetData.tweet.retweetid}/tweetid`,
                     {
                         method: "GET",
                         headers: {
@@ -172,7 +178,7 @@ export default function TweetPage() {
                             type={"reply"}
                             tweet={data.tweet}
                             user={data.user}
-							retweet={data.retweet}
+                            retweet={data.retweet}
                             initialisLiked={data.likes}
                             initialisRetweeted={data.retweets}
                             isblocked={data.isblocked}
@@ -198,7 +204,7 @@ export default function TweetPage() {
                                     key={index}
                                     tweet={data.tweet}
                                     user={data.user}
-									retweet={data.retweet}
+                                    retweet={data.retweet}
                                     initialisLiked={data.likes}
                                     initialisRetweeted={data.retweets}
                                     type={"tweet"}

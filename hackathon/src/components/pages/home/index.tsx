@@ -13,7 +13,7 @@ export default function HomePage() {
         error,
         isLoading,
         token,
-    } = GetFetcher("http://localhost:8080/timeline");
+    } = GetFetcher("https://backend-71857953091.us-central1.run.app/timeline");
 
     // dataが変更されたときにtimelineDataを更新する
     useEffect(() => {
@@ -53,13 +53,13 @@ export default function HomePage() {
                         key={index}
                         type={"tweet"}
                         tweet={data.tweet}
-						retweet={data.retweet}
+                        retweet={data.retweet}
                         user={data.user}
                         initialisLiked={data.likes}
                         initialisRetweeted={data.retweets}
-						isblocked={data.isblocked}
-						isprivate={data.isprivate}
-						token = {token}
+                        isblocked={data.isblocked}
+                        isprivate={data.isprivate}
+                        token={token}
                     />
                 ))}
             </div>

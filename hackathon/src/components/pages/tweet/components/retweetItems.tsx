@@ -11,15 +11,19 @@ import GetFetcher from "@/routes/getfetcher";
 
 interface TweetItemProps {
     tweet: Tweet; // tweetをオプショナルに変更
-	isblocked: boolean;
-	isprivate: boolean;
+    isblocked: boolean;
+    isprivate: boolean;
 }
 
-export default function RetweetItem({ tweet, isblocked, isprivate }: TweetItemProps) {
+export default function RetweetItem({
+    tweet,
+    isblocked,
+    isprivate,
+}: TweetItemProps) {
     const [user, setUser] = useState<User | null>(null);
 
     const { data, error, token } = GetFetcher(
-        `http://localhost:8080/user/${tweet.userid}`
+        `https://backend-71857953091.us-central1.run.app/user/${tweet.userid}`
     );
 
     useEffect(() => {
@@ -46,28 +50,34 @@ export default function RetweetItem({ tweet, isblocked, isprivate }: TweetItemPr
         }
     };
 
-	if(isblocked) {
-		return (
-			<div className="flex flex-col items-center justify-center  rounded-md text-gray-600">
-			  <p className="text-sm font-medium text-gray-800">ブロックされているため、このツイートは表示できません。</p>
-			</div>
-		  );
-	}
-	if (isprivate) {
-		return (
-			<div className="flex flex-col items-center justify-center rounded-md  text-gray-600">
-			  <p className="text-sm font-medium text-gray-800">作成者が表示範囲を設定しているため、このツイートは表示できません。</p>
-			</div>
-		  );
-	}
+    if (isblocked) {
+        return (
+            <div className="flex flex-col items-center justify-center  rounded-md text-gray-600">
+                <p className="text-sm font-medium text-gray-800">
+                    ブロックされているため、このツイートは表示できません。
+                </p>
+            </div>
+        );
+    }
+    if (isprivate) {
+        return (
+            <div className="flex flex-col items-center justify-center rounded-md  text-gray-600">
+                <p className="text-sm font-medium text-gray-800">
+                    作成者が表示範囲を設定しているため、このツイートは表示できません。
+                </p>
+            </div>
+        );
+    }
 
-	if(tweet.isdeleted) {
-		return (
-			<div className="flex flex-col items-center justify-center   rounded-md  text-gray-600">
-			  <p className="text-sm font-medium text-gray-800">このツイートは、ツイートの制作者により削除されました。</p>
-			</div>
-		  );
-	}
+    if (tweet.isdeleted) {
+        return (
+            <div className="flex flex-col items-center justify-center   rounded-md  text-gray-600">
+                <p className="text-sm font-medium text-gray-800">
+                    このツイートは、ツイートの制作者により削除されました。
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex space-x-3">
