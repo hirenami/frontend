@@ -3,30 +3,37 @@ import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { User } from "@/types";
 import { useEffect, useRef, useState } from "react";
-import {LucideImage} from "lucide-react";
+import { LucideImage } from "lucide-react";
 import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
 
 interface TweetComponentProps {
     tweetId: number;
-	setRetweetCount: (retweetCount: number) => void;
-	retweetCount: number;
-	setIsQuoteDialogOpen: (isQuoteDialogOpen: boolean) => void;
+    setRetweetCount: (retweetCount: number) => void;
+    retweetCount: number;
+    setIsQuoteDialogOpen: (isQuoteDialogOpen: boolean) => void;
 }
-const CreateQuote = ({  tweetId, setIsQuoteDialogOpen, setRetweetCount , retweetCount }: TweetComponentProps) => {
+const CreateQuote = ({
+    tweetId,
+    setIsQuoteDialogOpen,
+    setRetweetCount,
+    retweetCount,
+}: TweetComponentProps) => {
     const [tweetText, setTweetText] = useState("");
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false); // ローディング状態
-	const { data: UserData,token } = GetFetcher('http://localhost:8080/user');
-	const [user , setUser] = useState<User | null>(null);
+    const { data: UserData, token } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-		if (UserData) {
-			setUser(UserData.user);
-		}
-		console.log(UserData);
-	}, [UserData]);
+        if (UserData) {
+            setUser(UserData.user);
+        }
+        console.log(UserData);
+    }, [UserData]);
 
     const handleTweet = async () => {
         if (tweetText.trim() === "" && !mediaFile) {
@@ -36,30 +43,33 @@ const CreateQuote = ({  tweetId, setIsQuoteDialogOpen, setRetweetCount , retweet
 
         setIsLoading(true); // ローディング開始
         let media_url = "";
-		if ( tweetText == "") console.log("tweetText is empty");
+        if (tweetText == "") console.log("tweetText is empty");
 
         if (fileInputRef.current?.files?.[0]) {
             media_url = await uploadFile(fileInputRef.current.files[0]);
         }
 
-        const response = await fetch(`http://localhost:8080/retweet/${tweetId}/quote`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                content:  tweetText,
-                media_url: media_url,
-            }),
-        });
+        const response = await fetch(
+            `https://backend-71857953091.us-central1.run.app/retweet/${tweetId}/quote`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    content: tweetText,
+                    media_url: media_url,
+                }),
+            }
+        );
 
         if (response.ok) {
             console.log("ツイートが正常に投稿されました");
             setTweetText("");
             setMediaFile(null);
-            setIsQuoteDialogOpen(false)
-			setRetweetCount(retweetCount + 1)
+            setIsQuoteDialogOpen(false);
+            setRetweetCount(retweetCount + 1);
         } else {
             console.error("ツイートの投稿中にエラーが発生しました");
         }
@@ -81,7 +91,6 @@ const CreateQuote = ({  tweetId, setIsQuoteDialogOpen, setRetweetCount , retweet
     return (
         <div className="border-b p-4">
             <div className="flex space-x-4">
-               
                 <div className="flex-1 space-y-2">
                     <Textarea
                         placeholder={"コメントする"}
@@ -140,19 +149,18 @@ const CreateQuote = ({  tweetId, setIsQuoteDialogOpen, setRetweetCount , retweet
                         </div>
                         <div className="flex items-center space-x-4">
                             <span className="text-sm text-gray-500">
-                                {user?.ispremium ?  "∞" : 140 - tweetText.length}
+                                {user?.ispremium ? "∞" : 140 - tweetText.length}
                             </span>
                             <Button
                                 onClick={handleTweet}
                                 disabled={
                                     isLoading ||
-                                    (tweetText.length === 0 && !mediaFile) || (!user?.ispremium && tweetText.length > 140)
+                                    (tweetText.length === 0 && !mediaFile) ||
+                                    (!user?.ispremium && tweetText.length > 140)
                                 }
                                 className="rounded-full px-4 py-2"
                             >
-                                {isLoading
-                                    ? "投稿中..."
-                                    : "コメントする"}
+                                {isLoading ? "投稿中..." : "コメントする"}
                             </Button>
                         </div>
                     </div>

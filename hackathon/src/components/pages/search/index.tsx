@@ -1,67 +1,78 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from "react"
-import GetFetcher from "@/routes/getfetcher"
-import TweetItem from "@/components/pages/tweetitem"
-import Follow from "@/components/pages/follow/components/follow"
-import { TweetData, FollowData } from "@/types"
-import { useSearchParams, useRouter } from "next/navigation"
-import { ArrowLeft, Search, Settings2 } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState, useEffect } from "react";
+import GetFetcher from "@/routes/getfetcher";
+import TweetItem from "@/components/pages/tweetitem";
+import Follow from "@/components/pages/follow/components/follow";
+import { TweetData, FollowData } from "@/types";
+import { useSearchParams, useRouter } from "next/navigation";
+import { ArrowLeft, Search, Settings2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SearchPage = () => {
-    const [searchData, setSearchData] = useState<TweetData[]>([])
-    const [userData, setUserData] = useState<FollowData[]>([])
-    const [hashtagData, setHashtagData] = useState<TweetData[]>([])
+    const [searchData, setSearchData] = useState<TweetData[]>([]);
+    const [userData, setUserData] = useState<FollowData[]>([]);
+    const [hashtagData, setHashtagData] = useState<TweetData[]>([]);
 
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const q = searchParams.get("q") || ""
-    const hashtag = q.startsWith("#") ? q.replace(/^(#|＃)/, "") : q
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const q = searchParams.get("q") || "";
+    const hashtag = q.startsWith("#") ? q.replace(/^(#|＃)/, "") : q;
 
-    const { data: search, error, isLoading, token } = GetFetcher(
-        q ? `http://localhost:8080/search/${hashtag}` : ""
-    )
+    const {
+        data: search,
+        error,
+        isLoading,
+        token,
+    } = GetFetcher(
+        q
+            ? `https://backend-71857953091.us-central1.run.app/search/${hashtag}`
+            : ""
+    );
 
     const { data: user } = GetFetcher(
-        q ? `http://localhost:8080/search/${hashtag}/user` : ""
-    )
+        q
+            ? `https://backend-71857953091.us-central1.run.app/search/${hashtag}/user`
+            : ""
+    );
 
     const { data: Hashtag } = GetFetcher(
-        hashtag ? `http://localhost:8080/search/＃${hashtag}/hashtag` : ""
-    )
+        hashtag
+            ? `https://backend-71857953091.us-central1.run.app/search/＃${hashtag}/hashtag`
+            : ""
+    );
 
     useEffect(() => {
-		setSearchData([]);
+        setSearchData([]);
         setUserData([]);
         setHashtagData([]);
 
         if (search) {
-            setSearchData(search)
+            setSearchData(search);
         }
         if (user) {
-            setUserData(user)
+            setUserData(user);
         }
         if (Hashtag) {
-            setHashtagData(Hashtag)
+            setHashtagData(Hashtag);
         }
-		console.log(q)
-    }, [search, user, Hashtag, q])
+        console.log(q);
+    }, [search, user, Hashtag, q]);
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && !e.nativeEvent.isComposing) {
-            const query = (e.target as HTMLInputElement).value
-			const encode = encodeURIComponent(query)
-            router.push(`/search?q=${encode}`)
+            const query = (e.target as HTMLInputElement).value;
+            const encode = encodeURIComponent(query);
+            router.push(`/search?q=${encode}`);
         }
-    }
+    };
 
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-white text-black">
                 <p>読み込み中...</p>
             </div>
-        )
+        );
     }
 
     if (error) {
@@ -69,10 +80,10 @@ const SearchPage = () => {
             <div className="flex min-h-screen items-center justify-center bg-white text-black">
                 <p>再読み込みしてください</p>
             </div>
-        )
+        );
     }
 
-    const displayData = q.startsWith("#") ? hashtagData : searchData
+    const displayData = q.startsWith("#") ? hashtagData : searchData;
 
     return (
         <>
@@ -103,10 +114,20 @@ const SearchPage = () => {
                     </button>
                 </div>
             </header>
-            <Tabs defaultValue="tweets" className="w-full" >
+            <Tabs defaultValue="tweets" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-white">
-                    <TabsTrigger value="tweets" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">ツイート</TabsTrigger>
-                    <TabsTrigger value="users" className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none">ユーザー</TabsTrigger>
+                    <TabsTrigger
+                        value="tweets"
+                        className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none"
+                    >
+                        ツイート
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="users"
+                        className="hover:bg-gray-100 data-[state=active]:border-blue-500 data-[state=active]:border-b-2 rounded-none"
+                    >
+                        ユーザー
+                    </TabsTrigger>
                 </TabsList>
                 <TabsContent value="tweets">
                     {displayData?.length === 0 ? (
@@ -121,7 +142,7 @@ const SearchPage = () => {
                                     type={"tweet"}
                                     tweet={data.tweet}
                                     user={data.user}
-									retweet={data.retweet}
+                                    retweet={data.retweet}
                                     initialisLiked={data.likes}
                                     initialisRetweeted={data.retweets}
                                     isblocked={data.isblocked}
@@ -142,7 +163,7 @@ const SearchPage = () => {
                             {userData?.map((data, index) => (
                                 <Follow
                                     key={index}
-									index={index}
+                                    index={index}
                                     follower={data}
                                 />
                             ))}
@@ -151,7 +172,7 @@ const SearchPage = () => {
                 </TabsContent>
             </Tabs>
         </>
-    )
-}
+    );
+};
 
-export default SearchPage
+export default SearchPage;

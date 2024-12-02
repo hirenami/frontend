@@ -20,9 +20,11 @@ export default function Component() {
     const [purchase, setPurchase] = useState<PurchaseItem>();
     const [user, setUser] = useState<User>();
     const { data: purchasedata } = GetFetcher(
-        `http://localhost:8080/purchase/${Id}`
+        `https://backend-71857953091.us-central1.run.app/purchase/${Id}`
     );
-    const { data: userdata } = GetFetcher(`http://localhost:8080/user`);
+    const { data: userdata } = GetFetcher(
+        `https://backend-71857953091.us-central1.run.app/user`
+    );
 
     useEffect(() => {
         if (purchasedata) {
@@ -62,9 +64,7 @@ export default function Component() {
                 <Alert className="bg-blue-50 border-blue-100 mb-6">
                     <AlertDescription className="flex items-center gap-2">
                         配送中です
-                        <p className="text-gray-600">
-                            残り数日で到着予定です
-                        </p>
+                        <p className="text-gray-600">残り数日で到着予定です</p>
                     </AlertDescription>
                 </Alert>
             ) : purchase.purchase.status == "注文確定" ? (
@@ -107,7 +107,11 @@ export default function Component() {
                             </h2>
                             <p className="text-2xl font-bold">
                                 ¥
-                                {user?.ispremium ? Math.floor(purchase.listing.listingprice * 0.98).toLocaleString() : purchase.listing.listingprice.toLocaleString()}
+                                {user?.ispremium
+                                    ? Math.floor(
+                                          purchase.listing.listingprice * 0.98
+                                      ).toLocaleString()
+                                    : purchase.listing.listingprice.toLocaleString()}
                             </p>
                         </div>
                     </div>
@@ -147,7 +151,7 @@ export default function Component() {
                             <div>
                                 <p className="font-medium">
                                     {purchase.user.username}
-									{purchase.user.isprivate ? "🔒️" : ""}
+                                    {purchase.user.isprivate ? "🔒️" : ""}
                                 </p>
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <span>@{purchase.user.userid}</span>

@@ -2,7 +2,7 @@ import { Tweet } from "@/types/index";
 
 export const createRetweet = async (tweet: Tweet, token: string) => {
 	try {
-		const response = await fetch(`http://localhost:8080/retweet/${tweet.tweetid}`, {
+		const response = await fetch(`https://backend-71857953091.us-central1.run.app/retweet/${tweet.tweetid}`, {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -20,7 +20,7 @@ export const createRetweet = async (tweet: Tweet, token: string) => {
 
 export const deleteRetweet = async (tweet: Tweet, token: string) => {
 	try {
-		const response = await fetch(`http://localhost:8080/retweet/${tweet.tweetid}`, {
+		const response = await fetch(`https://backend-71857953091.us-central1.run.app/retweet/${tweet.tweetid}`, {
 			method: "DELETE",
 			headers: {
 				Authorization: `Bearer ${token}`,

@@ -1,7 +1,7 @@
 export const handleFollow = async (userid: string, token: string | null, isFollowing: boolean, followerCount: number, setIsFollowing: (state: boolean) => void, setFollowerCount: (state: number) => void) => {
 	try {
 		const response = await fetch(
-			`http://localhost:8080/follow/${userid}`,
+			`https://backend-71857953091.us-central1.run.app/follow/${userid}`,
 			{
 				method: isFollowing ? "DELETE" : "POST",
 				headers: {

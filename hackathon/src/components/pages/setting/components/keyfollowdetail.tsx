@@ -19,7 +19,7 @@ export default function Follow({ follows, index, token }: followProps) {
         e.stopPropagation();
         try {
             const response = await fetch(
-                `http://localhost:8080/keyfollow/${follows.user.userid}/approve`,
+                `https://backend-71857953091.us-central1.run.app/keyfollow/${follows.user.userid}/approve`,
                 {
                     method: "POST",
                     headers: {
@@ -42,7 +42,7 @@ export default function Follow({ follows, index, token }: followProps) {
         e.stopPropagation();
         try {
             const response = await fetch(
-                `http://localhost:8080/keyfollow/${follows.user.userid}/reject`,
+                `https://backend-71857953091.us-central1.run.app/keyfollow/${follows.user.userid}/reject`,
                 {
                     method: "DELETE",
                     headers: {

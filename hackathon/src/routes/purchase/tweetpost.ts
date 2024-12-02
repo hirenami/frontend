@@ -1,7 +1,7 @@
 export const purchase = async (token: string, listingid: number) => {
 	try {
 		const Response = await fetch(
-			`http://localhost:8080/purchase`,
+			`https://backend-71857953091.us-central1.run.app/purchase`,
 			{
 				method: "POST",
 				headers: {

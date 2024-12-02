@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { User, Tweet } from "@/types";
 import { useEffect, useRef, useState } from "react";
-import { LucideImage, Star } from 'lucide-react';
+import { LucideImage, Star } from "lucide-react";
 import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
 
@@ -22,7 +22,9 @@ const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { data: UserData } = GetFetcher('http://localhost:8080/user');
+    const { data: UserData } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
     const [user, setUser] = useState<User | null>(null);
     const [rating, setRating] = useState<number>(0);
 
@@ -49,8 +51,8 @@ const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
 
         const endpoint =
             type === "tweet"
-                ? "http://localhost:8080/tweet"
-                : `http://localhost:8080/reply/${tweet?.tweetid}`;
+                ? "https://backend-71857953091.us-central1.run.app/tweet"
+                : `https://backend-71857953091.us-central1.run.app/reply/${tweet?.tweetid}`;
 
         const response = await fetch(endpoint, {
             method: "POST",
@@ -119,11 +121,17 @@ const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
                                         variant="ghost"
                                         size="sm"
                                         className="p-0"
-                                        onClick={() => setRating(star === rating ? 0 : star)}
+                                        onClick={() =>
+                                            setRating(
+                                                star === rating ? 0 : star
+                                            )
+                                        }
                                     >
                                         <Star
                                             className={`w-6 h-6 ${
-                                                star <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                                                star <= rating
+                                                    ? "text-yellow-400 fill-yellow-400"
+                                                    : "text-gray-300"
                                             }`}
                                         />
                                     </Button>

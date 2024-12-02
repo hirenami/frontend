@@ -23,20 +23,22 @@ export default function ProfilePage() {
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
     const { data: userData } = GetFetcher(
-        `http://localhost:8080/user/${userid}`
+        `https://backend-71857953091.us-central1.run.app/user/${userid}`
     );
     const { data: tweetData, token } = GetFetcher(
-        `http://localhost:8080/tweet/${userid}`
+        `https://backend-71857953091.us-central1.run.app/tweet/${userid}`
     );
-    const { data: myData } = GetFetcher("http://localhost:8080/user");
+    const { data: myData } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
     const { data: replyData } = GetFetcher(
-        `http://localhost:8080/reply/${userid}/user`
+        `https://backend-71857953091.us-central1.run.app/reply/${userid}/user`
     );
     const { data: likeData } = GetFetcher(
-        `http://localhost:8080/like/${userid}`
+        `https://backend-71857953091.us-central1.run.app/like/${userid}`
     );
     const { data: listingData } = GetFetcher(
-        `http://localhost:8080/listing/${userid}/userid`
+        `https://backend-71857953091.us-central1.run.app/listing/${userid}/userid`
     );
 
     useEffect(() => {
@@ -80,7 +82,7 @@ export default function ProfilePage() {
                         このアカウントのツイートは表示できません
                     </p>
                 </div>
-            ) : user?.isprivate  ? (
+            ) : user?.isprivate ? (
                 <div className="flex flex-col items-center justify-center space-y-2 p-8 rounded-lg mt-10">
                     <LockIcon className="w-12 h-12 text-gray-400" />
                     <span className="font-bold text-xl text-gray-900">
@@ -124,7 +126,7 @@ export default function ProfilePage() {
                                 key={index}
                                 tweet={data.tweet}
                                 user={data.user}
-								retweet={data.retweet}
+                                retweet={data.retweet}
                                 initialisLiked={data.likes}
                                 initialisRetweeted={data.retweets}
                                 type={"tweet"}
@@ -140,7 +142,7 @@ export default function ProfilePage() {
                                 key={index}
                                 tweet={data.tweet}
                                 user={data.user}
-								retweet={data.retweet}
+                                retweet={data.retweet}
                                 initialisLiked={data.likes}
                                 initialisRetweeted={data.retweets}
                                 type={"tweet"}
@@ -156,7 +158,7 @@ export default function ProfilePage() {
                                 key={index}
                                 tweet={data.tweet}
                                 user={data.user}
-								retweet={data.retweet}
+                                retweet={data.retweet}
                                 initialisLiked={data.likes}
                                 initialisRetweeted={data.retweets}
                                 type={"tweet"}

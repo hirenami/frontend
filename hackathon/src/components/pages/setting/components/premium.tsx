@@ -4,29 +4,27 @@ import { useEffect, useState } from "react";
 import { updatePremium } from "@/routes/purchase/post";
 
 export default function PremiumAccountBilling() {
-	// プレミアム会員かどうか
-	const [isPremium, setIsPremium] = useState<boolean>(false);
+    // プレミアム会員かどうか
+    const [isPremium, setIsPremium] = useState<boolean>(false);
 
-    
-	const { data: userdata ,token} = GetFetcher(
-		"http://localhost:8080/user"
-	);
-	
+    const { data: userdata, token } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
 
-	// 支払い成功時にプレミアム状態を更新する
-	const handlePaymentSuccess = () => {
-		if (!token) {
-			console.error("トークンが取得できませんでした");
-			return;
-		}
-		setIsPremium(true);
-		updatePremium(token);
-	};
+    // 支払い成功時にプレミアム状態を更新する
+    const handlePaymentSuccess = () => {
+        if (!token) {
+            console.error("トークンが取得できませんでした");
+            return;
+        }
+        setIsPremium(true);
+        updatePremium(token);
+    };
 
     useEffect(() => {
-		if(userdata){
-			setIsPremium(userdata.user.ispremium);
-		}
+        if (userdata) {
+            setIsPremium(userdata.user.ispremium);
+        }
     }, [userdata, isPremium]);
 
     return (
@@ -70,7 +68,7 @@ export default function PremiumAccountBilling() {
                         </svg>
                         購入時2%の割引
                     </li>
-					<li className="flex items-center text-sm text-gray-700">
+                    <li className="flex items-center text-sm text-gray-700">
                         <svg
                             className="w-5 h-5 text-blue-500 mr-2"
                             xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +93,7 @@ export default function PremiumAccountBilling() {
                         productId="premium"
                         value={1000}
                         isOpen={true}
-						onPaymentSuccess={handlePaymentSuccess}
+                        onPaymentSuccess={handlePaymentSuccess}
                     />
                     <div className="text-center mt-4">
                         <p className="text-sm text-gray-700">

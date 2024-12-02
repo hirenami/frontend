@@ -2,7 +2,7 @@ import React from "react";
 import GetFetcher from "@/routes/getfetcher";
 import { useSearchParams } from "next/navigation";
 import GeminiDetail from "./geminidetail";
-import { Sparkles, AlertCircle } from 'lucide-react';
+import { Sparkles, AlertCircle } from "lucide-react";
 
 const scrollbarHideStyles = `
   .hide-scrollbar::-webkit-scrollbar {
@@ -19,7 +19,9 @@ export default function GeminiSidebar() {
     const q = searchParams.get("q") || "";
 
     const { data } = GetFetcher(
-        q ? `http://localhost:8080/api/search-products/${q}` : ""
+        q
+            ? `https://backend-71857953091.us-central1.run.app/api/search-products/${q}`
+            : ""
     );
 
     return (
@@ -38,15 +40,18 @@ export default function GeminiSidebar() {
                                     Vertex AI検索
                                 </h2>
                             </div>
-
                         </div>
                     </div>
                     <div className="flex-1 overflow-y-auto p-6 hide-scrollbar">
-                        {q && data && data.results && data.results.length === 0 ? (
+                        {q &&
+                        data &&
+                        data.results &&
+                        data.results.length === 0 ? (
                             <div className="flex flex-col items-center justify-center h-full text-gray-500">
                                 <AlertCircle className="w-12 h-12 mb-4" />
                                 <p className="text-center">
-                                    「{q}」に一致する検索結果が見つかりませんでした。
+                                    「{q}
+                                    」に一致する検索結果が見つかりませんでした。
                                 </p>
                                 <p className="text-sm mt-2">
                                     別のキーワードで試してみてください。
@@ -61,7 +66,10 @@ export default function GeminiSidebar() {
                                         key={item.id}
                                         className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md transition-shadow duration-200"
                                     >
-                                        <GeminiDetail id={item.id} index={item.id} />
+                                        <GeminiDetail
+                                            id={item.id}
+                                            index={item.id}
+                                        />
                                     </div>
                                 ))}
                             </div>
@@ -72,4 +80,3 @@ export default function GeminiSidebar() {
         </>
     );
 }
-

@@ -1,7 +1,7 @@
-export const CreateDM = async (token: string | null, receiverid: string | undefined, content: string, media_url : string) => {
+export const CreateDM = async (token: string | null, receiverid: string | undefined, content: string, media_url: string) => {
 	try {
 		const Response = await fetch(
-			`http://localhost:8080/dm`,
+			`https://backend-71857953091.us-central1.run.app/dm`,
 			{
 				method: "POST",
 				headers: {

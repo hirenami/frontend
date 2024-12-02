@@ -9,23 +9,25 @@ import { User } from "@/types";
 import GetFetcher from "@/routes/getfetcher";
 
 interface UserEditorProps {
-setOpen : React.Dispatch<React.SetStateAction<boolean>>;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function UserEditor( {setOpen} : UserEditorProps) {
+export default function UserEditor({ setOpen }: UserEditorProps) {
     const [user, setUser] = useState<User | null>(null);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const headerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
-    const { data: UserData } = GetFetcher("http://localhost:8080/user");
+    const { data: UserData } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
 
     useEffect(() => {
         if (UserData) {
-			setUser(UserData.user);
-		}
-    }, [ UserData ]);
+            setUser(UserData.user);
+        }
+    }, [UserData]);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -33,13 +35,12 @@ export default function UserEditor( {setOpen} : UserEditorProps) {
         const { name, value } = e.target;
         setUser((prev) => {
             if (prev) {
-				return {
-					...prev,
-					[name]:
-						name === "biography" ? value : value, // biographyをstringとして扱う
-				};
-			}
-			return prev;
+                return {
+                    ...prev,
+                    [name]: name === "biography" ? value : value, // biographyをstringとして扱う
+                };
+            }
+            return prev;
         });
         setErrors((prev) => ({ ...prev, [name]: "" }));
     };
@@ -117,23 +118,26 @@ export default function UserEditor( {setOpen} : UserEditorProps) {
                 return;
             }
 
-            const response = await fetch("http://localhost:8080/user/edit", {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username: user.username,
-                    biography: user.biography,
-                    header_image: header_imageUrl,
-                    icon_image: icon_imageUrl,
-                }),
-            });
+            const response = await fetch(
+                "https://backend-71857953091.us-central1.run.app/user/edit",
+                {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        username: user.username,
+                        biography: user.biography,
+                        header_image: header_imageUrl,
+                        icon_image: icon_imageUrl,
+                    }),
+                }
+            );
 
             if (response.ok) {
                 console.log("プロフィールが正常に保存されました");
-				setOpen(false);
+                setOpen(false);
                 router.push(`http://localhost:3000/profile/${user.userid}`);
             } else {
                 console.error("プロフィールの保存中にエラーが発生しました");
