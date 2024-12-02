@@ -1,19 +1,23 @@
 import React, { useState } from "react";
-import { Sign } from "@/types";
 import Image from "next/image";
+import { signIn,signUp } from "@/features/firebase/sign";
+import { useRouter } from "next/navigation";
 
-export const LoginForm = (props: Sign) => {
+export const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
     const [isSignUp, setIsSignUp] = useState(false);
+	const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isSignUp) {
-            props.signUp(email, password, username);
+            await signUp(email, password, username);
+			router.push("/home");
         } else {
-            props.signIn(email, password);
+            await signIn(email, password);
+			router.push("/home");
         }
         setEmail("");
         setPassword("");
