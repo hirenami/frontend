@@ -84,7 +84,7 @@ export default function CombinedTweetProductListing() {
     const [media, setMedia] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { data: UserData, token } = GetFetcher("http://localhost:8080/user");
+    const { data: UserData, token } = GetFetcher("https://backend-71857953091.us-central1.run.app/user");
     const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
 
@@ -128,8 +128,8 @@ export default function CombinedTweetProductListing() {
             }
 
             const endpoint = values.isProductListing
-                ? "http://localhost:8080/listing"
-                : "http://localhost:8080/tweet";
+                ? "https://backend-71857953091.us-central1.run.app/listing"
+                : "https://backend-71857953091.us-central1.run.app/tweet";
 
             const payload = {
                 content: values.content,
