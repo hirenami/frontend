@@ -13,10 +13,16 @@ export const LoginForm = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isSignUp) {
-            await signUp(email, password, username);
+            const res = await signUp(email, password, username);
+			if (!res) {
+				return;
+			}
 			router.push("/home");
         } else {
-            await signIn(email, password);
+            const res = await signIn(email, password);
+			if (!res) {
+				return
+			}
 			router.push("/home");
         }
         setEmail("");
