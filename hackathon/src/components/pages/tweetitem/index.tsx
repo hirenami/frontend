@@ -63,7 +63,8 @@ export default function TweetItem({
         );
     }
 
-    const hundleUserClick = async () => {
+    const hundleUserClick = async (e:React.MouseEvent) => {
+		e.stopPropagation();
         try {
             const token = await auth.currentUser?.getIdToken();
             if (token) {
@@ -85,7 +86,7 @@ export default function TweetItem({
                 <div className="relative flex flex-col items-center">
                     <Button
                         className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
-                        onClick={hundleUserClick}
+                        onClick={(e) => hundleUserClick(e)}
                     >
                         <Avatar className="w-full h-full rounded-full">
                             <AvatarImage
@@ -112,14 +113,14 @@ export default function TweetItem({
                             {/* ユーザー名とID */}
                             <button
                                 className="text-base font-bold text-gray-900 hover:underline bg-transparent p-0 focus:outline-none"
-                                onClick={hundleUserClick}
+                                onClick={(e) => hundleUserClick(e)}
                             >
                                 {user?.username}
 								{user?.isprivate ? "🔒️" : ""}
                             </button>
                             <button
                                 className="text-sm text-gray-500 bg-transparent p-0 focus:outline-none"
-                                onClick={hundleUserClick}
+                                onClick={(e) => hundleUserClick(e)}
                             >
                                 @{user?.userid}
                             </button>
