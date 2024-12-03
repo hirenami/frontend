@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
-import { LucideImage } from "lucide-react";
+import { LucideImage } from 'lucide-react';
 import { User } from "@/types";
 import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
@@ -60,8 +60,23 @@ const productSchema = z.object({
     stock: z.number().min(0, "在庫は0以上である必要があります"),
 });
 
-const combinedSchema = tweetSchema.merge(productSchema.partial()).extend({
+const combinedSchema = z.object({
+    content: tweetSchema.shape.content,
     isProductListing: z.boolean().default(false),
+    name: z.string().optional(),
+    category: z.string().optional(),
+    condition: z.string().optional(),
+    price: z.number().optional(),
+    description: z.string().optional(),
+    stock: z.number().optional(),
+}).refine((data) => {
+    if (data.isProductListing) {
+        return productSchema.safeParse(data).success;
+    }
+    return true;
+}, {
+    message: "商品情報が不完全です",
+    path: ["isProductListing"],
 });
 
 export default function CombinedTweetProductListing() {
@@ -69,9 +84,7 @@ export default function CombinedTweetProductListing() {
     const [media, setMedia] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { data: UserData, token } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: UserData, token } = GetFetcher("http://localhost:8080/user");
     const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
 
@@ -106,8 +119,8 @@ export default function CombinedTweetProductListing() {
     async function onSubmit(values: z.infer<typeof combinedSchema>) {
         setIsSubmitting(true);
         let media_url = "";
-        const generateNumericID = customAlphabet("0123456789", 12); // 長さ12の数字IDを生成
-        const id = generateNumericID(); // 数字IDを数値に変換
+        const generateNumericID = customAlphabet("0123456789", 12);
+        const id = generateNumericID();
 
         try {
             if (media.length > 0) {
@@ -115,8 +128,8 @@ export default function CombinedTweetProductListing() {
             }
 
             const endpoint = values.isProductListing
-                ? "https://backend-71857953091.us-central1.run.app/listing"
-                : "https://backend-71857953091.us-central1.run.app/tweet";
+                ? "http://localhost:8080/listing"
+                : "http://localhost:8080/tweet";
 
             const payload = {
                 content: values.content,
@@ -135,7 +148,6 @@ export default function CombinedTweetProductListing() {
                 }),
             };
 
-            // POST to either listing or tweet endpoint
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: {
@@ -149,15 +161,14 @@ export default function CombinedTweetProductListing() {
                 throw new Error("Error posting tweet or listing");
             }
 
-            // If it's a product listing, send additional data to the import-products API
             if (values.isProductListing) {
                 await sendProductData(
-                    id, // Assuming a fixed or dynamic ID
+                    id,
                     values.category as string,
                     values.name as string,
                     values.price as number,
                     values.description as string,
-                    media_url // Use uploaded media URL as the image
+                    media_url
                 );
             }
 
@@ -396,17 +407,13 @@ export default function CombinedTweetProductListing() {
                                                         placeholder="価格を入力してください"
                                                         {...field}
                                                         value={
-                                                            field.value !==
-                                                            undefined
-                                                                ? String(
-                                                                      field.value
-                                                                  )
+                                                            field.value !== undefined
+                                                                ? String(field.value)
                                                                 : ""
                                                         } // 型を一致させる
                                                         onChange={(e) =>
                                                             field.onChange(
-                                                                +e.target
-                                                                    .value || 0
+                                                                +e.target.value || 0
                                                             )
                                                         } // 入力値を数値に変換
                                                         min="1"
@@ -446,11 +453,8 @@ export default function CombinedTweetProductListing() {
                                                     placeholder="在庫数を入力してください"
                                                     {...field}
                                                     value={
-                                                        field.value !==
-                                                        undefined
-                                                            ? String(
-                                                                  field.value
-                                                              )
+                                                        field.value !== undefined
+                                                            ? String(field.value)
                                                             : ""
                                                     } // 型を一致させる
                                                     onChange={(e) =>
@@ -471,7 +475,7 @@ export default function CombinedTweetProductListing() {
                             <div className="text-sm text-muted-foreground">
                                 {user?.ispremium
                                     ? "∞"
-                                    : 140 - form.watch("content").length}{" "}
+                                    : 280 - form.watch("content").length}{" "}
                                 文字残り
                             </div>
                             <Button
@@ -481,7 +485,7 @@ export default function CombinedTweetProductListing() {
                                     (form.watch("content").length === 0 &&
                                         media.length === 0) ||
                                     (!user?.ispremium &&
-                                        form.watch("content").length > 280)
+                                        form.watch("content").length > 140)
                                 }
                                 className="rounded-full px-4 py-2 bg-blue-500 text-white"
                             >
