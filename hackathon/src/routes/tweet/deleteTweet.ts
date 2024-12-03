@@ -1,6 +1,6 @@
 export const deleteTweet = async (tweetid: number, token: string) => {
 	try {
-		await fetch(`https://backend-71857953091.us-central1.run.app/tweet/${tweetid}`, {
+		await fetch(`http://localhost:8080/tweet/${tweetid}`, {
 			method: "DELETE",
 			headers: {
 				Authorization: `Bearer ${token}`,

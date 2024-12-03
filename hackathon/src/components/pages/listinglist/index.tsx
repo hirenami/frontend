@@ -11,9 +11,7 @@ import { date } from "@/lib/Date";
 export default function ListingHistory() {
     const router = useRouter();
     const [listing, setListing] = useState<ListingItem[]>([]);
-    const { data: listingdata } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/listing`
-    );
+    const { data: listingdata } = GetFetcher(`http://localhost:8080/listing`);
 
     useEffect(() => {
         if (listingdata) {

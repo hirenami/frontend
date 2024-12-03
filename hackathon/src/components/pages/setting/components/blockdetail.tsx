@@ -23,7 +23,7 @@ export default function Block({ blocks, index, token }: BlockProps) {
         e.stopPropagation();
         try {
             const response = await fetch(
-                `https://backend-71857953091.us-central1.run.app/block/${blocks.user.userid}`,
+                `http://localhost:8080/block/${blocks.user.userid}`,
                 {
                     method: isblock ? "DELETE" : "POST",
                     headers: {

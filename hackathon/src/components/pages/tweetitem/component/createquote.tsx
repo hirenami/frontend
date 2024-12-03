@@ -23,9 +23,7 @@ const CreateQuote = ({
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false); // ローディング状態
-    const { data: UserData, token } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: UserData, token } = GetFetcher("http://localhost:8080/user");
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -50,7 +48,7 @@ const CreateQuote = ({
         }
 
         const response = await fetch(
-            `https://backend-71857953091.us-central1.run.app/retweet/${tweetId}/quote`,
+            `http://localhost:8080/retweet/${tweetId}/quote`,
             {
                 method: "POST",
                 headers: {

@@ -12,7 +12,7 @@ export async function sendProductData(id: string, categories: string, title: str
 		images: [{ uri: image, width: 300, height: 300 }],
 	};
 
-	const response = await fetch("https://backend-71857953091.us-central1.run.app/api/import-products", {
+	const response = await fetch("http://localhost:8080/api/import-products", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

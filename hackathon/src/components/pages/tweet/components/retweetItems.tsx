@@ -23,7 +23,7 @@ export default function RetweetItem({
     const [user, setUser] = useState<User | null>(null);
 
     const { data, error, token } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/user/${tweet.userid}`
+        `http://localhost:8080/user/${tweet.userid}`
     );
 
     useEffect(() => {

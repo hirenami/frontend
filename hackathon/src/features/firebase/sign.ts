@@ -22,7 +22,7 @@ export const signIn = async (email: string, password: string) => {
 		const idToken = await userCredential.user.getIdToken();
 
 		// ここでバックエンドにリクエストを送る
-		await fetch("https://backend-71857953091.us-central1.run.app/login", {
+		await fetch("http://localhost:8080/login", {
 			method: "GET",
 			credentials: "include",
 			headers: {
@@ -60,7 +60,7 @@ export const signUp = async (
 			userId: username,
 		};
 
-		await fetch("https://backend-71857953091.us-central1.run.app/user/create", {
+		await fetch("http://localhost:8080/user/create", {
 			method: "POST",
 			credentials: "include",
 			headers: {

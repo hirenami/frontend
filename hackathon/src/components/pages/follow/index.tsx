@@ -25,23 +25,17 @@ export default function FollowPage() {
         data: userData,
         error: error1,
         isLoading: isLoading1,
-    } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/user/${userid}`
-    );
+    } = GetFetcher(`http://localhost:8080/user/${userid}`);
     const {
         data: followsData,
         error: error2,
         isLoading: isLoading2,
-    } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/follow/${userid}/following`
-    );
+    } = GetFetcher(`http://localhost:8080/follow/${userid}/following`);
     const {
         data: followersData,
         error: error3,
         isLoading: isLoading3,
-    } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/follow/${userid}/follower`
-    );
+    } = GetFetcher(`http://localhost:8080/follow/${userid}/follower`);
 
     useEffect(() => {
         if (userData && followsData && followersData) {

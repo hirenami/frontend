@@ -13,7 +13,7 @@ export default function HomePage() {
         error,
         isLoading,
         token,
-    } = GetFetcher("https://backend-71857953091.us-central1.run.app/timeline");
+    } = GetFetcher("http://localhost:8080/timeline");
 
     // dataが変更されたときにtimelineDataを更新する
     useEffect(() => {

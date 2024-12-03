@@ -20,11 +20,9 @@ export default function Component() {
     const [purchase, setPurchase] = useState<PurchaseItem>();
     const [user, setUser] = useState<User>();
     const { data: purchasedata } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/purchase/${Id}`
+        `http://localhost:8080/purchase/${Id}`
     );
-    const { data: userdata } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/user`
-    );
+    const { data: userdata } = GetFetcher(`http://localhost:8080/user`);
 
     useEffect(() => {
         if (purchasedata) {

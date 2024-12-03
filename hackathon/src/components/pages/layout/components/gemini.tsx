@@ -19,9 +19,7 @@ export default function GeminiSidebar() {
     const q = searchParams.get("q") || "";
 
     const { data } = GetFetcher(
-        q
-            ? `https://backend-71857953091.us-central1.run.app/api/search-products/${q}`
-            : ""
+        q ? `http://localhost:8080/api/search-products/${q}` : ""
     );
 
     return (

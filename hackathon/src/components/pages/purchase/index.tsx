@@ -22,12 +22,8 @@ export default function PurchaseForm() {
         data: listingData,
         error,
         token,
-    } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/listing/${tweetid}/tweetid`
-    );
-    const { data: userdata } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/user`
-    );
+    } = GetFetcher(`http://localhost:8080/listing/${tweetid}/tweetid`);
+    const { data: userdata } = GetFetcher(`http://localhost:8080/user`);
 
     useEffect(() => {
         if (listingData) {

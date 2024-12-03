@@ -3,9 +3,7 @@ import GetFetcher from "@/routes/getfetcher";
 import updatePrivate from "@/routes/setting/updatePrivate";
 
 export default function PrivateAccountSettings() {
-    const { data: userdata, token } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: userdata, token } = GetFetcher("http://localhost:8080/user");
 
     const [isPrivate, setIsPrivate] = useState<boolean>(false);
 

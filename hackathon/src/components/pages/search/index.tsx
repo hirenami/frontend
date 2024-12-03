@@ -24,22 +24,14 @@ const SearchPage = () => {
         error,
         isLoading,
         token,
-    } = GetFetcher(
-        q
-            ? `https://backend-71857953091.us-central1.run.app/search/${hashtag}`
-            : ""
-    );
+    } = GetFetcher(q ? `http://localhost:8080/search/${hashtag}` : "");
 
     const { data: user } = GetFetcher(
-        q
-            ? `https://backend-71857953091.us-central1.run.app/search/${hashtag}/user`
-            : ""
+        q ? `http://localhost:8080/search/${hashtag}/user` : ""
     );
 
     const { data: Hashtag } = GetFetcher(
-        hashtag
-            ? `https://backend-71857953091.us-central1.run.app/search/＃${hashtag}/hashtag`
-            : ""
+        hashtag ? `http://localhost:8080/search/＃${hashtag}/hashtag` : ""
     );
 
     useEffect(() => {

@@ -19,9 +19,7 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
     const iconInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
-    const { data: UserData } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: UserData } = GetFetcher("http://localhost:8080/user");
 
     useEffect(() => {
         if (UserData) {
@@ -118,22 +116,19 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
                 return;
             }
 
-            const response = await fetch(
-                "https://backend-71857953091.us-central1.run.app/user/edit",
-                {
-                    method: "PUT",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        username: user.username,
-                        biography: user.biography,
-                        header_image: header_imageUrl,
-                        icon_image: icon_imageUrl,
-                    }),
-                }
-            );
+            const response = await fetch("http://localhost:8080/user/edit", {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: user.username,
+                    biography: user.biography,
+                    header_image: header_imageUrl,
+                    icon_image: icon_imageUrl,
+                }),
+            });
 
             if (response.ok) {
                 console.log("プロフィールが正常に保存されました");

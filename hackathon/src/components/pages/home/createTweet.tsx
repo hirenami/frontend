@@ -22,9 +22,7 @@ const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
     const [mediaFile, setMediaFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { data: UserData } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: UserData } = GetFetcher("http://localhost:8080/user");
     const [user, setUser] = useState<User | null>(null);
     const [rating, setRating] = useState<number>(0);
 
@@ -51,8 +49,8 @@ const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
 
         const endpoint =
             type === "tweet"
-                ? "https://backend-71857953091.us-central1.run.app/tweet"
-                : `https://backend-71857953091.us-central1.run.app/reply/${tweet?.tweetid}`;
+                ? "http://localhost:8080/tweet"
+                : `http://localhost:8080/reply/${tweet?.tweetid}`;
 
         const response = await fetch(endpoint, {
             method: "POST",
@@ -72,11 +70,7 @@ const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
             setTweetText("");
             setMediaFile(null);
             setRating(0);
-            router.push(
-                type == "tweet"
-                    ? `/home`
-                    : `/tweet/${tweet?.tweetid}`
-            );
+            router.push(type == "tweet" ? `/home` : `/tweet/${tweet?.tweetid}`);
         } else {
             console.error("ツイートの投稿中にエラーが発生しました");
         }

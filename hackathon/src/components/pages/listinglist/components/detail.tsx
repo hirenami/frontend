@@ -18,11 +18,9 @@ export default function Component() {
     const [listing, setlisting] = useState<ListingDetails>();
     const [user, setUser] = useState<User>();
     const { data: listingdata } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/listing/${Id}`
+        `http://localhost:8080/listing/${Id}`
     );
-    const { data: userdata } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/user`
-    );
+    const { data: userdata } = GetFetcher(`http://localhost:8080/user`);
 
     useEffect(() => {
         if (listingdata) {

@@ -14,7 +14,7 @@ export default function GeminiDetail({ id, index }: Props) {
     const router = useRouter();
     const [listing, setListing] = useState<ListingItem>();
     const { data: listingData } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/listing/${id}`
+        `http://localhost:8080/listing/${id}`
     );
 
     useEffect(() => {

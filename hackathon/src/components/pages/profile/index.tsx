@@ -23,22 +23,20 @@ export default function ProfilePage() {
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
     const { data: userData } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/user/${userid}`
+        `http://localhost:8080/user/${userid}`
     );
     const { data: tweetData, token } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/tweet/${userid}`
+        `http://localhost:8080/tweet/${userid}`
     );
-    const { data: myData } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: myData } = GetFetcher("http://localhost:8080/user");
     const { data: replyData } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/reply/${userid}/user`
+        `http://localhost:8080/reply/${userid}/user`
     );
     const { data: likeData } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/like/${userid}`
+        `http://localhost:8080/like/${userid}`
     );
     const { data: listingData } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/listing/${userid}/userid`
+        `http://localhost:8080/listing/${userid}/userid`
     );
 
     useEffect(() => {

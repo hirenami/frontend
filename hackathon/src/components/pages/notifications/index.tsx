@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 export default function NotificationsPage() {
     const [notifications, setNotifications] = useState<NotificationData[]>([]);
     const { data, error, isLoading } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/notifications"
+        "http://localhost:8080/notifications"
     );
     const router = useRouter();
 

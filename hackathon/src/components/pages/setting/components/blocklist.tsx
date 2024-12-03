@@ -5,7 +5,7 @@ import Block from "./blockdetail";
 
 export default function BlockList() {
     const { data: BlockData, token } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/block"
+        "http://localhost:8080/block"
     );
     const [blockData, setBlockData] = useState<FollowData[]>([]);
 

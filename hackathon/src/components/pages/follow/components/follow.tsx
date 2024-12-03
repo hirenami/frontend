@@ -17,9 +17,7 @@ export default function Follow({ follower, index }: FollowProps) {
     const [user, setUser] = useState<User | null>(null);
     const [isFollowing, setIsFollowing] = useState(false);
     const [isRequest, setIsRequest] = useState(false);
-    const { data: UserData, token } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: UserData, token } = GetFetcher("http://localhost:8080/user");
 
     useEffect(() => {
         if (UserData) {
@@ -33,7 +31,7 @@ export default function Follow({ follower, index }: FollowProps) {
         e.stopPropagation();
         try {
             const response = await fetch(
-                `https://backend-71857953091.us-central1.run.app/follow/${follower.user.userid}`,
+                `http://localhost:8080/follow/${follower.user.userid}`,
                 {
                     method: isFollowing ? "DELETE" : "POST",
                     headers: {

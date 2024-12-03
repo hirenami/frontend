@@ -7,9 +7,7 @@ export default function PremiumAccountBilling() {
     // プレミアム会員かどうか
     const [isPremium, setIsPremium] = useState<boolean>(false);
 
-    const { data: userdata, token } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: userdata, token } = GetFetcher("http://localhost:8080/user");
 
     // 支払い成功時にプレミアム状態を更新する
     const handlePaymentSuccess = () => {

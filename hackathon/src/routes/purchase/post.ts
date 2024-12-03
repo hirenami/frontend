@@ -1,7 +1,7 @@
 export const updatePremium = async (token: string) => {
 	try {
 		const Response = await fetch(
-			`https://backend-71857953091.us-central1.run.app/premium`,
+			`http://localhost:8080/premium`,
 			{
 				method: "PATCH",
 				headers: {

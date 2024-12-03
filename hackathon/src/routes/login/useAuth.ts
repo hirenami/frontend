@@ -5,7 +5,7 @@ import GetFetcher from "@/routes/getfetcher";
 const useAuth = () => {
 	const [loginUser, setLoginUser] = useState(null);
 	const router = useRouter();
-	const { data: userData } = GetFetcher("https://backend-71857953091.us-central1.run.app/user");
+	const { data: userData } = GetFetcher("http://localhost:8080/user");
 
 	useEffect(() => {
 		if (userData) {

@@ -13,13 +13,9 @@ import { User } from "@/types";
 export default function DirectMessage() {
     const [selectedUserDm, setSelectedUserDm] = useState<DmData>();
     const router = useRouter();
-    const { data, error, token } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/dm"
-    );
+    const { data, error, token } = GetFetcher("http://localhost:8080/dm");
     const [dmsdata, setDmsData] = useState<DmData[]>([]);
-    const { data: userdata } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: userdata } = GetFetcher("http://localhost:8080/user");
     const [user, setUser] = useState<User>();
 
     useEffect(() => {

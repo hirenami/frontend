@@ -95,9 +95,7 @@ export default function Component({
     };
 
     const [user, setUser] = useState<User | null>(null);
-    const { data: UserData } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/user"
-    );
+    const { data: UserData } = GetFetcher("http://localhost:8080/user");
     useEffect(() => {
         if (UserData) {
             setUser(UserData.user);

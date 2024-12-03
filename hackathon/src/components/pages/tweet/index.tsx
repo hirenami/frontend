@@ -30,23 +30,17 @@ export default function TweetPage() {
         error: error1,
         isLoading: isLoading1,
         token,
-    } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/tweet/${tweetid}/tweetid`
-    );
+    } = GetFetcher(`http://localhost:8080/tweet/${tweetid}/tweetid`);
     const {
         data: repliesData,
         error: error2,
         isLoading: isLoading2,
-    } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/reply/${tweetId}`
-    );
+    } = GetFetcher(`http://localhost:8080/reply/${tweetId}`);
     const {
         data: repliedData,
         error: error3,
         isLoading: isLoading3,
-    } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/reply/${tweetId}/replied`
-    );
+    } = GetFetcher(`http://localhost:8080/reply/${tweetId}/replied`);
 
     useEffect(() => {
         if (!tweetId) return;
@@ -69,7 +63,7 @@ export default function TweetPage() {
         if (tweetData?.tweet.retweetid) {
             const fetchData = async () => {
                 const res = await fetch(
-                    `https://backend-71857953091.us-central1.run.app/tweet/${tweetData.tweet.retweetid}/tweetid`,
+                    `http://localhost:8080/tweet/${tweetData.tweet.retweetid}/tweetid`,
                     {
                         method: "GET",
                         headers: {

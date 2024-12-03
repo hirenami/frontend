@@ -5,7 +5,7 @@ import Follow from "./keyfollowdetail";
 
 export default function KeyFollow() {
     const { data: FollowData, token } = GetFetcher(
-        "https://backend-71857953091.us-central1.run.app/keyfollow"
+        "http://localhost:8080/keyfollow"
     );
     const [followData, setFollowData] = useState<FollowData[]>([]);
 

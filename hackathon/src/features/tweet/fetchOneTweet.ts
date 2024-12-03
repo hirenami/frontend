@@ -2,7 +2,7 @@
 export const fetchOneTweet = async (token: string, tweetid: number) => {
 	try {
 		const tweetsResponse = await fetch(
-			`https://backend-71857953091.us-central1.run.app/tweet/${tweetid}/tweetid`,
+			`http://localhost:8080/tweet/${tweetid}/tweetid`,
 			{
 				method: "GET",
 				headers: {

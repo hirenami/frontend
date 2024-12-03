@@ -1,7 +1,7 @@
 export const handlekeyFollow = async (userid: string, token: string | null, isRequest: boolean, setIsRequest: (state: boolean) => void) => {
 	try {
 		const response = await fetch(
-			`https://backend-71857953091.us-central1.run.app/keyfollow/${userid}`,
+			`http://localhost:8080/keyfollow/${userid}`,
 			{
 				method: isRequest ? "DELETE" : "POST",
 				headers: {

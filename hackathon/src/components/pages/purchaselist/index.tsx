@@ -11,9 +11,7 @@ import { date } from "@/lib/Date";
 export default function PurchaseHistory() {
     const router = useRouter();
     const [purchase, setpurchase] = useState<PurchaseItem[]>([]);
-    const { data: purchasedata } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/purchase`
-    );
+    const { data: purchasedata } = GetFetcher(`http://localhost:8080/purchase`);
 
     useEffect(() => {
         if (purchasedata) {
