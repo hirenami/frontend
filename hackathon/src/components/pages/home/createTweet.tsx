@@ -74,8 +74,8 @@ const CreateTweet = ({ type, tweet, userToken }: TweetComponentProps) => {
             setRating(0);
             router.push(
                 type == "tweet"
-                    ? `http://localhost:3000/home`
-                    : `http://localhost:3000/tweet/${tweet?.tweetid}`
+                    ? `/home`
+                    : `/tweet/${tweet?.tweetid}`
             );
         } else {
             console.error("ツイートの投稿中にエラーが発生しました");

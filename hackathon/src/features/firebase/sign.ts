@@ -22,7 +22,7 @@ export const signIn = async (email: string, password: string) => {
 		const idToken = await userCredential.user.getIdToken();
 
 		// ここでバックエンドにリクエストを送る
-		const response = await fetch("https://backend-71857953091.us-central1.run.app/login", {
+		await fetch("https://backend-71857953091.us-central1.run.app/login", {
 			method: "GET",
 			credentials: "include",
 			headers: {
@@ -30,12 +30,12 @@ export const signIn = async (email: string, password: string) => {
 				"Content-Type": "application/json",
 			},
 		});
-		const data = await response.json();
-		return data;
+		return true;
 	} catch (err) {
 		if (err instanceof FirebaseError) {
 			alert(`${err}:SignInに失敗しました。`);
 		}
+		return false;
 	}
 };
 
@@ -69,9 +69,11 @@ export const signUp = async (
 			},
 			body: JSON.stringify(requestBody),
 		});
+		return true;
 	} catch (err) {
 		if (err instanceof FirebaseError) {
 			alert(`${err}:SignUpに失敗しました。`);
 		}
+		return false;
 	}
 };

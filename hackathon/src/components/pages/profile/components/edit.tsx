@@ -138,7 +138,7 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
             if (response.ok) {
                 console.log("プロフィールが正常に保存されました");
                 setOpen(false);
-                router.push(`http://localhost:3000/profile/${user.userid}`);
+                router.push(`/profile/${user.userid}`);
             } else {
                 console.error("プロフィールの保存中にエラーが発生しました");
             }

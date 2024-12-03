@@ -10,7 +10,6 @@ export async function sendProductData(id: string, categories: string, title: str
 		description: description,
 		availability: "IN_STOCK",
 		images: [{ uri: image, width: 300, height: 300 }],
-		//uri: "http://localhost:3000/purchase/" + id,
 	};
 
 	const response = await fetch("https://backend-71857953091.us-central1.run.app/api/import-products", {
