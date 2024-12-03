@@ -63,7 +63,8 @@ export default function TweetItem({
         );
     }
 
-    const hundleUserClick = async () => {
+    const hundleUserClick = async (e:React.MouseEvent) => {
+		e.stopPropagation();
         try {
             const token = await auth.currentUser?.getIdToken();
             if (token) {
@@ -119,7 +120,7 @@ export default function TweetItem({
                             </button>
                             <button
                                 className="text-sm text-gray-500 bg-transparent p-0 focus:outline-none"
-                                onClick={hundleUserClick}
+                                onClick={(e) => hundleUserClick(e)}
                             >
                                 @{user?.userid}
                             </button>
