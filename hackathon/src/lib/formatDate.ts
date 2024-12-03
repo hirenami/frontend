@@ -1,7 +1,7 @@
 export const formatDate = (dateString: string) => {
 	const date = new Date(dateString); // ISO文字列をDateオブジェクトに変換
 	const now = new Date();
-	date.setHours((date.getHours() as number) - 9); // 9時間を追加して日本時間に変換
+	date.setHours((date.getHours() as number)); 
 
 	const diffInMs = now.getTime() - date.getTime(); // ミリ秒の差分を計算
 	const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
