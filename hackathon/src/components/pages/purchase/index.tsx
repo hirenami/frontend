@@ -44,7 +44,7 @@ export default function PurchaseForm() {
         if (token && listing) {
             purchase(token, listing.listing.listingid);
         }
-        router.push(`/tweet/${tweetid}`); // 購入履歴ページなどに遷移
+        router.push(`/purchaselist`); // 購入履歴ページなどに遷移
     };
 
     if (error) {
