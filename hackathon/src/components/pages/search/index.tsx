@@ -20,7 +20,7 @@ const SearchPage = () => {
     const hashtag = q.startsWith("#") ? q.replace(/^(#|＃)/, "") : q;
 
 	// エンコードされた hashtag を作成
-	const encodedHashtag = encodeURIComponent(hashtag);
+	const encodedHashtag = encodeURIComponent(hashtag).replace(/\//g, "%2F");
 
     const {
         data: search,
