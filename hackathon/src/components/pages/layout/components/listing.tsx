@@ -277,10 +277,10 @@ export default function CombinedTweetProductListing() {
                                             <LucideImage className="h-5 w-5 text-primary" />
                                         </Button>
                                     </div>
-                                    {user?.ispremium ||
+                                    {(user?.ispremium ||
                                     (!user?.ispremium &&
                                         user?.listingnum &&
-                                        user?.listingnum < 6) ? (
+                                        user?.listingnum < 6) ) ? (
                                         <FormField
                                             control={form.control}
                                             name="isProductListing"
