@@ -41,7 +41,7 @@ export default function Detail({ dmdata, user, token }: Props) {
 
     const connectWebSocket = useCallback(() => {
         if (dmdata?.user.userid && user) {
-            const ws = new WebSocket(`ws://backend-71857953091.us-central1.run.app/dm/${dmdata.user.userid}`);
+            const ws = new WebSocket(`wss://backend-71857953091.us-central1.run.app/dm/${dmdata.user.userid}`);
 
             ws.onopen = () => {
                 console.log("WebSocket接続が確立されました");
