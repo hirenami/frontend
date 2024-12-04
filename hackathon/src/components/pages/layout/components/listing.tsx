@@ -43,7 +43,6 @@ import { customAlphabet } from "nanoid";
 const tweetSchema = z.object({
     content: z
         .string()
-        .min(1, "ツイート内容を入力してください")
         .max(140, "ツイートは140文字以内で入力してください"),
 });
 
