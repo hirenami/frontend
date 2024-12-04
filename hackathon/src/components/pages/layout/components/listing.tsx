@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
-import { LucideImage } from "lucide-react";
+import { Gem, LucideImage } from "lucide-react";
 import { User } from "@/types";
 import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
@@ -41,9 +41,7 @@ import { sendProductData } from "@/routes/listing/importretail";
 import { customAlphabet } from "nanoid";
 
 const tweetSchema = z.object({
-    content: z
-        .string()
-        .max(140, "ツイートは140文字以内で入力してください"),
+    content: z.string().max(140, "ツイートは140文字以内で入力してください"),
 });
 
 const productSchema = z.object({
@@ -118,7 +116,8 @@ export default function CombinedTweetProductListing() {
         }
     };
 
-    const triggerFileUpload = () => {
+    const triggerFileUpload = (e: React.MouseEvent) => {
+        e.preventDefault();
         fileInputRef.current?.click();
     };
 
@@ -202,10 +201,7 @@ export default function CombinedTweetProductListing() {
                     <DialogTitle>新しいツイート</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-6 p-4"
-                    >
+                    <form className="space-y-6 p-4">
                         <div className="flex space-x-4">
                             <Avatar className="w-10 h-10">
                                 <AvatarImage
@@ -274,32 +270,54 @@ export default function CombinedTweetProductListing() {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            onClick={triggerFileUpload}
+                                            onClick={(e) =>
+                                                triggerFileUpload(e)
+                                            }
                                         >
                                             <LucideImage className="h-5 w-5 text-primary" />
                                         </Button>
                                     </div>
-									{(user?.ispremium || (!user?.ispremium && user?.listingnum && user?.listingnum < 6) )&& ( 
-                                    <FormField
-                                        control={form.control}
-                                        name="isProductListing"
-                                        render={({ field }) => (
-                                            <FormItem className="flex items-center space-x-2">
-                                                <FormLabel>
-                                                    商品を出品する
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Switch
-                                                        checked={field.value}
-                                                        onCheckedChange={
-                                                            field.onChange
-                                                        }
-                                                    />
-                                                </FormControl>
-                                            </FormItem>
-                                        )}
-                                    />
-									)}
+                                    {user?.ispremium ||
+                                    (!user?.ispremium &&
+                                        user?.listingnum &&
+                                        user?.listingnum < 6) ? (
+                                        <FormField
+                                            control={form.control}
+                                            name="isProductListing"
+                                            render={({ field }) => (
+                                                <FormItem className="flex items-center space-x-2">
+                                                    <FormLabel>
+                                                        商品を出品する
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Switch
+                                                            checked={
+                                                                field.value
+                                                            }
+                                                            onCheckedChange={
+                                                                field.onChange
+                                                            }
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    ) : (
+                                        <Button
+                                            variant="outline"
+                                            size="lg"
+                                            className="w-full flex items-center justify-center space-x-2 py-2"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                router.push("/setting");
+                                            }}
+                                        >
+                                            <Gem className="h-5 w-5 text-primary" />
+                                            <span className="text-sm font-medium">
+                                                プレミアム会員になると、無制限に出品可能
+                                            </span>
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -499,6 +517,7 @@ export default function CombinedTweetProductListing() {
                                         form.watch("content").length > 140)
                                 }
                                 className="rounded-full px-4 py-2 bg-blue-500 text-white"
+                                onSubmit={form.handleSubmit(onSubmit)}
                             >
                                 {isSubmitting
                                     ? "投稿中..."
