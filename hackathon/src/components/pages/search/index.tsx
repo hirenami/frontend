@@ -19,6 +19,9 @@ const SearchPage = () => {
     const q = searchParams.get("q") || "";
     const hashtag = q.startsWith("#") ? q.replace(/^(#|＃)/, "") : q;
 
+	// エンコードされた hashtag を作成
+	const encodedHashtag = encodeURIComponent(hashtag);
+
     const {
         data: search,
         error,
@@ -26,19 +29,19 @@ const SearchPage = () => {
         token,
     } = GetFetcher(
         q
-            ? `https://backend-71857953091.us-central1.run.app/search/${hashtag}`
+            ? `https://backend-71857953091.us-central1.run.app/search/${encodedHashtag}`
             : ""
     );
 
     const { data: user } = GetFetcher(
         q
-            ? `https://backend-71857953091.us-central1.run.app/search/${hashtag}/user`
+            ? `https://backend-71857953091.us-central1.run.app/search/${encodedHashtag}/user`
             : ""
     );
 
     const { data: Hashtag } = GetFetcher(
         hashtag
-            ? `https://backend-71857953091.us-central1.run.app/search/＃${hashtag}/hashtag`
+            ? `https://backend-71857953091.us-central1.run.app/search/＃${encodedHashtag}/hashtag`
             : ""
     );
 
