@@ -125,7 +125,6 @@ export default function Detail({ dmdata, user, token }: Props) {
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        const now = new Date();
         if ((inputMessage.trim() || mediaFile) && user) {
             let media_url = "";
             if (mediaFile) {
