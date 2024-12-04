@@ -82,6 +82,7 @@ export const signUp = async (
 		// バックエンドでエラーが発生した場合、Firebaseのユーザーを削除
 		if (userCredential) {
 			await deleteUser(userCredential.user); // Firebaseのユーザーを削除
+			alert('ユーザーIDがもう使われています。');
 		}
 
 		if (err instanceof FirebaseError) {
