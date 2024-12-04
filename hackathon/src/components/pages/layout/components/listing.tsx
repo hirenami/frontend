@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
-import { LucideImage } from 'lucide-react';
+import { LucideImage } from "lucide-react";
 import { User } from "@/types";
 import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
@@ -60,31 +60,38 @@ const productSchema = z.object({
     stock: z.number().min(0, "在庫は0以上である必要があります"),
 });
 
-const combinedSchema = z.object({
-    content: tweetSchema.shape.content,
-    isProductListing: z.boolean().default(false),
-    name: z.string().optional(),
-    category: z.string().optional(),
-    condition: z.string().optional(),
-    price: z.number().optional(),
-    description: z.string().optional(),
-    stock: z.number().optional(),
-}).refine((data) => {
-    if (data.isProductListing) {
-        return productSchema.safeParse(data).success;
-    }
-    return true;
-}, {
-    message: "商品情報が不完全です",
-    path: ["isProductListing"],
-});
+const combinedSchema = z
+    .object({
+        content: tweetSchema.shape.content,
+        isProductListing: z.boolean().default(false),
+        name: z.string().optional(),
+        category: z.string().optional(),
+        condition: z.string().optional(),
+        price: z.number().optional(),
+        description: z.string().optional(),
+        stock: z.number().optional(),
+    })
+    .refine(
+        (data) => {
+            if (data.isProductListing) {
+                return productSchema.safeParse(data).success;
+            }
+            return true;
+        },
+        {
+            message: "商品情報が不完全です",
+            path: ["isProductListing"],
+        }
+    );
 
 export default function CombinedTweetProductListing() {
     const [isOpen, setIsOpen] = useState(false);
     const [media, setMedia] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { data: UserData, token } = GetFetcher("https://backend-71857953091.us-central1.run.app/user");
+    const { data: UserData, token } = GetFetcher(
+        "https://backend-71857953091.us-central1.run.app/user"
+    );
     const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
 
@@ -273,29 +280,26 @@ export default function CombinedTweetProductListing() {
                                             <LucideImage className="h-5 w-5 text-primary" />
                                         </Button>
                                     </div>
-                                    {user?.ispremium && (
-                                        <FormField
-                                            control={form.control}
-                                            name="isProductListing"
-                                            render={({ field }) => (
-                                                <FormItem className="flex items-center space-x-2">
-                                                    <FormLabel>
-                                                        商品を出品する
-                                                    </FormLabel>
-                                                    <FormControl>
-                                                        <Switch
-                                                            checked={
-                                                                field.value
-                                                            }
-                                                            onCheckedChange={
-                                                                field.onChange
-                                                            }
-                                                        />
-                                                    </FormControl>
-                                                </FormItem>
-                                            )}
-                                        />
-                                    )}
+
+                                    <FormField
+                                        control={form.control}
+                                        name="isProductListing"
+                                        render={({ field }) => (
+                                            <FormItem className="flex items-center space-x-2">
+                                                <FormLabel>
+                                                    商品を出品する
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Switch
+                                                        checked={field.value}
+                                                        onCheckedChange={
+                                                            field.onChange
+                                                        }
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -407,13 +411,17 @@ export default function CombinedTweetProductListing() {
                                                         placeholder="価格を入力してください"
                                                         {...field}
                                                         value={
-                                                            field.value !== undefined
-                                                                ? String(field.value)
+                                                            field.value !==
+                                                            undefined
+                                                                ? String(
+                                                                      field.value
+                                                                  )
                                                                 : ""
                                                         } // 型を一致させる
                                                         onChange={(e) =>
                                                             field.onChange(
-                                                                +e.target.value || 0
+                                                                +e.target
+                                                                    .value || 0
                                                             )
                                                         } // 入力値を数値に変換
                                                         min="1"
@@ -453,8 +461,11 @@ export default function CombinedTweetProductListing() {
                                                     placeholder="在庫数を入力してください"
                                                     {...field}
                                                     value={
-                                                        field.value !== undefined
-                                                            ? String(field.value)
+                                                        field.value !==
+                                                        undefined
+                                                            ? String(
+                                                                  field.value
+                                                              )
                                                             : ""
                                                     } // 型を一致させる
                                                     onChange={(e) =>
