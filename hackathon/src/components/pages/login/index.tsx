@@ -25,13 +25,13 @@ export const LoginForm: React.FC = () => {
                 if (!res) {
                     throw new Error("サインアップに失敗しました");
                 }
-				router.push("/home");
+				router.push("/home?isopen=true");
             } else {
                 const res = await signIn(data.email, data.password);
                 if (!res) {
                     throw new Error("ログインに失敗しました");
                 }
-				router.push("/home?isopen=true");
+				router.push("/home");
             }
             
         } catch (error) {
