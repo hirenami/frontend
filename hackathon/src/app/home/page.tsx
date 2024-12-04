@@ -7,7 +7,7 @@ import { Suspense } from "react"
 export default function Component () {
 	return (
 		<Layout>
-			<Suspense fallback={<div>Loading...</div>}>
+			<Suspense >
 			<HomePage />
 			</Suspense>
 		</Layout>
