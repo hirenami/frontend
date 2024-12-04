@@ -13,11 +13,8 @@ import { MoreHorizontal } from "lucide-react";
 import { Tweet, User } from "@/types";
 import GetFetcher from "@/routes/getfetcher";
 import { useEffect, useState } from "react";
-import { createLike, deleteLike } from "@/features/like/likes";
-import {
-    createRetweet,
-    deleteRetweet,
-} from "@/features/retweet/handleretweets";
+import { createLike, deleteLike } from "@/routes/like/likes";
+import { createRetweet, deleteRetweet } from "@/routes/retweet/handleretweets";
 import { deleteTweet } from "@/routes/tweet/deleteTweet";
 
 interface Props {

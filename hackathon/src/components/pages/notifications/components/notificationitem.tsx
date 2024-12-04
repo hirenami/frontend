@@ -4,7 +4,7 @@ import { MessageCircle, Heart, Repeat, UserPlus, MessagesSquare } from "lucide-r
 import { User,Notification,Tweet } from "@/types/index";
 import { onAuthStateChanged } from "firebase/auth";
 import {fireAuth} from "@/features/firebase/auth";
-import { updateNotificationStatus } from "@/features/notification/updateNotificationStatus";
+import { updateNotificationStatus } from "@/routes/notification/updateNotificationStatus";
 import { useRouter } from "next/navigation";
 
 interface NotificationItemProps {
