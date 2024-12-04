@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent, use } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -279,7 +279,7 @@ export default function CombinedTweetProductListing() {
                                     </div>
                                     {(user?.ispremium ||
                                     (!user?.ispremium &&
-                                        user?.listingnum &&
+                                        user?.listingnum !== undefined &&
                                         user?.listingnum < 6) ) ? (
                                         <FormField
                                             control={form.control}
