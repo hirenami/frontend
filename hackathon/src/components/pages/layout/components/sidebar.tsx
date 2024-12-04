@@ -8,7 +8,6 @@ import {
     Mail,
     Search,
     User as UserIcon,
-    UserPlus,
     ShoppingCart,
     Upload,
 } from "lucide-react";
@@ -204,14 +203,6 @@ const Sidebar = () => {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        console.log("click");
-                                    }}
-                                >
-                                    <UserPlus className="mr-2 h-5 w-5" />
-                                    <span>アカウントを切り替え</span>
-                                </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={signOutEmailAndPassword}
                                 >
