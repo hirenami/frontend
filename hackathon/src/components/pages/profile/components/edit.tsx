@@ -18,6 +18,7 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
     const headerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { data: UserData } = GetFetcher(
         "https://backend-71857953091.us-central1.run.app/user"
@@ -86,61 +87,70 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            let header_imageUrl = user.header_image;
-            let icon_imageUrl = user.icon_image;
+            setIsSubmitting(true);
+            try {
+                let header_imageUrl = user.header_image;
+                let icon_imageUrl = user.icon_image;
 
-            if (headerInputRef.current?.files?.[0]) {
-                header_imageUrl = await uploadFile(
-                    headerInputRef.current.files[0]
-                );
-            }
-            if (iconInputRef.current?.files?.[0]) {
-                icon_imageUrl = await uploadFile(iconInputRef.current.files[0]);
-            }
-
-            const getUserToken = async () => {
-                const auth = getAuth();
-                return new Promise<string | null>((resolve) => {
-                    onAuthStateChanged(auth, async (currentUser) => {
-                        if (currentUser) {
-                            const token = await currentUser.getIdToken();
-                            resolve(token);
-                        } else {
-                            resolve(null);
-                        }
-                    });
-                });
-            };
-
-            const token = await getUserToken();
-            if (!token) {
-                console.error("認証トークンの取得に失敗しました");
-                return;
-            }
-
-            const response = await fetch(
-                "https://backend-71857953091.us-central1.run.app/user/edit",
-                {
-                    method: "PUT",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        username: user.username,
-                        biography: user.biography,
-                        header_image: header_imageUrl,
-                        icon_image: icon_imageUrl,
-                    }),
+                if (headerInputRef.current?.files?.[0]) {
+                    header_imageUrl = await uploadFile(
+                        headerInputRef.current.files[0]
+                    );
                 }
-            );
+                if (iconInputRef.current?.files?.[0]) {
+                    icon_imageUrl = await uploadFile(
+                        iconInputRef.current.files[0]
+                    );
+                }
 
-            if (response.ok) {
-                console.log("プロフィールが正常に保存されました");
-                setOpen(false);
-                router.push(`/profile/${user.userid}`);
-            } else {
-                console.error("プロフィールの保存中にエラーが発生しました");
+                const getUserToken = async () => {
+                    const auth = getAuth();
+                    return new Promise<string | null>((resolve) => {
+                        onAuthStateChanged(auth, async (currentUser) => {
+                            if (currentUser) {
+                                const token = await currentUser.getIdToken();
+                                resolve(token);
+                            } else {
+                                resolve(null);
+                            }
+                        });
+                    });
+                };
+
+                const token = await getUserToken();
+                if (!token) {
+                    console.error("認証トークンの取得に失敗しました");
+                    return;
+                }
+
+                const response = await fetch(
+                    "https://backend-71857953091.us-central1.run.app/user/edit",
+                    {
+                        method: "PUT",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            username: user.username,
+                            biography: user.biography,
+                            header_image: header_imageUrl,
+                            icon_image: icon_imageUrl,
+                        }),
+                    }
+                );
+
+                if (response.ok) {
+                    console.log("プロフィールが正常に保存されました");
+                    setOpen(false);
+                    router.push(`/profile/${user.userid}`);
+                } else {
+                    console.error("プロフィールの保存中にエラーが発生しました");
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsSubmitting(false);
             }
         }
     };
@@ -159,7 +169,10 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
                     </div>
                     <button
                         onClick={handleSubmit}
-                        className={`rounded-full bg-blue-500 px-4 py-1 font-bold text-white hover:bg-blue-600`}
+                        disabled={isSubmitting}
+                        className={`rounded-full bg-blue-500 px-4 py-1 font-bold text-white hover:bg-blue-600 ${
+                            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                     >
                         保存
                     </button>
