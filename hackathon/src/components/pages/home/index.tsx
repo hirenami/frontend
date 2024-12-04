@@ -5,15 +5,32 @@ import { TweetData } from "@/types";
 import TweetItem from "@/components/pages/tweetitem";
 import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import UserEditor from "@/components/pages/profile/components/edit";
+import { useSearchParams } from "next/navigation";
 
 export default function HomePage() {
     const [timelineData, setTimelineData] = useState<TweetData[]>([]);
+    const [open, setOpen] = useState<boolean>(false);
+
+	const searchParams = useSearchParams();
+	const isopen = searchParams.get("isopen") || "";
+
+
+	useEffect(() => {
+		if (isopen === "true") {
+			setOpen(true);
+		}
+	}
+	, [isopen]);
+
+
     const {
         data: timeline,
         error,
         isLoading,
         token,
-    } = GetFetcher("https://backend-71857953091.us-central1.run.app/timeline");
+    } = GetFetcher("http://localhost:8080/timeline");
 
     // dataが変更されたときにtimelineDataを更新する
     useEffect(() => {
@@ -46,6 +63,21 @@ export default function HomePage() {
             </header>
 
             <CreateTweet userToken={token} type={"tweet"} tweet={null} />
+
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent
+                    className="max-w-[600px] max-h-[90vh] p-4"
+                    style={{
+                        width: "600px",
+                        height: "auto",
+                    }}
+                >
+                    <DialogHeader>
+                        <DialogTitle></DialogTitle>
+                    </DialogHeader>
+                    <UserEditor setOpen={setOpen} />
+                </DialogContent>
+            </Dialog>
 
             <div>
                 {timelineData.map((data, index) => (

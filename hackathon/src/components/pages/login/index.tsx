@@ -25,13 +25,15 @@ export const LoginForm: React.FC = () => {
                 if (!res) {
                     throw new Error("サインアップに失敗しました");
                 }
+				router.push("/home");
             } else {
                 const res = await signIn(data.email, data.password);
                 if (!res) {
                     throw new Error("ログインに失敗しました");
                 }
+				router.push("/home?isopen=true");
             }
-            router.push("/home");
+            
         } catch (error) {
             console.error(error);
             // エラーメッセージを表示する処理をここに追加
