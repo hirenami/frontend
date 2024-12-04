@@ -47,12 +47,6 @@ export default function SettingsPage() {
             content: <PremiumAccountBilling />,
         },
         {
-            id: "userid",
-            title: "ユーザーID変更",
-            icon: <User className="w-4 h-4" />,
-            content: <UserIdChangeForm />,
-        },
-        {
             id: "email",
             title: "メールアドレス変更",
             icon: <User className="w-4 h-4" />,
@@ -129,8 +123,4 @@ export default function SettingsPage() {
             </Dialog>
         </div>
     );
-}
-
-function UserIdChangeForm() {
-    return <div>ユーザーID変更フォーム</div>;
 }
