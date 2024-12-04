@@ -117,11 +117,6 @@ export default function Component({
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>メニュー</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {tweet.userid == user?.userid && (
-                    <DropdownMenuItem onClick={() => console.log("編集")}>
-                        編集
-                    </DropdownMenuItem>
-                )}
                 <DropdownMenuItem onClick={(e) => handleLikeToggle(e)}>
                     {isliked ? "いいねを取り消す" : "いいねする"}
                 </DropdownMenuItem>
