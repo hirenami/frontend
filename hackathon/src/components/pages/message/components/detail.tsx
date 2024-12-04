@@ -138,7 +138,7 @@ export default function Detail({ dmdata, user, token }: Props) {
                 senderId: user.userid,
                 receiverId: dmdata?.user.userid,
                 content: inputMessage,
-                createdat: new Date(now.getTime() + 9 * 60 * 60 * 1000).toISOString(),
+                createdat: new Date().toISOString(),
                 media_url: media_url,
             };
             sendMessage(newMessage);
