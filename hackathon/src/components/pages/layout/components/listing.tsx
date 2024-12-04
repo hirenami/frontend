@@ -44,7 +44,7 @@ const tweetSchema = z.object({
     content: z
         .string()
         .min(1, "ツイート内容を入力してください")
-        .max(280, "ツイートは280文字以内で入力してください"),
+        .max(140, "ツイートは140文字以内で入力してください"),
 });
 
 const productSchema = z.object({
@@ -280,7 +280,7 @@ export default function CombinedTweetProductListing() {
                                             <LucideImage className="h-5 w-5 text-primary" />
                                         </Button>
                                     </div>
-
+									{(user?.ispremium || (!user?.ispremium && media.length < 6) )&& ( 
                                     <FormField
                                         control={form.control}
                                         name="isProductListing"
@@ -300,6 +300,7 @@ export default function CombinedTweetProductListing() {
                                             </FormItem>
                                         )}
                                     />
+									)}
                                 </div>
                             </div>
                         </div>
@@ -486,7 +487,7 @@ export default function CombinedTweetProductListing() {
                             <div className="text-sm text-muted-foreground">
                                 {user?.ispremium
                                     ? "∞"
-                                    : 280 - form.watch("content").length}{" "}
+                                    : 140 - form.watch("content").length}{" "}
                                 文字残り
                             </div>
                             <Button

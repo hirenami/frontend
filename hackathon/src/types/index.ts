@@ -30,7 +30,7 @@ export interface User {
 	biography: string; // 修正: null 値を許可
 	isprivate: boolean;
 	ispremium: boolean;
-	isdeleted: boolean;
+	listingnum : number;
 	isadmin: boolean;
 }
 
