@@ -12,7 +12,7 @@ const SearchLayout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <div className="flex min-h-screen bg-background">
             <Sidebar />
-            <main className="flex-1 ml-80 mr-120 border-r border-l">
+            <main className="flex-1 ml-0 md:ml-80 mr-0 md:mr-120 border-r border-l">
                 {children} {/* 動的にレンダリングするコンテンツ */}
             </main>
             <GeminiSidebar />
