@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Bell, Home, Mail, Search, UserIcon, ShoppingCart, Upload, Settings, Menu } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -9,18 +9,28 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import GetFetcher from "@/routes/getfetcher";
+import { User } from "@/types";
 
 const MobileNavigation = () => {
   const router = useRouter();
   const currentPath = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<User>();
+  const { data: UserData } = GetFetcher("https://backend-71857953091.us-central1.run.app/user");
+
+  useEffect(() => {
+	if (UserData) {
+	  setUser(UserData.user);
+	}
+  }, [UserData]);
 
   const navItems = [
     { icon: Home, label: "ホーム", path: "/home" },
     { icon: Search, label: "検索", path: "/search" },
     { icon: Bell, label: "通知", path: "/notification" },
     { icon: Mail, label: "メッセージ", path: "/message" },
-    { icon: UserIcon, label: "プロフィール", path: "/profile" },
+    { icon: UserIcon, label: "プロフィール", path: `/profile/${user?.userid}`},
   ];
 
   const handleNavigation = (path: string) => {
