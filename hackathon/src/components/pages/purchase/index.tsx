@@ -10,6 +10,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { purchase } from "@/routes/purchase/tweetpost";
+import { postevents } from "@/routes/purchase/postevents";
 
 export default function PurchaseForm() {
     const { tweetId } = useParams();
@@ -36,7 +37,8 @@ export default function PurchaseForm() {
         if (userdata) {
             setUser(userdata.user);
         }
-    }, [listingData, userdata]);
+		postevents(token, listingData.listing.listingid);
+    }, [listingData, userdata, token]);
 
     const handlePaymentSuccess = () => {
         // 支払い成功後の処理
