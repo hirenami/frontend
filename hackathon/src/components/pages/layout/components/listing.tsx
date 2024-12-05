@@ -202,7 +202,10 @@ export default function CombinedTweetProductListing() {
                     <DialogTitle>新しいツイート</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
-                    <form className="space-y-6 p-4">
+                    <form
+                        // onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-6 p-4"
+                    >
                         <div className="flex space-x-4">
                             <Avatar className="w-10 h-10">
                                 <AvatarImage
@@ -278,10 +281,10 @@ export default function CombinedTweetProductListing() {
                                             <LucideImage className="h-5 w-5 text-primary" />
                                         </Button>
                                     </div>
-                                    {(user?.ispremium ||
+                                    {user?.ispremium ||
                                     (!user?.ispremium &&
                                         user?.listingnum !== undefined &&
-                                        user?.listingnum < 6) ) ? (
+                                        user?.listingnum < 6) ? (
                                         <FormField
                                             control={form.control}
                                             name="isProductListing"
@@ -340,6 +343,7 @@ export default function CombinedTweetProductListing() {
                                         </FormItem>
                                     )}
                                 />
+
                                 <CategorySelect form={form} />
                                 <FormField
                                     control={form.control}
@@ -482,7 +486,7 @@ export default function CombinedTweetProductListing() {
                                         form.watch("content").length > 140)
                                 }
                                 className="rounded-full px-4 py-2 bg-blue-500 text-white"
-                                onSubmit={form.handleSubmit(onSubmit)}
+                                onClick={form.handleSubmit(onSubmit)}
                             >
                                 {isSubmitting
                                     ? "投稿中..."
