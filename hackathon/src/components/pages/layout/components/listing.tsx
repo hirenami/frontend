@@ -39,6 +39,7 @@ import { uploadFile } from "@/features/firebase/strage";
 import GetFetcher from "@/routes/getfetcher";
 import { sendProductData } from "@/routes/listing/importretail";
 import { customAlphabet } from "nanoid";
+import CategorySelect from "./category";
 
 const tweetSchema = z.object({
     content: z.string().max(140, "ツイートは140文字以内で入力してください"),
@@ -339,43 +340,7 @@ export default function CombinedTweetProductListing() {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
-                                    control={form.control}
-                                    name="category"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>カテゴリー</FormLabel>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="カテゴリーを選択" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    <SelectItem value="electronics">
-                                                        家電・スマホ・カメラ
-                                                    </SelectItem>
-                                                    <SelectItem value="fashion">
-                                                        ファッション・美容
-                                                    </SelectItem>
-                                                    <SelectItem value="books">
-                                                        本・音楽・ゲーム
-                                                    </SelectItem>
-                                                    <SelectItem value="sports">
-                                                        スポーツ・レジャー
-                                                    </SelectItem>
-                                                    <SelectItem value="Home & Garden > Decor">
-                                                        インテリア・住まい・小物
-                                                    </SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                <CategorySelect form={form} />
                                 <FormField
                                     control={form.control}
                                     name="condition"
