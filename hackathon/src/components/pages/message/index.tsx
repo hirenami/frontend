@@ -36,7 +36,7 @@ export default function DirectMessage() {
     if (!dmsdata) return <div>No data</div>;
 
     const UserList = () => (
-        <div className="w-full md:w-2/5 border-r border-gray-200">
+        <div className="w-full md:w-1/3 lg:w-1/4 border-r border-gray-200">
             <div className="flex items-center w-full border-b p-4">
                 <button
                     className="rounded-full p-2 hover:bg-gray-200 md:hidden"
@@ -89,9 +89,9 @@ export default function DirectMessage() {
     return (
         <div className="flex h-screen overflow-hidden bg-white text-black">
             {/* モバイルでの表示 */}
-            <div className="md:hidden w-full">
+            <div className="md:hidden w-full h-full flex flex-col">
                 {selectedUserDm ? (
-                    <div className="h-full flex flex-col">
+                    <>
                         <div className="flex items-center border-b p-4">
                             <Button
                                 variant="ghost"
@@ -110,8 +110,10 @@ export default function DirectMessage() {
                                 {selectedUserDm.user.username}
                             </span>
                         </div>
-                        <Detail dmdata={selectedUserDm} user={user} token={token} />
-                    </div>
+                        <div className="flex-grow overflow-hidden">
+                            <Detail dmdata={selectedUserDm} user={user} token={token} />
+                        </div>
+                    </>
                 ) : (
                     <UserList />
                 )}
@@ -120,9 +122,11 @@ export default function DirectMessage() {
             {/* デスクトップでの表示 */}
             <div className="hidden md:flex w-full">
                 <UserList />
-				{selectedUserDm &&
-                <Detail dmdata={selectedUserDm} user={user} token={token} />
-				}
+                <div className="flex-grow overflow-hidden">
+					{selectedUserDm && (
+                    <Detail dmdata={selectedUserDm} user={user} token={token} />
+					)}
+                </div>
             </div>
         </div>
     );
