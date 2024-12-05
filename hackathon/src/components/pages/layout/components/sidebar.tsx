@@ -55,7 +55,7 @@ const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <aside className="w-80 p-4 flex flex-col fixed min-h-screen">
+        <aside className="w-80 p-4 flex flex-col fixed min-h-screen hidden md:flex">
             <div className="mb-8 ml-6" onClick={() => router.push("/home")}>
                 <Image
                     src="https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/%E6%AE%B5%E8%90%BD%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88.png?alt=media&token=30c714d3-8dae-4d91-8c83-77fa1fae733e"

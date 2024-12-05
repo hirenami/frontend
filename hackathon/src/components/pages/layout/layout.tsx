@@ -2,6 +2,7 @@
 import React, { ReactNode } from "react";
 import Sidebar from "@/components/pages/layout/components/sidebar";
 import TrendsSidebar from "@/components/pages/layout/components/trendsidebar";
+import MobileNavigation from "@/components/pages/layout/components/mobilesidebar";
 
 interface LayoutProps {
     children: ReactNode; // childrenの型をReactNodeに指定
@@ -15,6 +16,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {children} {/* 動的にレンダリングするコンテンツ */}
             </main>
             <TrendsSidebar />
+			<MobileNavigation />
         </div>
     );
 };
