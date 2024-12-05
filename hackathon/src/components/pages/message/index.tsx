@@ -36,7 +36,7 @@ export default function DirectMessage() {
     if (!dmsdata) return <div>No data</div>;
 
     const UserList = () => (
-        <div className="w-full md:w-1/3 lg:w-1/4 border-r border-gray-200">
+        <div className="w-full md:w-2/5 border-r border-gray-200">
             <div className="flex items-center w-full border-b p-4">
                 <button
                     className="rounded-full p-2 hover:bg-gray-200 md:hidden"
