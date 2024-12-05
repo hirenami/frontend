@@ -33,11 +33,11 @@ export default function PurchaseForm() {
     useEffect(() => {
         if (listingData) {
             setListing(listingData);
+			postevents(token, listingData.listing.listingid);
         }
         if (userdata) {
             setUser(userdata.user);
         }
-		postevents(token, listingData.listing.listingid);
     }, [listingData, userdata, token]);
 
     const handlePaymentSuccess = () => {
