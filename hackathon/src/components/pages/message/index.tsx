@@ -89,7 +89,7 @@ export default function DirectMessage() {
     return (
         <div className="flex h-screen overflow-hidden bg-white text-black">
             {/* モバイルでの表示 */}
-            <div className="md:hidden w-full h-full flex flex-col">
+            <div className="md:hidden w-full h-[calc(100vh-4rem)] flex flex-col">
                 {selectedUserDm ? (
                     <>
                         <div className="flex items-center border-b p-4">
@@ -110,7 +110,7 @@ export default function DirectMessage() {
                                 {selectedUserDm.user.username}
                             </span>
                         </div>
-                        <div className="flex-grow overflow-hidden">
+                        <div className="flex-grow overflow-hidden flex flex-col">
                             <Detail dmdata={selectedUserDm} user={user} token={token} />
                         </div>
                     </>
@@ -122,7 +122,7 @@ export default function DirectMessage() {
             {/* デスクトップでの表示 */}
             <div className="hidden md:flex w-full">
                 <UserList />
-                <div className="flex-grow overflow-hidden">
+                <div className="flex-grow overflow-hidden flex flex-col">
 					{selectedUserDm && (
                     <Detail dmdata={selectedUserDm} user={user} token={token} />
 					)}
