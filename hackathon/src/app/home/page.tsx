@@ -15,7 +15,7 @@ export default function Component () {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (!user) {
 				// ログインしている場合はホーム画面に遷移
-				router.push("/login");
+				router.push("/");
 			}
 		});
 		return () => unsubscribe();
