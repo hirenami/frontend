@@ -191,13 +191,27 @@ export default function CombinedTweetProductListing() {
     }
 
     return (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <Dialog
+            open={isOpen}
+            onOpenChange={(open) => {
+                if (!isSubmitting) {
+                    setIsOpen(open);
+                }
+            }}
+        >
             <DialogTrigger asChild>
                 <Button className="rounded-full py-6 text-lg font-bold bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg hover:from-indigo-600 hover:to-purple-700 transition-all mt-10">
                     ツイートと商品を出品する
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+            <DialogContent
+                className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto"
+                onInteractOutside={(event) => {
+                    if (isSubmitting) {
+                        event.preventDefault();
+                    }
+                }}
+            >
                 <DialogHeader>
                     <DialogTitle>新しいツイート</DialogTitle>
                 </DialogHeader>
