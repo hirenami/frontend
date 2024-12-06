@@ -63,7 +63,10 @@ export default function TrendsSidebar() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden h-full flex flex-col">
+                <div
+                    className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col"
+                    style={{ height: "calc(100vh - 72px)" }} // 72px = 上部の検索バーの高さ + マージン
+                >
                     <div className="p-6 flex-shrink-0">
                         <div className="flex flex-col gap-6">
                             <div className="flex items-center gap-2 border-b border-gray-100 pb-4">
