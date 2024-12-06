@@ -5,16 +5,14 @@ import { TweetData } from "@/types";
 import TweetItem from "@/components/pages/tweetitem";
 import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
-import {
-    Dialog,
-    DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import UserEditor from "@/components/pages/profile/components/edit";
 import { useSearchParams } from "next/navigation";
 
 export default function HomePage() {
     const [timelineData, setTimelineData] = useState<TweetData[]>([]);
     const [open, setOpen] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const searchParams = useSearchParams();
     const isopen = searchParams.get("isopen") || "";
@@ -64,9 +62,27 @@ export default function HomePage() {
 
             <CreateTweet userToken={token} type={"tweet"} tweet={null} />
 
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="w-full sm:max-w-[600px] h-full sm:h-auto sm:max-h-[90vh] p-0 overflow-hidden">
-                    <UserEditor setOpen={setOpen} />
+            <Dialog
+                open={open}
+                onOpenChange={(open) => {
+                    if (!isSubmitting) {
+                        setOpen(open);
+                    }
+                }}
+            >
+                <DialogContent
+                    className="w-full sm:max-w-[600px] h-full sm:h-auto sm:max-h-[90vh] p-0 overflow-hidden"
+                    onInteractOutside={(event) => {
+                        if (isSubmitting) {
+                            event.preventDefault();
+                        }
+                    }}
+                >
+                    <UserEditor
+                        setOpen={setOpen}
+                        isSubmitting={isSubmitting}
+                        setIsSubmitting={setIsSubmitting}
+                    />
                 </DialogContent>
             </Dialog>
 
