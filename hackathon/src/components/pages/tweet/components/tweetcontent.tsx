@@ -15,8 +15,8 @@ interface TweetComponentProps {
 export default function TweetComponent({
     tweet,
     retweet,
-	isblocked,
-	isprivate,
+    isblocked,
+    isprivate,
 }: TweetComponentProps) {
     const router = useRouter();
 
@@ -30,27 +30,33 @@ export default function TweetComponent({
         );
     }
 
-	if(isblocked){
-		return (
-			<div className="flex flex-col items-center justify-center p-4 border rounded-md text-gray-600">
-			  <p className="text-sm font-medium text-gray-800">ブロックされているため、このツイートは表示できません。</p>
-			</div>
-		  );
-	}
-	if(isprivate){
-		return (
-			<div className="flex flex-col items-center justify-center p-4 border rounded-md  text-gray-600">
-			  <p className="text-sm font-medium text-gray-800">作成者が表示範囲を設定しているため、このツイートは表示できません。</p>
-			</div>
-		  );
-	}
+    if (isblocked) {
+        return (
+            <div className="flex flex-col items-center justify-center p-4 border rounded-md text-gray-600">
+                <p className="text-sm font-medium text-gray-800">
+                    ブロックされているため、このツイートは表示できません。
+                </p>
+            </div>
+        );
+    }
+    if (isprivate) {
+        return (
+            <div className="flex flex-col items-center justify-center p-4 border rounded-md  text-gray-600">
+                <p className="text-sm font-medium text-gray-800">
+                    作成者が表示範囲を設定しているため、このツイートは表示できません。
+                </p>
+            </div>
+        );
+    }
 
     return (
         <>
             {/* ツイートのテキスト */}
-            <p className="text-lg text-gray-900 whitespace-pre-wrap">
-                {RenderContentWithHashtags(tweet.content)}
-            </p>
+            <div className="w-full max-w-lg">
+                <p className="text-sm text-gray-900 break-words">
+                    {RenderContentWithHashtags(tweet.content)}
+                </p>
+            </div>
 
             {/* メディア（画像または動画） */}
             {tweet.media_url && tweet.media_url !== '""' && (
