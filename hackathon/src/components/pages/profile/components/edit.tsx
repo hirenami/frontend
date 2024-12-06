@@ -1,6 +1,7 @@
 "use client";
+
 import React, { useState, useRef, useEffect } from "react";
-import { Camera } from "lucide-react";
+import { Camera } from 'lucide-react';
 import Image from "next/image";
 import { uploadFile } from "@/features/firebase/strage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -38,7 +39,7 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
             if (prev) {
                 return {
                     ...prev,
-                    [name]: name === "biography" ? value : value, // biographyをstringとして扱う
+                    [name]: name === "biography" ? value : value,
                 };
             }
             return prev;
@@ -58,10 +59,10 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
                     if (prev) {
                         return {
                             ...prev,
-                            [imageType]: reader.result as string, // 画像データをセット
+                            [imageType]: reader.result as string,
                         };
                     }
-                    return prev; // prevがnullならそのまま返す
+                    return prev;
                 });
             };
             reader.readAsDataURL(file);
@@ -69,7 +70,7 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
     };
 
     if (!user) {
-        return <div>ユーザー情報が見つかりません</div>;
+        return <div className="text-center p-4">ユーザー情報が見つかりません</div>;
     }
 
     const validateForm = () => {
@@ -77,9 +78,6 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
         if (user.username.length < 1) {
             newErrors.username = "1文字以上で入力してください";
         }
-        // if (user.biography.String.length > 160) {
-        //     newErrors.biography = "自己紹介は160文字以内で入力してください";
-        // }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -156,136 +154,118 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
     };
 
     return (
-        <div className="flex max-w-[600px] max-h-[90vh]">
-            {/* <Sidebar /> 左側のサイドバー */}
-            <div className="flex-1 bg-white text-black">
-                {" "}
-                {/* 右側の編集画面 */}
-                <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 p-4 bg-white">
-                    <div className="flex items-center">
-                        <h1 className="text-xl font-bold">
-                            プロフィールを編集
-                        </h1>
-                    </div>
-                    <button
-                        onClick={handleSubmit}
-                        disabled={isSubmitting}
-                        className={`rounded-full bg-blue-500 px-4 py-1 font-bold text-white hover:bg-blue-600 ${
-                            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
-                    >
-                        保存
-                    </button>
-                </header>
-                <form
-                    onSubmit={handleSubmit}
-                    className="mx-auto max-w-full p-4"
+        <div className="flex flex-col w-full max-w-[600px] min-h-screen sm:max-h-[90vh] bg-white">
+            <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 p-4 bg-white">
+                <div className="flex items-center">
+                    <h1 className="text-lg sm:text-xl font-bold">プロフィールを編集</h1>
+                </div>
+                <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className={`rounded-full bg-blue-500 px-3 py-1 text-sm sm:px-4 sm:py-1 sm:text-base font-bold text-white hover:bg-blue-600 ${
+                        isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                 >
-                    <div className="relative mb-6 group">
-                        <Image
-                            src={
-                                user.header_image ||
-                                "https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/grey.png?alt=media&token=3cfa3b15-5419-4807-932d-d19e10c52ff3"
-                            }
-                            alt="ヘッダー画像"
-                            width={600}
-                            height={200}
-                            className="h-44 w-full object-cover"
-                            priority
-                        />
-                        <button
-                            type="button"
-                            onClick={() => headerInputRef.current?.click()}
-                            className="absolute inset-0 flex items-center justify-center transition-opacity duration-200 group-hover:bg-black group-hover:bg-opacity-50"
-                            aria-label="ヘッダー画像をアップロード"
-                        >
-                            <div className="rounded-full bg-gray-800 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                <Camera size={16} className="text-white" />
-                            </div>
-                        </button>
-                        <input
-                            ref={headerInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) =>
-                                handleImageUpload(e, "header_image")
-                            }
-                            className="hidden"
-                        />
-                    </div>
+                    保存
+                </button>
+            </header>
+            <form onSubmit={handleSubmit} className="mx-auto w-full p-4 overflow-y-auto">
+                <div className="relative mb-6 group">
+                    <Image
+                        src={
+                            user.header_image ||
+                            "https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/grey.png?alt=media&token=3cfa3b15-5419-4807-932d-d19e10c52ff3"
+                        }
+                        alt="ヘッダー画像"
+                        width={600}
+                        height={200}
+                        className="h-32 sm:h-44 w-full object-cover"
+                        priority
+                    />
+                    <button
+                        type="button"
+                        onClick={() => headerInputRef.current?.click()}
+                        className="absolute inset-0 flex items-center justify-center transition-opacity duration-200 group-hover:bg-black group-hover:bg-opacity-50"
+                        aria-label="ヘッダー画像をアップロード"
+                    >
+                        <div className="rounded-full bg-gray-800 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                            <Camera size={16} className="text-white" />
+                        </div>
+                    </button>
+                    <input
+                        ref={headerInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, "header_image")}
+                        className="hidden"
+                    />
+                </div>
 
-                    <div className="relative mb-6 group w-32 h-32">
-                        <Image
-                            src={
-                                user.icon_image ||
-                                "https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/default_User_400x400.png?alt=media&token=44ace5f1-ef11-481f-9618-ba7d07e96b5d"
-                            }
-                            alt="プロフィール画像"
-                            width={128}
-                            height={128}
-                            className="absolute h-32 w-32 rounded-full border-4 border-white"
-                            priority
-                        />
-                        <button
-                            type="button"
-                            onClick={() => iconInputRef.current?.click()}
-                            className="absolute inset-0 flex items-center justify-center rounded-full transition-opacity duration-200 group-hover:bg-black group-hover:bg-opacity-50"
-                            aria-label="プロフィール画像をアップロード"
-                        >
-                            <div className="rounded-full bg-gray-800 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                <Camera size={24} className="text-white" />
-                            </div>
-                        </button>
-                        <input
-                            ref={iconInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleImageUpload(e, "icon_image")}
-                            className="hidden"
-                        />
-                    </div>
+                <div className="relative mb-6 group w-24 h-24 sm:w-32 sm:h-32">
+                    <Image
+                        src={
+                            user.icon_image ||
+                            "https://firebasestorage.googleapis.com/v0/b/term6-namito-hirezaki.appspot.com/o/default_User_400x400.png?alt=media&token=44ace5f1-ef11-481f-9618-ba7d07e96b5d"
+                        }
+                        alt="プロフィール画像"
+                        width={128}
+                        height={128}
+                        className="absolute h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 border-white"
+                        priority
+                    />
+                    <button
+                        type="button"
+                        onClick={() => iconInputRef.current?.click()}
+                        className="absolute inset-0 flex items-center justify-center rounded-full transition-opacity duration-200 group-hover:bg-black group-hover:bg-opacity-50"
+                        aria-label="プロフィール画像をアップロード"
+                    >
+                        <div className="rounded-full bg-gray-800 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                            <Camera size={24} className="text-white" />
+                        </div>
+                    </button>
+                    <input
+                        ref={iconInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, "icon_image")}
+                        className="hidden"
+                    />
+                </div>
 
-                    <div className="mb-4">
-                        <label
-                            htmlFor="username"
-                            className="block text-sm font-bold"
-                        >
-                            ユーザー名
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={user.username}
-                            onChange={handleInputChange}
-                            className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {errors.username && (
-                            <p className="text-red-500">{errors.username}</p>
-                        )}
-                    </div>
+                <div className="mb-4">
+                    <label htmlFor="username" className="block text-sm font-bold mb-2">
+                        ユーザー名
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={user.username}
+                        onChange={handleInputChange}
+                        className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.username && (
+                        <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+                    )}
+                </div>
 
-                    <div className="mb-4">
-                        <label
-                            htmlFor="biography"
-                            className="block text-sm font-bold"
-                        >
-                            自己紹介
-                        </label>
-                        <textarea
-                            id="biography"
-                            name="biography"
-                            value={user.biography}
-                            onChange={handleInputChange}
-                            className="w-full rounded-md border  focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            rows={4}
-                        />
-                        {errors.biography && (
-                            <p className="text-red-500">{errors.biography}</p>
-                        )}
-                    </div>
-                </form>
-            </div>
+                <div className="mb-4">
+                    <label htmlFor="biography" className="block text-sm font-bold mb-2">
+                        自己紹介
+                    </label>
+                    <textarea
+                        id="biography"
+                        name="biography"
+                        value={user.biography}
+                        onChange={handleInputChange}
+                        className="w-full rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        rows={4}
+                    />
+                    {errors.biography && (
+                        <p className="text-red-500 text-sm mt-1">{errors.biography}</p>
+                    )}
+                </div>
+            </form>
         </div>
     );
 }
