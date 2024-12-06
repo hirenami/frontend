@@ -53,7 +53,7 @@ export default function TweetComponent({
         <>
             {/* ツイートのテキスト */}
             <div className="w-full max-w-lg">
-                <p className="text-sm text-gray-900 break-words">
+                <p className="text-sm text-gray-900 break-all">
                     {RenderContentWithHashtags(tweet.content)}
                 </p>
             </div>
