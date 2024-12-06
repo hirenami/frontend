@@ -15,7 +15,7 @@ import ActionButton from "./component/actionbutton";
 interface TweetItemProps {
     tweet: Tweet;
     user: User;
-	retweet: ReTweetData | null;
+    retweet: ReTweetData | null;
     initialisLiked: boolean;
     initialisRetweeted: boolean;
     type: string;
@@ -27,7 +27,7 @@ interface TweetItemProps {
 export default function TweetItem({
     tweet,
     user,
-	retweet,
+    retweet,
     initialisLiked,
     initialisRetweeted,
     type,
@@ -44,9 +44,9 @@ export default function TweetItem({
     const auth = fireAuth;
 
     useEffect(() => {
-		if(tweet.retweetid){
-			setRetweetData(retweet);
-		}
+        if (tweet.retweetid) {
+            setRetweetData(retweet);
+        }
         if (tweet.likes) {
             setLikeData(tweet.likes);
         }
@@ -63,8 +63,8 @@ export default function TweetItem({
         );
     }
 
-    const hundleUserClick = async (e:React.MouseEvent) => {
-		e.stopPropagation();
+    const hundleUserClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         try {
             const token = await auth.currentUser?.getIdToken();
             if (token) {
@@ -116,7 +116,7 @@ export default function TweetItem({
                                 onClick={(e) => hundleUserClick(e)}
                             >
                                 {user?.username}
-								{user?.isprivate ? "🔒️" : ""}
+                                {user?.isprivate ? "🔒️" : ""}
                             </button>
                             <button
                                 className="text-sm text-gray-500 bg-transparent p-0 focus:outline-none"
@@ -129,18 +129,23 @@ export default function TweetItem({
                                 {formatDate(tweet.created_at)}
                             </span>
                         </div>
-						{tweet.review > 0 &&  (
-							<div className="flex items-center space-x-1">
-							<span className="sr-only">{tweet.review}つ星のレビュー</span>
-							{[...Array(5)].map((_, i) => (
-							  <Star
-								key={i}
-								className={`w-4 h-4 ${
-								  i < tweet.review ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-								}`}
-							  />
-							))}
-						  </div>)}
+                        {tweet.review > 0 && (
+                            <div className="flex items-center space-x-1">
+                                <span className="sr-only">
+                                    {tweet.review}つ星のレビュー
+                                </span>
+                                {[...Array(5)].map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        className={`w-4 h-4 ${
+                                            i < tweet.review
+                                                ? "text-yellow-400 fill-yellow-400"
+                                                : "text-gray-300"
+                                        }`}
+                                    />
+                                ))}
+                            </div>
+                        )}
                         <MenuComponent
                             tweet={tweet}
                             token={token}
@@ -156,9 +161,11 @@ export default function TweetItem({
                     </div>
 
                     {/* ツイートのテキスト */}
-                    <p className="text-sm text-gray-900 whitespace-pre-wrap break-words">
-                        {RenderContentWithHashtags(tweet.content)}
-                    </p>
+                    <div className="w-full max-w-lg">
+                        <p className="text-sm text-gray-900 break-words">
+                            {RenderContentWithHashtags(tweet.content)}
+                        </p>
+                    </div>
 
                     {/* メディア（画像または動画） */}
                     {tweet.media_url && tweet.media_url !== '""' && (
@@ -186,21 +193,23 @@ export default function TweetItem({
                     )}
 
                     {/* 引用リツイートされたツイート */}
-                    {tweet.isquote && retweetData && retweetData.tweet.tweetid &&  (
-                        <div
-                            className="mt-3 mr-10 p-3 border border-gray-200 rounded-lg  hover:bg-gray-100"
-                            onClick={(e) => {
-                                e.stopPropagation(); // 親のクリックイベントをキャンセル
-                                handleTweetClick(tweet.retweetid);
-                            }}
-                        >
-                            <RetweetItem
-                                tweet={retweetData.tweet}
-                                isblocked={retweetData.isblocked}
-                                isprivate={retweetData.isprivate}
-                            />
-                        </div>
-                    )}
+                    {tweet.isquote &&
+                        retweetData &&
+                        retweetData.tweet.tweetid && (
+                            <div
+                                className="mt-3 mr-10 p-3 border border-gray-200 rounded-lg  hover:bg-gray-100"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // 親のクリックイベントをキャンセル
+                                    handleTweetClick(tweet.retweetid);
+                                }}
+                            >
+                                <RetweetItem
+                                    tweet={retweetData.tweet}
+                                    isblocked={retweetData.isblocked}
+                                    isprivate={retweetData.isprivate}
+                                />
+                            </div>
+                        )}
 
                     {isblocked || isprivate || tweet.isdeleted ? null : (
                         <ActionButton
@@ -254,7 +263,10 @@ export default function TweetItem({
 
     return (
         <div>
-            {retweet && retweet.tweet.tweetid!=0  && !retweet?.tweet.isdeleted  && !tweet.isquote ? (
+            {retweet &&
+            retweet.tweet.tweetid != 0 &&
+            !retweet?.tweet.isdeleted &&
+            !tweet.isquote ? (
                 <div
                     className="relative hover:bg-gray-50 transition-colors duration-200"
                     onClick={() => handleTweetClick(tweet.retweetid)}
@@ -271,7 +283,7 @@ export default function TweetItem({
                     <TweetItem
                         tweet={retweet.tweet}
                         user={retweet.user}
-						retweet={retweet.quote}
+                        retweet={retweet.quote}
                         initialisLiked={retweet.likes}
                         initialisRetweeted={retweet.retweets}
                         type={"tweet"}
