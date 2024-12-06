@@ -1,8 +1,6 @@
 import {
     Dialog,
     DialogContent,
-    DialogHeader,
-    DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -105,30 +103,45 @@ export const Header = ({
                                 プロフィールを編集
                             </Button>
                             <Dialog open={open} onOpenChange={setOpen}>
-                                <DialogContent
-                                    className="max-w-[600px] max-h-[90vh] p-4"
-                                    style={{
-                                        width: "600px",
-                                        height: "auto",
-                                    }}
-                                >
-                                    <DialogHeader>
-                                        <DialogTitle></DialogTitle>
-                                    </DialogHeader>
+                                <DialogContent className="w-full sm:max-w-[600px] h-full sm:h-auto sm:max-h-[90vh] p-0 overflow-hidden">
                                     <UserEditor setOpen={setOpen} />
                                 </DialogContent>
                             </Dialog>
                         </>
                     ) : !userData?.isblocked ? (
                         <Button
-                            variant={(isFollowing || (isRequest && userData?.isprivate)) ? "outline" : "default"}
+                            variant={
+                                isFollowing ||
+                                (isRequest && userData?.isprivate)
+                                    ? "outline"
+                                    : "default"
+                            }
                             size="sm"
                             className={`rounded-full ${
-                                isFollowing || (isRequest && userData?.isprivate)
+                                isFollowing ||
+                                (isRequest && userData?.isprivate)
                                     ? "border-gray-300 text-gray-900 hover:bg-gray-100 hover:text-red-500 hover:border-red-500"
                                     : "bg-gray-900 text-white hover:bg-gray-800"
                             }`}
-                            onClick={userData?.isprivate ? () => handlekeyFollow(userid,token,isRequest,setIsRequest) : () => handleFollow(userid,token,isFollowing,followerCount,setIsFollowing,setFollowerCount)}
+                            onClick={
+                                userData?.isprivate
+                                    ? () =>
+                                          handlekeyFollow(
+                                              userid,
+                                              token,
+                                              isRequest,
+                                              setIsRequest
+                                          )
+                                    : () =>
+                                          handleFollow(
+                                              userid,
+                                              token,
+                                              isFollowing,
+                                              followerCount,
+                                              setIsFollowing,
+                                              setFollowerCount
+                                          )
+                            }
                         >
                             {isFollowing ? (
                                 <>
