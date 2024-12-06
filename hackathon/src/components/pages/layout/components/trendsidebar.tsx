@@ -76,10 +76,12 @@ export default function TrendsSidebar() {
                     </div>
                     <div className="flex-1 overflow-y-auto p-6 hide-scrollbar">
                         {data &&
-                            data.productIds &&
-                            data.productIds.length > 0 && (
-                                <div className="space-y-4">
-                                    {data.productIds.map((item: any) => (
+                        data.productIds &&
+                        data.productIds.length > 0 ? (
+                            <div className="space-y-4">
+                                {data.productIds
+                                    .filter((item: any) => !!item) // 無効な値を除外
+                                    .map((item: any) => (
                                         <div
                                             key={item}
                                             className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md transition-shadow duration-200"
@@ -90,8 +92,12 @@ export default function TrendsSidebar() {
                                             />
                                         </div>
                                     ))}
-                                </div>
-                            )}
+                            </div>
+                        ) : (
+                            <div className="text-gray-500 text-center">
+                                表示する商品がありません。
+                            </div>
+                        )}
                     </div>
                 </div>
             </aside>
