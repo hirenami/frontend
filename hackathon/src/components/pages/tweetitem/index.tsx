@@ -156,7 +156,7 @@ export default function TweetItem({
                     </div>
 
                     {/* ツイートのテキスト */}
-                    <p className="text-sm text-gray-900 whitespace-pre-wrap">
+                    <p className="text-sm text-gray-900 whitespace-pre-wrap break-words">
                         {RenderContentWithHashtags(tweet.content)}
                     </p>
 
