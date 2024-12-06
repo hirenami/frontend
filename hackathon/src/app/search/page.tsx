@@ -4,7 +4,7 @@ import SearchLayout from "@/components/pages/layout/searchlayout";
 import SearchPage from "@/components/pages/search";
 import { Suspense } from "react";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { fireAuth } from "@/features/firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 

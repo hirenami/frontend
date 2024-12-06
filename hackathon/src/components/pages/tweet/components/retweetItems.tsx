@@ -111,7 +111,7 @@ export default function RetweetItem({
                         </span>
                     </div>
                 </div>
-                <p className="mt-2 text-sm text-gray-900 whitespace-pre-wrap">
+                <p className="mt-2 text-sm text-gray-900 whitespace-pre-wrap break-all">
                     {RenderContentWithHashtags(tweet.content)}
                 </p>
                 {tweet.media_url && tweet.media_url !== '""' && (
