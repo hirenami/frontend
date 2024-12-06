@@ -1,7 +1,4 @@
-import {
-    Dialog,
-    DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ArrowLeft, Calendar, Edit3, UserCheck, UserPlus } from "lucide-react";
@@ -40,6 +37,7 @@ export const Header = ({
     const [followerCount, setFollowerCount] = useState(0);
     const [isRequest, setIsRequest] = useState(false);
     const [open, setOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (userData) {
@@ -102,9 +100,27 @@ export const Header = ({
                                 <Edit3 className="h-4 w-4 mr-2" />
                                 プロフィールを編集
                             </Button>
-                            <Dialog open={open} onOpenChange={setOpen}>
-                                <DialogContent className="w-full sm:max-w-[600px] h-full sm:h-auto sm:max-h-[90vh] p-0 overflow-hidden">
-                                    <UserEditor setOpen={setOpen} />
+                            <Dialog
+                                open={open}
+                                onOpenChange={(open) => {
+                                    if (!isSubmitting) {
+                                        setOpen(open);
+                                    }
+                                }}
+                            >
+                                <DialogContent
+                                    className="w-full sm:max-w-[600px] h-full sm:h-auto sm:max-h-[90vh] p-0 overflow-hidden"
+                                    onInteractOutside={(event) => {
+                                        if (isSubmitting) {
+                                            event.preventDefault();
+                                        }
+                                    }}
+                                >
+                                    <UserEditor
+                                        setOpen={setOpen}
+                                        isSubmitting={isSubmitting}
+                                        setIsSubmitting={setIsSubmitting}
+                                    />
                                 </DialogContent>
                             </Dialog>
                         </>

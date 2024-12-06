@@ -11,15 +11,16 @@ import GetFetcher from "@/routes/getfetcher";
 
 interface UserEditorProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	isSubmitting: boolean;
+	setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function UserEditor({ setOpen }: UserEditorProps) {
+export default function UserEditor({ setOpen,isSubmitting,setIsSubmitting }: UserEditorProps) {
     const [user, setUser] = useState<User | null>(null);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const headerInputRef = useRef<HTMLInputElement>(null);
     const iconInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { data: UserData } = GetFetcher(
         "https://backend-71857953091.us-central1.run.app/user"
