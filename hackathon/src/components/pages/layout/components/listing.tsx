@@ -428,6 +428,7 @@ export default function CombinedTweetProductListing() {
                                             <FormLabel>商品の詳細</FormLabel>
                                             <FormControl>
                                                 <Textarea
+													className="border"
                                                     placeholder="商品の詳細を入力してください"
                                                     {...field}
                                                 />
