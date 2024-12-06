@@ -5,7 +5,10 @@ import { TweetData } from "@/types";
 import TweetItem from "@/components/pages/tweetitem";
 import CreateTweet from "@/components/pages/home/createTweet";
 import GetFetcher from "@/routes/getfetcher";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+} from "@/components/ui/dialog";
 import UserEditor from "@/components/pages/profile/components/edit";
 import { useSearchParams } from "next/navigation";
 
@@ -13,17 +16,14 @@ export default function HomePage() {
     const [timelineData, setTimelineData] = useState<TweetData[]>([]);
     const [open, setOpen] = useState<boolean>(false);
 
-	const searchParams = useSearchParams();
-	const isopen = searchParams.get("isopen") || "";
+    const searchParams = useSearchParams();
+    const isopen = searchParams.get("isopen") || "";
 
-
-	useEffect(() => {
-		if (isopen === "true") {
-			setOpen(true);
-		}
-	}
-	, [isopen]);
-
+    useEffect(() => {
+        if (isopen === "true") {
+            setOpen(true);
+        }
+    }, [isopen]);
 
     const {
         data: timeline,
@@ -65,16 +65,7 @@ export default function HomePage() {
             <CreateTweet userToken={token} type={"tweet"} tweet={null} />
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent
-                    className="max-w-[600px] max-h-[90vh] p-4"
-                    style={{
-                        width: "600px",
-                        height: "auto",
-                    }}
-                >
-                    <DialogHeader>
-                        <DialogTitle></DialogTitle>
-                    </DialogHeader>
+                <DialogContent className="w-full sm:max-w-[600px] h-full sm:h-auto sm:max-h-[90vh] p-0 overflow-hidden">
                     <UserEditor setOpen={setOpen} />
                 </DialogContent>
             </Dialog>
