@@ -39,7 +39,7 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
             if (prev) {
                 return {
                     ...prev,
-                    [name]: name === "biography" ? value : value,
+                    [name]: value,
                 };
             }
             return prev;
@@ -154,7 +154,7 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
     };
 
     return (
-        <div className="flex flex-col w-full max-w-[600px] min-h-screen sm:max-h-[90vh] bg-white">
+        <div className="flex flex-col w-full h-full bg-white overflow-hidden">
             <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 p-4 bg-white">
                 <div className="flex items-center">
                     <h1 className="text-lg sm:text-xl font-bold">プロフィールを編集</h1>
@@ -169,7 +169,7 @@ export default function UserEditor({ setOpen }: UserEditorProps) {
                     保存
                 </button>
             </header>
-            <form onSubmit={handleSubmit} className="mx-auto w-full p-4 overflow-y-auto">
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4">
                 <div className="relative mb-6 group">
                     <Image
                         src={
