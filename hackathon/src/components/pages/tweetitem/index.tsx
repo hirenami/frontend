@@ -271,7 +271,7 @@ export default function TweetItem({
                     <TweetItem
                         tweet={retweet.tweet}
                         user={retweet.user}
-						retweet={null}
+						retweet={retweet.quote}
                         initialisLiked={retweet.likes}
                         initialisRetweeted={retweet.retweets}
                         type={"tweet"}

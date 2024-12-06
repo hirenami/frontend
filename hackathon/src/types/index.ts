@@ -47,6 +47,7 @@ export interface TweetData {
 export interface ReTweetData {
 	tweet: Tweet;
 	user: User;
+	quote: ReTweetData | null;
 	likes: boolean;
 	retweets: boolean;
 	isblocked: boolean;
