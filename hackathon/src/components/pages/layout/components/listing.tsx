@@ -306,7 +306,7 @@ export default function CombinedTweetProductListing() {
                                     {user?.ispremium ||
                                     (!user?.ispremium &&
                                         user?.listingnum !== undefined &&
-                                        user?.listingnum < 6) ? (
+                                        user?.listingnum < 5) ? (
                                         <FormField
                                             control={form.control}
                                             name="isProductListing"
