@@ -41,16 +41,16 @@ const Sidebar = () => {
         }
     }, [UserData]);
 
-    const signOutEmailAndPassword = (): void => {
-        signOut(fireAuth)
-            .then(() => {
-                alert("ログアウトしました");
-                router.push("/");
-            })
-            .catch((err) => {
-                alert(err);
-            });
-    };
+    const signOutEmailAndPassword = async (): Promise<void> => {
+		try {
+			await signOut(fireAuth); // 確実にログアウト処理が完了するまで待つ
+			alert("ログアウトしました");
+			router.replace("/"); // リダイレクト
+		} catch (err) {
+			console.error("ログアウトに失敗しました:", err);
+			alert("ログアウトに失敗しました。再試行してください。");
+		}
+	};
 
     const [isOpen, setIsOpen] = useState(false);
 
