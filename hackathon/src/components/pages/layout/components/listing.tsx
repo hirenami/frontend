@@ -42,7 +42,7 @@ import { customAlphabet } from "nanoid";
 import CategorySelect from "./category";
 
 const tweetSchema = z.object({
-    content: z.string().max(140, "ツイートは140文字以内で入力してください"),
+    content: z.string(),
 });
 
 const productSchema = z.object({
@@ -55,7 +55,7 @@ const productSchema = z.object({
     }),
     price: z.number().min(1, "価格は1円以上である必要があります"),
     description: z.string().min(1, "商品の詳細を入力してください"),
-    stock: z.number().min(0, "在庫は0以上である必要があります"),
+    stock: z.number().min(1, "在庫は1以上である必要があります"),
 });
 
 const combinedSchema = z
@@ -217,7 +217,7 @@ export default function CombinedTweetProductListing() {
                 </DialogHeader>
                 <Form {...form}>
                     <form
-                        // onSubmit={form.handleSubmit(onSubmit)}
+                        onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-6 p-4"
                     >
                         <div className="flex space-x-4">
@@ -498,10 +498,10 @@ export default function CombinedTweetProductListing() {
                                     (form.watch("content").length === 0 &&
                                         media.length === 0) ||
                                     (!user?.ispremium &&
-                                        form.watch("content").length > 140)
+                                        form.watch("content").length > 140) ||
+									(form.watch("isProductListing") && !form.formState.isValid)
                                 }
                                 className="rounded-full px-4 py-2 bg-blue-500 text-white"
-                                onClick={form.handleSubmit(onSubmit)}
                             >
                                 {isSubmitting
                                     ? "投稿中..."
