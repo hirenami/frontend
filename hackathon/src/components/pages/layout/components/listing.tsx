@@ -46,16 +46,24 @@ const tweetSchema = z.object({
 });
 
 const productSchema = z.object({
-    name: z.string().min(1, "商品名は必須です"),
+    name: z.string()
+		.min(1, "商品名は必須です")
+		.max(50, "商品名は50文字以内である必要があります"),
     category: z.string({
         required_error: "カテゴリーを選択してください",
     }),
     condition: z.string({
         required_error: "商品の状態を選択してください",
     }),
-    price: z.number().min(1, "価格は1円以上である必要があります"),
-    description: z.string().min(1, "商品の詳細を入力してください"),
-    stock: z.number().min(1, "在庫は1以上である必要があります"),
+    price: z.number()
+		.min(1, "価格は1円以上である必要があります")
+		.max(1000000, "価格は100万円以下である必要があります"),
+    description: z.string()
+		.min(1, "商品の詳細を入力してください")
+		.max(500, "商品の詳細は500文字以内である必要があります"),
+    stock: z.number()
+		.min(1, "在庫は1以上である必要があります")
+		.max(100, "在庫は100以下である必要があります"),
 });
 
 const combinedSchema = z
