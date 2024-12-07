@@ -34,6 +34,12 @@ export default function ListingHistory() {
             </div>
 
             <div className="bg-white rounded-lg">
+				{listing.length === 0 && (
+					<div className="flex items-center justify-center bg-white text-black pt-20">
+						<p>まだ商品を出品していません。</p>
+					</div>
+				)}
+
                 {listing.map((item) => (
                     <Link
                         key={item.listing.listingid}

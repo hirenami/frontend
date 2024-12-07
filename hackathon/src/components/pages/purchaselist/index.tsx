@@ -34,6 +34,12 @@ export default function PurchaseHistory() {
             </div>
 
             <div className="bg-white rounded-lg">
+				{purchase.length === 0 && (
+					<div className="flex items-center justify-center bg-white text-black pt-20">
+					<p>まだ商品を購入していません。</p>
+					</div>
+				)}
+
                 {purchase.map((item) => (
                     <Link
                         key={item.purchase.purchaseid}

@@ -48,6 +48,11 @@ export default function NotificationsPage() {
                 <h1 className="text-xl font-bold ml-4">通知</h1>
             </div>
             <div className="overflow-y-auto">
+				{notifications.length === 0 && (
+					<div className="flex items-center justify-center bg-white text-black pt-20">
+						<p>まだ通知はありません。</p>
+					</div>
+				)}
                 {notifications.slice(0, 10).map((data, index) => (
                     <NotificationItem
                         key={index}

@@ -47,6 +47,13 @@ export default function DirectMessage() {
                 <h1 className="text-xl font-bold ml-4">メッセージ</h1>
             </div>
             <ScrollArea className="h-[calc(100vh-80px)] overflow-y-auto">
+				{dmsdata.length === 0 && (
+					<div className="flex items-center justify-center bg-white text-black pt-20">
+					<p>まだダイレクトメッセージがありません。</p>
+					</div>
+				)}
+
+
                 {dmsdata.map((dmdata) => (
                     <div
                         key={dmdata.dms[0].dmsid}
