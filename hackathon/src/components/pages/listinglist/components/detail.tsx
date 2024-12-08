@@ -5,7 +5,7 @@ import { ArrowLeft, ShoppingCartIcon } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { ListingDetails, User } from "@/types";
+import { ListingDetails } from "@/types";
 import GetFetcher from "@/routes/getfetcher";
 import { date } from "@/lib/Date";
 import Follow from "@/components/pages/follow/components/follow";
@@ -16,22 +16,15 @@ export default function Component() {
     const Id = id as unknown as number;
 
     const [listing, setlisting] = useState<ListingDetails>();
-    const [user, setUser] = useState<User>();
     const { data: listingdata } = GetFetcher(
         `https://backend-71857953091.us-central1.run.app/listing/${Id}`
-    );
-    const { data: userdata } = GetFetcher(
-        `https://backend-71857953091.us-central1.run.app/user`
     );
 
     useEffect(() => {
         if (listingdata) {
             setlisting(listingdata);
         }
-        if (userdata) {
-            setUser(userdata.user);
-        }
-    }, [listingdata, userdata]);
+    }, [listingdata]);
 
     if (!listing) {
         return null;
@@ -68,12 +61,7 @@ export default function Component() {
                                 {listing.listing.listingname}
                             </h2>
                             <p className="text-2xl font-bold">
-                                ¥
-                                {user?.ispremium
-                                    ? Math.floor(
-                                          listing.listing.listingprice * 0.98
-                                      ).toLocaleString()
-                                    : listing.listing.listingprice.toLocaleString()}
+                                ¥{listing.listing.listingprice.toLocaleString()}
                             </p>
                         </div>
                     </div>
