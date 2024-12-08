@@ -6,18 +6,26 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Loader2, Send, HelpCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+import GetFetcher from '@/routes/getfetcher'
 
 export default function CustomerSupport() {
   const [query, setQuery] = useState('')
   const [answer, setAnswer] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const {token} = GetFetcher('https://backend-71857953091.us-central1.run.app/user')
 
   const handleSearch = async () => {
     if (!query.trim()) return
     setIsLoading(true)
     try {
-		const response = await fetch('https://backend-71857953091.us-central1.run.app/api/gemini?query=' + query)
-  
+		const response = await fetch('https://backend-71857953091.us-central1.run.app/api/gemini?query=' + query, {
+			method: 'GET',
+			headers:
+			{
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			}
+		})
 		if (response.ok) {
 		  const data = await response.json()
 		  setAnswer(data.answer.references[0].chunkInfo.documentMetadata.structData.answer) 
