@@ -59,7 +59,7 @@ export default function CustomerSupport() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-grow"
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            onKeyDown={(e) => !e.nativeEvent.isComposing && e.key === 'Enter' && handleSearch()}
           />
           <Button onClick={handleSearch} disabled={isLoading || !query.trim()} className="w-24">
             {isLoading ? (
