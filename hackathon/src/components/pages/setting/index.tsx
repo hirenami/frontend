@@ -25,6 +25,7 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import BlockList from "./components/blocklist";
 import FollowRequest from "./components/keyfollow";
+import CustomerSupport from "./components/gemini";
 
 type SettingOption = {
     id: string;
@@ -112,6 +113,7 @@ export default function SettingsPage() {
                         </Button>
                     ))}
                 </div>
+				<CustomerSupport />
             </ScrollArea>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
